@@ -347,7 +347,7 @@ class App extends React.Component {
 
         return (
             <Provider store={store}>
-                <div className={"theme-" + this.tenant}>
+                <div className={clsx("theme-" + this.tenant, {['home']: this.props.location.pathname === '/'})}>
                     <CssBaseline />
                     
                     { this.tenant === 'mobids' ? <ToolbarList /> : defaultAppbar }
@@ -356,7 +356,7 @@ class App extends React.Component {
                     <main className={clsx(classes.content, {
                         [classes.contentShift]: this.state.open
                     })}>
-                        <div className={classes.appBarSpacer} />
+                        <div className={clsx(classes.appBarSpacer, 'appBarSpacer')} />
                         <Container maxWidth="lg" className={classes.container}>
                             <Route exact path="/">
                                 <MDSHome />

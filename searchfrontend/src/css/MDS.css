@@ -1,7 +1,11 @@
-.theme-mobids {
+.theme-mobids.home {
     background-image: url(../assets/home-shape.svg);
     background-repeat: no-repeat;
     background-size: 500px;
+}
+
+.theme-mobids .appBarSpacer {
+    min-height: 132px;
 }
 
 nav.toolbar-list {
@@ -24,7 +28,7 @@ nav.toolbar-list .MuiListItem-root {
     width: auto
 }
 
-nav.toolbar-list .MuiListItem-root.Mui-selected, nav.toolbar-list .MuiListItem-root.Mui-selected:hover {
+nav.toolbar-list .MuiListItem-root.Mui-selected, nav.toolbar-list .MuiListItem-root:hover {
     background: none;
 }
 
