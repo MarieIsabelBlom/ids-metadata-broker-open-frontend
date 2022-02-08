@@ -17,8 +17,11 @@ import SearchConnectors from "./components/SearchConnectors";
 import SearchFhgResources from "./components/SearchFhgResources";
 import DataPrivacyView from "./DataPrivacyView";
 import ImprintView from "./ImprintView";
+import MDSHome from "./MDSHome"
+import ToolbarList from './components/ToolbarList';
 
 import "./css/App.scss"
+import "./css/MDS.css"
 import FhgResourceView from "./components/ConnectorFhg";
 import Maintainer from "./components/Maintainer";
 import UsageControl from "./components/UsageControl";
@@ -38,6 +41,7 @@ import Adminx from './components/Adminx';
 import { BrokerConnectorViewComponent } from './components/BrokerConnectorViewComponent';
 
 import { elasticsearchURL } from './urlConfig';
+import { FlashOnOutlined, FormatLineSpacingRounded } from '@material-ui/icons';
 
 const drawerWidth = 300;
 const styles = theme => ({
@@ -63,6 +67,10 @@ const styles = theme => ({
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.leavingScreen
         }),
+    },
+    appBarMDS: {
+        background: 'none !important',
+        boxShadow: 'none'
     },
     appBarShift: {
         marginLeft: drawerWidth,
@@ -119,7 +127,7 @@ const styles = theme => ({
         flexGrow: 1,
         height: '100vh',
         overflow: 'auto',
-        backgroundColor: 'white',
+        //backgroundColor: 'white',
         transition: theme.transitions.create("width", {
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.leavingScreen
@@ -166,7 +174,7 @@ class App extends React.Component {
     }
 
     // change eis to paris to have the paris frontend
-    tenant = process.env.REACT_APP_TENANT || 'eis';
+    tenant = process.env.REACT_APP_TENANT || 'mobids';
     tenant = this.tenant.toLowerCase();
 
     setBrokerURL = () => {
@@ -268,38 +276,10 @@ class App extends React.Component {
         let logo = <Link style={{ textDecoration: 'none' }} to="/">
             <h1>IDS</h1>
         </Link>
-        if (tenant === 'mobids') {
-            logo = <Link style={{ textDecoration: 'none' }} to="/">
-                <img src="./logo.png" alt="image" width='135px' />
-            </Link>
-            footerPos1 = <Box component="footer" className="footer" m={1}>
-                <Grid container spacing={3} className="footer-copyright">
-                    <Grid container item xs={12} className="footer-header">
-                        <h5 style={{ fontSize: '14px', paddingTop: '6px' }}>{this.renderMainTitle(this.tenant)}</h5>
-                        <p style={{ fontSize: '10px', textAlign: 'center' }}>International Data Spaces</p>
-                    </Grid>
-                    <Grid container>
-                        <Grid className="footer-mail" container item xs={12} lg={12} md={12} >
-                            <a href="https://www.iais.fraunhofer.de/.org/" style={{ fontSize: '10px' }}>© {new Date().getFullYear()}&nbsp;Fraunhofer IAIS</a>
+        let hasDrawer = this.tenant !== 'mobids'
 
-                        </Grid>
-                        <Grid className="footer-mail" container item xs={12} lg={12} md={12} >
-                            <a href="mailto:contact@ids.fraunhofer.de" style={{ fontSize: '10px' }}>contact@ids.fraunhofer.de</a>
-                        </Grid>
-                    </Grid>
-                    <Grid container >
-                        <Grid className="footer-privacy" container item xs={12} lg={12} md={12} style={{ marginTop: '10px' }}>
-                            <Link to="/data-protection" style={{ fontSize: '10px' }}>Data Protection Policy</Link>
-                        </Grid>
-                        <Grid className="footer-privacy" container item xs={12} lg={12} md={12}>
-                            <Link to="/imprint" style={{ fontSize: '10px' }}>Imprint</Link>
-                        </Grid>
-                        <Grid className="footer-mail" container item xs={12} lg={12} md={12}  >
-                            <p style={{ fontSize: '10px' }}>  Last Modified: {new Date(document.lastModified).getDate() + "." + parseInt(new Date(document.lastModified).getMonth() + 1) + "." + new Date(document.lastModified).getFullYear()}</p>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Box>
+        if (tenant === 'mobids') {
+            this.state.open = false
         }
         else {
             footerPos2 = <Box component="footer" className="footer" m={2}>
@@ -329,53 +309,58 @@ class App extends React.Component {
             </Box>
         }
 
+        let drawer = <Drawer
+            variant="persistent"
+            classes={{
+                paper: clsx(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
+            }}
+            open={this.state.open}>
+            <div className={classes.toolbarIcon} >
+                {logo}
+            </div>
+            <SidebarList tenant={this.tenant} />
+            {footerPos1}
+        </Drawer>
+
+        let defaultAppbar = <AppBar position="absolute" className={clsx(classes.appBar, this.state.open && classes.appBarShift, this.tenant === 'mobids' && classes.appBarMDS)}>
+        <Toolbar className={classes.toolbar}>
+            <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                onClick={this.state.open ? this.handleDrawerClose : this.handleDrawerOpen}
+                className={hasDrawer ? classes.menuButton : classes.menuButtonHidden}
+            >
+                <MenuIcon />
+            </IconButton>
+
+            <div color="inherit" className={classes.logo}>
+                <div className={classes.titles}>
+                    <h3 style={{ color: '#808080' }}>{this.renderMainTitle(this.tenant)}</h3>
+                    <h3 style={{ fontWeight: 'bold', marginLeft: '10px', color: '#808080' }}>{this.renderSubTitle(this.props.location.pathname)}</h3>
+                </div>
+            </div>           
+            
+            <LoginOrLogout />
+        </Toolbar>
+    </AppBar>
+
         return (
             <Provider store={store}>
                 <div className={"theme-" + this.tenant}>
                     <CssBaseline />
-                    <AppBar position="absolute" className={clsx(classes.appBar, this.state.open && classes.appBarShift)}>
-                        <Toolbar className={classes.toolbar}>
-                            <IconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                onClick={this.state.open ? this.handleDrawerClose : this.handleDrawerOpen}
-                                className={classes.menuButton}
-                            >
-                                <MenuIcon />
-                            </IconButton>
+                    
+                    { this.tenant === 'mobids' ? <ToolbarList /> : defaultAppbar }
 
-                            <div color="inherit" className={classes.logo}>
-                                <div className={classes.titles}>
-                                    <h3 style={{ color: '#808080' }}>{this.renderMainTitle(this.tenant)}</h3>
-                                    <h3 style={{ fontWeight: 'bold', marginLeft: '10px', color: '#808080' }}>{this.renderSubTitle(this.props.location.pathname)}</h3>
-                                </div>
-
-                            </div>
-
-                            <LoginOrLogout />
-                        </Toolbar>
-                    </AppBar>
-                    <Drawer
-                        variant="persistent"
-                        classes={{
-                            paper: clsx(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
-                        }}
-                        open={this.state.open}
-                    >
-                        <div className={classes.toolbarIcon} >
-
-                            {logo}
-
-                        </div>
-                        <SidebarList tenant={this.tenant} />
-                        {footerPos1}
-                    </Drawer>
+                    { hasDrawer ? drawer : '' }
                     <main className={clsx(classes.content, {
                         [classes.contentShift]: this.state.open
                     })}>
                         <div className={classes.appBarSpacer} />
                         <Container maxWidth="lg" className={classes.container}>
+                            <Route exact path="/">
+                                <MDSHome />
+                            </Route>
                             <Route path="/browse">
                                 <Dashboard />
                             </Route>

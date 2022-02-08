@@ -1,0 +1,34 @@
+.theme-mobids {
+    background-image: url(../assets/home-shape.svg);
+    background-repeat: no-repeat;
+    background-size: 500px;
+}
+
+nav.toolbar-list {
+    display: flex;
+    padding-top: 0;
+    flex-grow: 1;
+}
+
+.theme-mobids .appbar button {
+    text-transform: none;
+    color: black;
+    background-color: #FFFF00;
+    font-size: 17px;
+    padding: 10px 30px;
+    margin-bottom: 5px;
+    font-weight: 100;
+}
+
+nav.toolbar-list .MuiListItem-root {
+    width: auto
+}
+
+nav.toolbar-list .MuiListItem-root.Mui-selected, nav.toolbar-list .MuiListItem-root.Mui-selected:hover {
+    background: none;
+}
+
+/*.toolbar-list > div {
+    padding-left: 8px;
+    padding-right: 8px
+}*/

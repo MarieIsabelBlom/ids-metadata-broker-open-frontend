@@ -27,7 +27,8 @@
   "description": "Search GUI for browsing the metadata registry of an IDS Broker",
   "version": "0.0.1",
   "devDependencies": {
-    "react-scripts": "^3.4.4"
+    "react-scripts": "^4.0.3",
+    "sass": "^1.35.1"
   },
   "homepage": ".",
   "scripts": {
@@ -36,21 +37,10 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "browserslist": {
-    "production": [
+  "browserslist": [
       ">0.2%",
       "not dead",
       "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "proxy": "http://localhost:4000",
-  "devDependencies": {
-    "react-scripts": "^4.0.3",
-    "sass": "^1.35.1"
-  }
+   ],
+  "proxy": "http://localhost:4000"
 }
