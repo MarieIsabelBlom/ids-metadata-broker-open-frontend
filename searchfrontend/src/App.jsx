@@ -42,6 +42,7 @@ import { BrokerConnectorViewComponent } from './components/BrokerConnectorViewCo
 
 import { elasticsearchURL } from './urlConfig';
 import { FlashOnOutlined, FormatLineSpacingRounded } from '@material-ui/icons';
+import Footer from './components/Footer';
 
 const drawerWidth = 300;
 const styles = theme => ({
@@ -280,6 +281,7 @@ class App extends React.Component {
 
         if (tenant === 'mobids') {
             this.state.open = false
+            footerPos2 = <Footer />
         }
         else {
             footerPos2 = <Box component="footer" className="footer" m={2}>

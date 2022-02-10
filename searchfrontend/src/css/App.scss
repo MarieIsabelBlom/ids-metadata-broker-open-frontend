@@ -276,7 +276,7 @@ main {
     */
 footer {
     @include themify($themes) {
-        background-color: themed('primaryColor') !important;
+        background-color: themed('footerColor') !important;
     }
 
     color: white;
@@ -288,7 +288,7 @@ footer {
         margin: 0;
 
         @include themify($themes) {
-            background-color: themed('primaryColor') !important;
+            background-color: themed('footerColor') !important;
         }
 
         padding: 10px;

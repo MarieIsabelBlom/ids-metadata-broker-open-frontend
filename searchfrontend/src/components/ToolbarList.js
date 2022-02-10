@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { List, ListItem, Tooltip } from '@material-ui/core';
+import { List, ListItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import LoginOrLogout from './auth/LoginOrLogout';
 import { withStyles } from '@material-ui/core/styles';
@@ -11,6 +11,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import CloseIcon from '@material-ui/icons/Close';
 
 const styles = theme => ({
     appBar: {
@@ -103,7 +104,7 @@ class ToolbarList extends Component {
                                 aria-label="open drawer"
                                 onClick={this.state.open ? this.handleDrawerClose : this.handleDrawerOpen}
                             >
-                                <MenuIcon />
+                                {this.state.open ? <CloseIcon /> : <MenuIcon />}
                             </IconButton>
                         </div>
                     </div>
