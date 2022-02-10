@@ -1,3 +1,24 @@
+@font-face {
+    font-family: "Soehne";
+    src: url(../assets/fonts/soehne-web-buch.woff2);
+}
+
+@font-face {
+    font-family: "Soehne";
+    src: url(../assets/fonts/soehne-web-kraftig.woff2);
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: "Soehne";
+    src: url(../assets/fonts/soehne-web-leicht.woff2);
+    font-weight: 100;
+}
+
+.theme-mobids * {
+    font-family: 'Soehne' !important;
+}
+
 .theme-mobids.home {
     background-image: url(../assets/home-shape.svg);
     background-repeat: no-repeat;
@@ -18,10 +39,10 @@ nav.toolbar-list {
     text-transform: none;
     color: black;
     background-color: #FFFF00;
-    font-size: 17px;
+    font-size: 18px;
     padding: 10px 30px;
     margin-bottom: 5px;
-    font-weight: 100;
+    font-weight: normal;
 }
 
 nav.toolbar-list .MuiListItem-root {
@@ -51,12 +72,8 @@ header .menu-button {
 .theme-mobids footer .footer-copyright {
     max-width: 1100px;
     margin: auto !important;
-    font-size: 18px;
+    font-size: 16px;
     padding: 70px 0;
-}
-
-.theme-mobids footer .footer-copyright > div {
-    margin: 0 10px
 }
 
 .theme-mobids footer .footer-mail {
@@ -76,7 +93,7 @@ header .menu-button {
 }
 
 .theme-mobids footer .footer-right .copyright {
-    font-size: 16px;
+    font-size: 15px;
     color: #8F8F8F;
 }
 

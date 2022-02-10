@@ -11,8 +11,8 @@ class Footer extends Component {
             <Box component="footer" className="footer" m={4}>
                 <Grid container className="footer-copyright">
                     <Grid container item xs={6}  lg={3} md={3} className="footer-header">
-                        <h5 style={{ fontSize: '24px', marginTop: '16px' }}>Mobility<br />Data Space</h5>
-                        <p style={{ fontSize: '20px', textAlign: 'left', color: '#8F8F8F' }}>International Data Spaces</p>
+                        <h5 style={{ fontSize: '22px', marginTop: '16px' }}>Mobility<br />Data Space</h5>
+                        <p style={{ fontSize: '18px', textAlign: 'left', color: '#8F8F8F' }}>International Data Spaces</p>
                     </Grid>
                     <Grid className="footer-mail" container item xs={6} lg={3} md={3} >
                         <List>
