@@ -5,7 +5,7 @@
 }
 
 .theme-mobids .appBarSpacer {
-    min-height: 132px;
+    min-height: 150px;
 }
 
 nav.toolbar-list {
@@ -14,7 +14,7 @@ nav.toolbar-list {
     flex-grow: 1;
 }
 
-.theme-mobids .appbar button {
+.theme-mobids .appbar .login-button button {
     text-transform: none;
     color: black;
     background-color: #FFFF00;
@@ -32,7 +32,45 @@ nav.toolbar-list .MuiListItem-root.Mui-selected, nav.toolbar-list .MuiListItem-r
     background: none;
 }
 
-/*.toolbar-list > div {
-    padding-left: 8px;
-    padding-right: 8px
-}*/
+header .logo-wrapper {
+    min-width: 500px
+}
+
+header .menu-button {
+    margin-left: 12px;
+    align-self: flex-start;
+    flex-grow: 1;
+    text-align: end;
+    display: none;
+}
+
+.MuiToolbar-root {
+     flex-wrap: wrap;
+}
+
+@media screen and (max-width: 800px) {
+    header .menu-button {
+        display: block;
+    }
+
+    header .MuiToolbar-root {
+        display: block;
+    }
+
+    header .logo-wrapper {
+        min-width: 100%;
+        display: flex;
+        margin-bottom: 20px;
+    }
+
+    nav.toolbar-list {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin-bottom: 20px;
+    }
+
+    nav.toolbar-list.hidden, .search-icon.hidden, .login-button.hidden {
+        display: none;
+    }
+}
