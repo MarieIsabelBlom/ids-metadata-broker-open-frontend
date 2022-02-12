@@ -91,7 +91,7 @@ class ToolbarList extends Component {
         const selectedIndex = this.state.selectedIndex;
         
         return (
-            <AppBar position="absolute" className={clsx(classes.appBar, this.state.open ? classes.appBarOpen: classes.appBarMDS, 'appbar')}>
+            <AppBar position="static" className={clsx(classes.appBar, this.state.open ? classes.appBarOpen: classes.appBarMDS, 'appbar')}>
                 <Toolbar>
                     <div className="logo-wrapper">
                         <Link style={{ textDecoration: 'none' }} className="header-logo" to="/" onClick={(event) => this.handleListItemClick(event, -1)}>
