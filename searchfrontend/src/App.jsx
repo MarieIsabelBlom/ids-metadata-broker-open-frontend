@@ -355,11 +355,12 @@ class App extends React.Component {
                     { this.tenant === 'mobids' ? <ToolbarList /> : defaultAppbar }
 
                     { hasDrawer ? drawer : '' }
-                    <main className={clsx(classes.content, {
+                    <main className={clsx({
+                        [classes.content]: this.tenant !== 'mobids',
                         [classes.contentShift]: this.state.open
                     })}>
                         <div className={clsx(classes.appBarSpacer, 'appBarSpacer')} />
-                        <Container maxWidth="lg" className={classes.container}>
+                        <Container maxWidth="xl" className={classes.container}>
                             <Route exact path="/">
                                 <MDSHome />
                             </Route>
