@@ -3,6 +3,7 @@ import {
     ReactiveList,
     MultiList
 } from "@appbaseio/reactivesearch";
+import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
@@ -693,6 +694,7 @@ export function SearchBroker(props) {
     useEffect(() => {
         getAllConnectors(token).then(data => {
             setConnectors(data);
+            props.setResultSize(data.length)
         });
     }, []);
 
@@ -709,22 +711,41 @@ export function SearchBroker(props) {
         return (
             <React.Fragment key={process.env.REACT_APP_USE_SPARQL === 'true' ? encodeURIComponent(connector.originURI) : encodeURIComponent(res._id)}>
                 <Link to={'/connector/connector?id=' + (process.env.REACT_APP_USE_SPARQL === 'true' ? encodeURIComponent(connector.originURI) : encodeURIComponent(res._id))} >
-                    <Divider />
                     <Card key={res._id} style={{ border: 'none', boxShadow: "none" }} onClick={() => handleBrokerClick(res)}>
                         <CardActionArea>
-                            <CardContent>
+                            <CardContent className="connector-content">
                                 <Typography variant="h5" component="h2">
                                     {connector.title.join(", ")}
                                 </Typography>
-                                <Typography variant="subtitle1" gutterBottom>
+                                <Typography variant="body2">
                                     {connector.description.join(", ")}
                                 </Typography>
-                                <Typography variant="body1">
-                                    Curator {provider.curator}
-                                </Typography>
-                                <Typography variant="body1" gutterBottom>
-                                    Maintainer {provider.maintainer}
-                                </Typography>
+                                <div className="connector-resource connector-content-container">
+                                    <Typography component="p" className="link-title">
+                                        Resource Description
+                                    </Typography>
+                                    <Typography variant="body2" component="p">
+                                        Lorem ipsum
+                                    </Typography>
+                                </div>
+                                <Grid container className="connector-links connector-content-container">
+                                    <Grid item xs={6}>
+                                        <Typography component="p" className="link-title">
+                                            Curator
+                                        </Typography>
+                                        <Typography component="p" className="link-content">
+                                            {provider.curator}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography component="p" className="link-title">
+                                            Maintainer
+                                        </Typography>
+                                        <Typography component="p" className="link-content">
+                                            {provider.maintainer}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
                                 {
                                     resources && resources.title ?
                                         <Typography variant="body2" color="textSecondary" component="p">
@@ -742,6 +763,7 @@ export function SearchBroker(props) {
                             </CardContent>
                         </CardActionArea>
                     </Card>
+                    <Divider />
                 </Link>
             </React.Fragment>
         );

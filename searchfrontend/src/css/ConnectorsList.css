@@ -1,0 +1,72 @@
+@media screen and (min-width: 800px) {
+    .theme-mobids .connectors-list {
+        margin-top: 60px
+    }
+}
+
+.theme-mobids #search-downshift-input {
+    background-color: unset !important;
+    border-radius: 20px;
+    padding: 14px 50px;
+}
+
+.theme-mobids #search-downshift-input::placeholder {
+    color: black;
+    opacity: 1;
+}
+
+.theme-mobids #search-downshift-input:-ms-input-placeholder {
+    color: black;
+    opacity: 1;
+}
+
+.theme-mobids #search-downshift-input::-ms-input-placeholder {
+    color: black;
+    opacity: 1;
+}
+
+.theme-mobids .search-icon, .theme-mobids .cancel-icon {
+    fill: black !important;
+    height: 14px;
+    margin-bottom: 3px;
+    margin-left: 4px;
+    margin-right: 4px
+}
+
+.theme-mobids .search-icon {
+    height: 20px;
+}
+
+.theme-mobids .connector-content {
+    padding: 35px 20px;
+}
+
+.theme-mobids .data-search {
+    margin-bottom: 8px;
+}
+
+.theme-mobids .results {
+    font-size: 13px;
+    color: #8F8F8F;
+    margin: 4px 12px
+}
+
+.theme-mobids .connector-content h2 {
+    margin-bottom: 6px;
+    font-size: 21px
+}
+
+.connector-content-container {
+    margin-top: 20px;
+}
+
+.connector-content-container .link-title {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.connector-links .link-content {
+    color: #8F8F8F;
+    font-size: 13px;
+}

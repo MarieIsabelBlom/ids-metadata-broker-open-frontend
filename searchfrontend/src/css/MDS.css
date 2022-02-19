@@ -19,6 +19,10 @@
     font-family: 'Soehne' !important;
 }
 
+body {
+    background-color: white !important;
+}
+
 .theme-mobids.home {
     background-image: url(../assets/home-shape.svg);
     background-repeat: no-repeat;
@@ -33,6 +37,10 @@ nav.toolbar-list {
     display: flex;
     padding-top: 0;
     flex-grow: 1;
+}
+
+.theme-mobids nav .Mui-selected a > p {
+    font-weight: bold;
 }
 
 .theme-mobids .appbar .login-button button {

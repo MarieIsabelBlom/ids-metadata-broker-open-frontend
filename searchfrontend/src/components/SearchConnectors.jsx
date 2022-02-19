@@ -5,10 +5,12 @@ import {
 } from "@appbaseio/reactivesearch";
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
+import Typography from '@material-ui/core/Typography';
 import { SearchBroker, BrokerConnectorView, BrokerFilter } from "./ConnectorBroker";
 import { SearchParis, ParisConnectorView, ParisFilter } from "./ConnectorParis";
 import { propertyArray } from '../propertyArray';
 // import Query from "../Query.jsx";
+import '../css/ConnectorsList.css'
 
 export default class SearchConnectors extends React.Component {
     constructor(props) {
@@ -17,7 +19,8 @@ export default class SearchConnectors extends React.Component {
             currentConnector: {
             },
             currentConnectorTenant: '',
-            value: ''
+            value: '',
+            resultSize: 0
         };
     }
 
@@ -38,6 +41,12 @@ export default class SearchConnectors extends React.Component {
         this.setState({
             currentConnectorTenant: tenant
         });
+    }
+
+    setResultSize = (size) => {
+        this.setState({
+            resultSize: size
+        })
     }
 
     render() {
@@ -62,11 +71,11 @@ export default class SearchConnectors extends React.Component {
                 )
             } else if (name === 'eis') {
                 return (
-                    <SearchBroker updateCurrentConnector={this.updateCurrentConnector} />
+                    <SearchBroker updateCurrentConnector={this.updateCurrentConnector}setResultSize={this.setResultSize}  />
                 )
             } else {
                 return (
-                    <SearchBroker updateCurrentConnector={this.updateCurrentConnector} />
+                    <SearchBroker updateCurrentConnector={this.updateCurrentConnector}setResultSize={this.setResultSize}  />
                 )
             }
         }
@@ -105,34 +114,7 @@ export default class SearchConnectors extends React.Component {
                 {
                     Object.entries(currentConnector).length === 0 ?
                         <React.Fragment>
-                            <DataSearch
-                              componentId="search"
-                              dataField={['connector.title','connector.title_en','connector.title_de','connector.description','connector.description_de', 'participant.title', 'participant.description','participant.corporateHompage']}
-                              URLParams={true}
-                              queryFormat="or"
-                                style={{
-                                    marginBottom: 20
-                                }}
-                                value={this.state.value}
-                                autosuggest={true}
-                                showClear={true}
-                                onChange={this.handleSearch}
-                                onValueChange={
-                                    function (value) {
-                                        if (propsFromApp.location.pathname.indexOf('connector') === -1) {
-                                            propsFromApp.history.push("/connector");
-                                        }
-                                    }
-                                }
-                            // title="Search for Connectors"
-                            />
-                            <SelectedFilters />
                             <Grid container>
-                                <Grid item className="conn-list" lg={9} md={9} xs={12}>
-                                    {
-                                        renderTenant(tenant)
-                                    }
-                                </Grid>
                                 <Grid item lg={3} md={3} xs={12}>
                                     <Card>
                                         {
@@ -144,6 +126,37 @@ export default class SearchConnectors extends React.Component {
                                     {
                                         // renderQueryExpansion(tenant)
                                     }
+                                </Grid>
+                                <Grid item lg={6} md={6} xs={12}>
+                                <DataSearch
+                                    componentId="search"
+                                    dataField={['connector.title','connector.title_en','connector.title_de','connector.description','connector.description_de', 'participant.title', 'participant.description','participant.corporateHompage']}
+                                    URLParams={true}
+                                    queryFormat="or"
+                                    className="data-search"
+                                        value={this.state.value}
+                                        autosuggest={true}
+                                        showClear={true}
+                                        onChange={this.handleSearch}
+                                        onValueChange={
+                                            function (value) {
+                                                if (propsFromApp.location.pathname.indexOf('connector') === -1) {
+                                                    propsFromApp.history.push("/connector");
+                                                }
+                                            }
+                                        }
+                                    // title="Search for Connectors"
+                                    />
+                                    <Typography variant="p" className="results">
+                                        { this.state.resultSize } Results
+                                    </Typography>
+                                    <SelectedFilters />
+
+                                    <div className="conn-list">
+                                        {
+                                            renderTenant(tenant)
+                                        }
+                                    </div>
                                 </Grid>
                             </Grid>
                         </React.Fragment>
