@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { List, ListItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import LoginOrLogout from './auth/LoginOrLogout';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
@@ -12,6 +11,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import CloseIcon from '@material-ui/icons/Close';
+import { Button } from '@material-ui/core';
 
 const styles = theme => ({
     appBar: {
@@ -170,12 +170,8 @@ class ToolbarList extends Component {
                     </List>
 
                     <div className={classes.appBarIconDiv}>
-                        <Link style={{ textDecoration: 'none' }} className={clsx(classes.searchIcon, "search-icon", !this.state.open && "hidden")} to="/" onClick={(event) => this.handleListItemClick(event, -1)}>
-                            <img src="./search.svg" alt="Search" width='30px' />
-                        </Link>
-
                         <div className={clsx("login-button", !this.state.open && "hidden")}>
-                            <LoginOrLogout />
+                            <Button>MDS Forum</Button>
                         </div>
                     </div>
 

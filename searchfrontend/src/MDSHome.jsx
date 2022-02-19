@@ -57,15 +57,16 @@ class MDSHome extends React.Component {
                 "icon": "./search.svg"
             }
         ]
+        const showButtons = false, showTrusted = false;
 
         return <Container maxWidth="md">
             <h1 component="h1" id="home-title">Welcome to Mobility<br />Data Space Broker</h1>
             <p id="home-subtitle">Get acces to different data Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.</p>
-            <Box className="button-container">
+            {showButtons ? <Box className="button-container">
                 <span className="button-light">Choose your data category <img src="./arrow-right.svg" alt="Search" height='15px' /></span>
                 <span className="button-default">Get in touch</span>
-            </Box>
-            <Box id="trusted-container" className="content-container" >
+            </Box> : ''}
+            {showTrusted ? <Box id="trusted-container" className="content-container" >
                 <Typography id="trusted-title">Trusted by Teams at</Typography>
                 <Grid container justifyContent="flex-start">
                     <Grid item><Typography>Mercedes Benz</Typography></Grid>
@@ -73,7 +74,7 @@ class MDSHome extends React.Component {
                     <Grid item><Typography>Mercedes Benz</Typography></Grid>
                     <Grid item><Typography>Volkswagen GIS</Typography></Grid>
                 </Grid>
-            </Box>
+            </Box> : ''}
             <Box className="content-container">
                 <h2 style={{marginTop: '100px'}}>Categories</h2>
                 <Grid container id="categories-container" spacing={3}>

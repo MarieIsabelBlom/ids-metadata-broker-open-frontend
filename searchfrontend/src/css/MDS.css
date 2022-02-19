@@ -43,6 +43,19 @@ nav.toolbar-list {
     padding: 10px 30px;
     margin-bottom: 5px;
     font-weight: normal;
+    border-radius: 32px
+}
+
+.theme-mobids footer .footer-header button {
+    background: none;
+    text-transform: none;
+    color: #FFFF00;
+    font-weight: normal;
+}
+
+.theme-mobids footer .footer-header button::before {
+    content: '>';
+    margin-right: 5px;
 }
 
 nav.toolbar-list .MuiListItem-root {

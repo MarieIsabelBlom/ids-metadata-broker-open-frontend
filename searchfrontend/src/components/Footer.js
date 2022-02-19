@@ -3,6 +3,7 @@ import { Grid } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { Link } from 'react-router-dom';
 import { List, ListItem } from '@material-ui/core';
+import LoginOrLogout from './auth/LoginOrLogout';
 import "../css/MDS.css"
 
 class Footer extends Component {
@@ -12,7 +13,7 @@ class Footer extends Component {
                 <Grid container className="footer-copyright">
                     <Grid container item xs={6}  lg={3} md={3} className="footer-header">
                         <h5 style={{ fontSize: '22px', marginTop: '16px', fontWeight: 'normal' }}>Mobility<br />Data Space</h5>
-                        <p style={{ fontSize: '18px', textAlign: 'left', color: '#8F8F8F' }}>International Data Spaces</p>
+                        <LoginOrLogout />
                     </Grid>
                     <Grid className="footer-mail" container item xs={6} lg={3} md={3} >
                         <List>
