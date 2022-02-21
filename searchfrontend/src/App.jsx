@@ -180,7 +180,7 @@ class App extends React.Component {
 
     setBrokerURL = () => {
         if (window._env_ === undefined)
-            this.brokerURL = 'https://localhost:9200';
+            this.brokerURL = 'http://localhost:9200';
         else
             this.brokerURL = window._env_.REACT_APP_BROKER_URL;
         this.brokerURL = new URL(this.brokerURL).toString();
@@ -340,8 +340,8 @@ class App extends React.Component {
                     <h3 style={{ color: '#808080' }}>{this.renderMainTitle(this.tenant)}</h3>
                     <h3 style={{ fontWeight: 'bold', marginLeft: '10px', color: '#808080' }}>{this.renderSubTitle(this.props.location.pathname)}</h3>
                 </div>
-            </div>           
-            
+            </div>
+
             <LoginOrLogout />
         </Toolbar>
     </AppBar>
@@ -350,7 +350,7 @@ class App extends React.Component {
             <Provider store={store}>
                 <div className={clsx("theme-" + this.tenant, {['home']: this.props.location.pathname === '/'})}>
                     <CssBaseline />
-                    
+
                     { this.tenant === 'mobids' ? <ToolbarList /> : defaultAppbar }
 
                     { hasDrawer ? drawer : '' }

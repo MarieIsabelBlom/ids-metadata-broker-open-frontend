@@ -144,7 +144,7 @@ class Dashboard extends PureComponent {
 
   setBrokerURL = () => {
     if (window._env_ === undefined)
-      this.brokerURL = 'https://localhost:9200';
+      this.brokerURL = 'http://localhost:9200';
     else
       this.brokerURL = window._env_.REACT_APP_BROKER_URL;
     this.brokerURL = new URL(this.brokerURL).toString();
