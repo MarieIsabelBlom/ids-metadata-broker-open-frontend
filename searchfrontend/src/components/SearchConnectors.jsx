@@ -147,7 +147,7 @@ export default class SearchConnectors extends React.Component {
                                         }
                                     // title="Search for Connectors"
                                     />
-                                    <Typography variant="p" className="results">
+                                    <Typography component="p" className="results">
                                         { this.state.resultSize } Results
                                     </Typography>
                                     <SelectedFilters />

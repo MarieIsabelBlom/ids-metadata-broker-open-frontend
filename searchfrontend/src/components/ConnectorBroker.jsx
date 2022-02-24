@@ -694,7 +694,7 @@ export function SearchBroker(props) {
     useEffect(() => {
         getAllConnectors(token).then(data => {
             setConnectors(data);
-            props.setResultSize(data.length)
+            //props.setResultSize(data.length)
         });
     }, []);
 
