@@ -16,7 +16,7 @@ class CategoryItem extends React.Component {
         return <Card className="category">
             <CardMedia
                 component="img"
-                height="220"
+                height="180"
                 image={cat.icon}
                 alt={cat.title}
             />
@@ -76,9 +76,9 @@ class MDSHome extends React.Component {
                 </Grid>
             </Box> : ''}
             <Box className="content-container">
-                <h2 style={{marginTop: '100px'}}>Categories</h2>
+                <h2 style={{marginTop: '50px'}}>Categories</h2>
                 <Grid container id="categories-container" spacing={3}>
-                    { categoryItems.map((item, i) => <Grid item key={i} xs={12} sm={6} md={4}><CategoryItem category={item} /></Grid>)}
+                    { categoryItems.map((item, i) => <Grid item key={i} xs={12} sm={6} md={3}><CategoryItem category={item} /></Grid>)}
                 </Grid>
             </Box>
             
