@@ -19,15 +19,8 @@ export default class SearchConnectors extends React.Component {
             currentConnector: {
             },
             currentConnectorTenant: '',
-            value: '',
-            resultSize: 0
+            value: ''
         };
-    }
-
-    updateCurrentConnector = (obj) => {
-        this.setState({
-            currentConnector: obj
-        })
     }
 
     handleSearch = value => {
@@ -71,11 +64,11 @@ export default class SearchConnectors extends React.Component {
                 )
             } else if (name === 'eis') {
                 return (
-                    <SearchBroker updateCurrentConnector={this.updateCurrentConnector}setResultSize={this.setResultSize}  />
+                    <SearchBroker updateCurrentConnector={this.updateCurrentConnector} />
                 )
             } else {
                 return (
-                    <SearchBroker updateCurrentConnector={this.updateCurrentConnector}setResultSize={this.setResultSize}  />
+                    <SearchBroker updateCurrentConnector={this.updateCurrentConnector} />
                 )
             }
         }
@@ -116,7 +109,7 @@ export default class SearchConnectors extends React.Component {
                         <React.Fragment>
                             <Grid container>
                                 <Grid item lg={3} md={3} xs={12}>
-                                    <Card>
+                                    <Card className="filter-container">
                                         {
                                             renderFilterTenant(tenant)
                                         }
@@ -147,9 +140,6 @@ export default class SearchConnectors extends React.Component {
                                         }
                                     // title="Search for Connectors"
                                     />
-                                    <Typography component="p" className="results">
-                                        { this.state.resultSize } Results
-                                    </Typography>
                                     <SelectedFilters />
 
                                     <div className="conn-list">

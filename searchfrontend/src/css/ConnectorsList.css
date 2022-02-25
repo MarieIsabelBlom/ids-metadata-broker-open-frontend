@@ -56,6 +56,58 @@
     font-size: 21px
 }
 
+.theme-mobids .conn-list a > div.MuiCard-root:hover {
+    background-color: #FFFF00;
+}
+
+.theme-mobids hr {
+    background-color: black;
+}
+
+.theme-mobids .filter-container {
+    padding: 0 30px;
+    box-shadow: none;
+    color: #8F8F8F
+}
+
+.theme-mobids .filter-container > div {
+    margin: 10px 0;
+}
+
+.theme-mobids .filter-container h2 {
+    color: black;
+    font-size: 18px;
+    margin-top: 14px;
+    margin-bottom: 14px;
+}
+
+.theme-mobids .filter-container .expandable h2 {
+    cursor: pointer;
+}
+
+.theme-mobids .filter-container .expandable > ul {
+    display: none;
+    padding-left: 10px;
+}
+
+.theme-mobids .filter-container .expandable.expanded > ul {
+    display: block;
+}
+
+.theme-mobids .filter-container .expandable h2::after {
+    content: "";
+    display: block;
+    float: right;
+    background: url("../assets/icons/filter-open.svg") no-repeat;
+    width: 13px;
+    height: 13px;
+    margin-top: 5px;
+}
+
+.theme-mobids .filter-container .expandable.expanded h2::after {
+    background: url("../assets/icons/filter-close.svg") no-repeat;
+}
+
 .connector-content-container {
     margin-top: 20px;
 }

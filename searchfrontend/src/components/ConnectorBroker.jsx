@@ -637,26 +637,40 @@ export function BrokerConnectorView(props) {
 }
 
 export function BrokerFilter(props) {
+
+    useEffect(() => {
+        const handleGlobalClick = event => {
+            let element = event.target;
+
+            if(element.matches('.theme-mobids .filter-container .expandable h2')) {
+                element.parentElement.classList.toggle('expanded')
+                event.preventDefault()
+            }
+        }
+        document.addEventListener('click', handleGlobalClick)
+
+        return () => {
+            document.removeEventListener('click', handleGlobalClick)
+        }
+    })
+
     return (
         <React.Fragment>
-            <Divider />
             <MultiList
                 componentId="list-2"
                 dataField="catalog.resources.keyword.keyword"
-                style={{
-                    margin: 20
-                }}
+                showSearch={false}
                 title="Keyword"
+                className="expandable expanded"
                 URLParams={true}
             />
             <Divider />
             <MultiList
                 componentId="list-3"
                 dataField="catalog.resources.publisher.keyword"
-                style={{
-                    margin: 20
-                }}
+                showSearch={false}
                 title="Publisher"
+                className="expandable"
                 URLParams={true}
             />
 
@@ -664,20 +678,18 @@ export function BrokerFilter(props) {
             <MultiList
                 componentId="list-6"
                 dataField="catalog.resources.language.keyword"
-                style={{
-                    margin: 20
-                }}
+                showSearch={false}
                 title="Resource Language"
+                className="expandable"
                 URLParams={true}
             />
             <Divider />
             <MultiList
                 componentId="list-1"
                 dataField="connector.securityProfile.keyword"
-                style={{
-                    margin: 20
-                }}
+                showSearch={false}
                 title="Connector Security Profile"
+                className="expandable"
                 URLParams={true}
             />
             {/* <Query /> */}
@@ -694,7 +706,6 @@ export function SearchBroker(props) {
     useEffect(() => {
         getAllConnectors(token).then(data => {
             setConnectors(data);
-            //props.setResultSize(data.length)
         });
     }, []);
 
@@ -720,14 +731,19 @@ export function SearchBroker(props) {
                                 <Typography variant="body2">
                                     {connector.description.join(", ")}
                                 </Typography>
-                                <div className="connector-resource connector-content-container">
-                                    <Typography component="p" className="link-title">
-                                        Resource Description
-                                    </Typography>
-                                    <Typography variant="body2" component="p">
-                                        Lorem ipsum
-                                    </Typography>
-                                </div>
+                                {
+                                    resources && resources.description ?
+                                        <div className="connector-resource connector-content-container">
+                                            <Typography component="p" className="link-title">
+                                                Resource Description
+                                            </Typography>
+                                            <Typography variant="body2" component="p">
+                                                {resources.description}
+                                            </Typography>
+                                        </div>
+                                    : ""
+                                }
+                                
                                 <Grid container className="connector-links connector-content-container">
                                     <Grid item xs={6}>
                                         <Typography component="p" className="link-title">
@@ -746,20 +762,6 @@ export function SearchBroker(props) {
                                         </Typography>
                                     </Grid>
                                 </Grid>
-                                {
-                                    resources && resources.title ?
-                                        <Typography variant="body2" color="textSecondary" component="p">
-                                            {resources.title}
-                                        </Typography>
-                                        : ""
-                                }
-                                {
-                                    resources && resources.description ?
-                                        <Typography variant="body2" color="textSecondary" component="p">
-                                            {resources.description}
-                                        </Typography>
-                                        : ""
-                                }
                             </CardContent>
                         </CardActionArea>
                     </Card>
@@ -768,6 +770,16 @@ export function SearchBroker(props) {
             </React.Fragment>
         );
     }
+
+    function renderResultStats(stats) {
+        return <p className="results">{stats.numberOfResults} Results</p>
+    }
+
+    function renderThePagination(pages, totalPages, currentPage, setPage, fragmentName) {
+        console.log("render page")
+        return <p>TODO render pagination</p>;
+    }
+
     return (
         <React.Fragment>
             {(process.env.REACT_APP_USE_SPARQL === 'true') && (
@@ -786,9 +798,11 @@ export function SearchBroker(props) {
                     }
                     }
                     renderItem={renderBrokerData}
-                    size={10}
+                    renderResultStats={renderResultStats}
+                    renderPagination={renderThePagination}
+                    size={4}
                     style={{
-                        marginTop: 20
+                        margin: 0
                     }}
                 />
             )}
