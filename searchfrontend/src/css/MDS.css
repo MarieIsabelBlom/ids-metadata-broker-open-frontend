@@ -29,14 +29,23 @@ body {
     background-size: 500px;
 }
 
+@media screen and (max-width: 500px) {
+    #root .theme-mobids.home {
+        background-size: contain;
+    }
+}
+
 .theme-mobids .appBarSpacer {
     min-height: 0px;
 }
 
-nav.toolbar-list {
+.theme-mobids nav {
+    flex-grow: 1;
+}
+
+nav .toolbar-list {
     display: flex;
     padding-top: 0;
-    flex-grow: 1;
 }
 
 .theme-mobids nav .Mui-selected a > p {
@@ -66,11 +75,11 @@ nav.toolbar-list {
     margin-right: 5px;
 }
 
-nav.toolbar-list .MuiListItem-root {
+nav .toolbar-list .MuiListItem-root {
     width: auto
 }
 
-nav.toolbar-list .MuiListItem-root.Mui-selected, nav.toolbar-list .MuiListItem-root:hover {
+nav .toolbar-list .MuiListItem-root.Mui-selected, nav.toolbar-list .MuiListItem-root:hover {
     background: none;
 }
 
@@ -118,6 +127,28 @@ header .menu-button {
     color: #8F8F8F;
 }
 
+nav .mobile-only {
+    display: none;
+}
+
+.theme-mobids nav .menu-item.expandable {
+    cursor: pointer;
+}
+
+.theme-mobids nav .menu-item.expandable::after {
+    content: "";
+    display: block;
+    float: right;
+    background: url("../assets/icons/arrow-next.svg") no-repeat;
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+}
+
+.theme-mobids nav .menu-item.expandable.expanded::after {
+    background: url("../assets/icons/filter-close.svg") no-repeat;
+}
+
 @media screen and (max-width: 800px) {
     header .menu-button {
         display: block;
@@ -130,17 +161,31 @@ header .menu-button {
     header .logo-wrapper {
         min-width: 100%;
         display: flex;
-        margin-bottom: 20px;
+        margin-bottom: 60px;
     }
 
-    nav.toolbar-list {
+    nav .toolbar-list .MuiListItem-root {
+        display: block;
+    }
+
+    nav .toolbar-list {
         display: block;
         width: 100%;
         max-width: 400px;
         margin-bottom: 20px;
     }
 
-    nav.toolbar-list.hidden, .search-icon.hidden, .login-button.hidden {
-        display: none;
+    .search-icon.hidden, .mobile-hidden {
+        display: none !important;
+    }
+
+    nav .mobile-only {
+        display: block;
+    }
+
+    .menu-item {
+        font-size: 22px;
+        font-weight: bold;
+        padding: 12px 0;
     }
 }

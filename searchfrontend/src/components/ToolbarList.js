@@ -58,7 +58,8 @@ class ToolbarList extends Component {
         super(props);
         this.state = {
             selectedIndex: -1,
-            open: false
+            open: false,
+            openBrokerMenu: false
         };
     }
 
@@ -85,13 +86,20 @@ class ToolbarList extends Component {
         })
     };
 
+    handleBrokerMenuClick = () => {
+        let newState = !this.state.openBrokerMenu
+        this.setState({
+            openBrokerMenu: newState
+        })
+    }
+
     render() {
         const { isAuthenticated, user } = this.props.auth;
         const { classes } = this.props;
         const selectedIndex = this.state.selectedIndex;
         
         return (
-            <AppBar position="static" className={clsx(classes.appBar, this.state.open ? classes.appBarOpen: classes.appBarMDS, 'appbar')}>
+            <AppBar position={this.state.open ? "absolute" : "static"} className={clsx(classes.appBar, this.state.open ? classes.appBarOpen: classes.appBarMDS, 'appbar')}>
                 <Toolbar>
                     <div className="logo-wrapper">
                         <Link style={{ textDecoration: 'none' }} className="header-logo" to="/" onClick={(event) => this.handleListItemClick(event, -1)}>
@@ -107,70 +115,81 @@ class ToolbarList extends Component {
                                 {this.state.open ? <CloseIcon /> : <MenuIcon />}
                             </IconButton>
                         </div>
-                    </div>
+                    </div> 
 
-                    <List className={clsx("toolbar-list", !this.state.open && "hidden")} component="nav">
+                    <nav className={clsx(!this.state.open && "mobile-hidden")}>
+                        <div className={clsx("mobile-only", "menu-item", "expandable", this.state.openBrokerMenu && "expanded")} onClick={this.handleBrokerMenuClick}>Broker Platform</div>
+                        <List className={clsx("toolbar-list", !this.state.openBrokerMenu && "mobile-hidden")} component="div">
+                            <ListItem button className="mobile-only" onClick={(event) => this.handleListItemClick(event, -1)}>
+                                <div className={clsx(classes.container)}>
+                                    <Link to="/" style={{ textDecoration: 'none' }}>
+                                        <Typography className={classes.text}>Home</Typography>
+                                    </Link>
+                                </div>
+                            </ListItem>
 
-                        <ListItem button selected={selectedIndex === 0} onClick={(event) => this.handleListItemClick(event, 0)}>
-                            <div className={clsx(classes.container, selectedIndex === 0 && classes.selectedContainer)}>
-                                <Link to="/resources" style={{ textDecoration: 'none' }}>
-                                    <Typography className={classes.text}>Resources</Typography>
-                                </Link>
+                            <ListItem button selected={selectedIndex === 0} onClick={(event) => this.handleListItemClick(event, 0)}>
+                                <div className={clsx(classes.container, selectedIndex === 0 && classes.selectedContainer)}>
+                                    <Link to="/resources" style={{ textDecoration: 'none' }}>
+                                        <Typography className={classes.text}>Resources</Typography>
+                                    </Link>
 
-                            </div>
-
-                        </ListItem>
-
-
-                        <ListItem button selected={selectedIndex === 1} onClick={(event) => this.handleListItemClick(event, 1)}>
-                            <div className={clsx(classes.container, selectedIndex === 1 && classes.selectedContainer)}>
-                                <Link to="/connector" style={{ textDecoration: 'none' }}>
-                                    <Typography className={classes.text}>Connectors</Typography>
-                                </Link>
-
-                            </div>
-                        </ListItem>
+                                </div>
+                            </ListItem>
 
 
-                        <ListItem button selected={selectedIndex === 6} onClick={(event) => this.handleListItemClick(event, 6)}>
-                            <div className={clsx(classes.container, selectedIndex === 6 && classes.selectedContainer)}>
-                                <Link to="/browse" style={{ textDecoration: 'none' }}>
-                                    <Typography className={classes.text}>Dashboard</Typography>
-                                </Link>
+                            <ListItem button selected={selectedIndex === 1} onClick={(event) => this.handleListItemClick(event, 1)}>
+                                <div className={clsx(classes.container, selectedIndex === 1 && classes.selectedContainer)}>
+                                    <Link to="/connector" style={{ textDecoration: 'none' }}>
+                                        <Typography className={classes.text}>Connectors</Typography>
+                                    </Link>
 
-                            </div>
-                        </ListItem>
+                                </div>
+                            </ListItem>
 
-                        {
-                            isAuthenticated && user.role === "admin"
-                                ? <ListItem button selected={selectedIndex === 2} onClick={(event) => this.handleListItemClick(event, 2)}>
-                                    <div className={clsx(classes.container, selectedIndex === 2 && classes.selectedContainer)}>
-                                        <Link to="/admin" style={{ textDecoration: 'none' }}>
-                                            <Typography className={classes.text}>Admin</Typography>
-                                        </Link>
 
-                                    </div>
-                                </ListItem>
-                                : ""
-                        }
+                            <ListItem button selected={selectedIndex === 6} onClick={(event) => this.handleListItemClick(event, 6)}>
+                                <div className={clsx(classes.container, selectedIndex === 6 && classes.selectedContainer)}>
+                                    <Link to="/browse" style={{ textDecoration: 'none' }}>
+                                        <Typography className={classes.text}>Dashboard</Typography>
+                                    </Link>
 
-                        {
-                            isAuthenticated && user.role === "admin"
-                                ? <ListItem button selected={selectedIndex === 3} onClick={(event) => this.handleListItemClick(event, 3)}>
-                                    <div className={clsx(classes.container, selectedIndex === 3 && classes.selectedContainer)}>
-                                        <Link to="/maintainer" style={{ textDecoration: 'none' }}>
-                                            <Typography className={classes.text}>Maintainer</Typography>
-                                        </Link>
+                                </div>
+                            </ListItem>
 
-                                    </div>
-                                </ListItem>
-                                : ""
-                        }
+                            {
+                                isAuthenticated && user.role === "admin"
+                                    ? <ListItem button selected={selectedIndex === 2} onClick={(event) => this.handleListItemClick(event, 2)}>
+                                        <div className={clsx(classes.container, selectedIndex === 2 && classes.selectedContainer)}>
+                                            <Link to="/admin" style={{ textDecoration: 'none' }}>
+                                                <Typography className={classes.text}>Admin</Typography>
+                                            </Link>
 
-                    </List>
+                                        </div>
+                                    </ListItem>
+                                    : ""
+                            }
+
+                            {
+                                isAuthenticated && user.role === "admin"
+                                    ? <ListItem button selected={selectedIndex === 3} onClick={(event) => this.handleListItemClick(event, 3)}>
+                                        <div className={clsx(classes.container, selectedIndex === 3 && classes.selectedContainer)}>
+                                            <Link to="/maintainer" style={{ textDecoration: 'none' }}>
+                                                <Typography className={classes.text}>Maintainer</Typography>
+                                            </Link>
+
+                                        </div>
+                                    </ListItem>
+                                    : ""
+                            }
+
+                        </List>
+                        <div className='mobile-only menu-item'>MDS Forum</div>
+                        <div className='mobile-only menu-item'>Contact</div>
+                    </nav>
 
                     <div className={classes.appBarIconDiv}>
-                        <div className={clsx("login-button", !this.state.open && "hidden")}>
+                        <div className={clsx("login-button", "mobile-hidden")}>
                             <Button>MDS Forum</Button>
                         </div>
                     </div>
