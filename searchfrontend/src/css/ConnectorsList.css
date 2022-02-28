@@ -56,8 +56,23 @@
     font-size: 21px
 }
 
+.pagination {
+    margin: 60px 0;
+}
+
 .theme-mobids .conn-list a > div.MuiCard-root:hover {
     background-color: #FFFF00;
+}
+
+.theme-mobids .pagination button {
+    background-color: #FFFF00;
+    text-transform: none;
+    width: 100px;
+    margin: 0 20px;
+}
+
+.theme-mobids .pagination button[disabled] {
+    background-color: #8F8F8F;
 }
 
 .theme-mobids hr {
