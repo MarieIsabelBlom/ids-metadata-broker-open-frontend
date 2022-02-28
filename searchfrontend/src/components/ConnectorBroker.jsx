@@ -25,6 +25,7 @@ import { getAllConnectors } from '../helpers/sparql/connectors';
 
 import ArrowNext from '../assets/icons/arrow-next.svg'
 import ArrowPrev from '../assets/icons/arrow-previous.svg'
+import useExpandableFilter from "../helpers/useExpandableFilter";
 
 //The following css styles for ExpansionPanel, ExpansionPanelSummary, and ExpansionPanelDetails are taken from https://codesandbox.io/s/52fpr
 const ExpansionPanel = withStyles({
@@ -640,21 +641,7 @@ export function BrokerConnectorView(props) {
 
 export function BrokerFilter(props) {
 
-    useEffect(() => {
-        const handleGlobalClick = event => {
-            let element = event.target;
-
-            if(element.matches('.theme-mobids .filter-container .expandable h2')) {
-                element.parentElement.classList.toggle('expanded')
-                event.preventDefault()
-            }
-        }
-        document.addEventListener('click', handleGlobalClick)
-
-        return () => {
-            document.removeEventListener('click', handleGlobalClick)
-        }
-    })
+    useExpandableFilter()
 
     return (
         <React.Fragment>
@@ -773,33 +760,6 @@ export function SearchBroker(props) {
         );
     }
 
-    function renderResultStats(stats) {
-        return <p className="results">{stats.numberOfResults} Results</p>
-    }
-
-    function renderThePagination({pages, totalPages, currentPage, setPage, fragmentName}) {
-        return <div className='pagination'>
-            <Button variant='contained' 
-            onClick={() => setPage(currentPage-1)}
-            startIcon={<img src={ArrowPrev} height={15} width={15}/>}
-            disabled={currentPage == 0} disableElevation>Previous</Button>
-
-            <TextField defaultValue={currentPage+1} variant="outlined" 
-            onChange={(e) => {
-                let val = parseInt(e.target.value)
-                if(val > 0 && val <= totalPages)
-                    setPage(val-1)
-            }}
-            style={{width: 50, marginRight: 12, textAlign: 'center'}} />
-            of {totalPages}
-
-            <Button variant='contained' 
-            onClick={() => setPage(currentPage+1)}
-            endIcon={<img src={ArrowNext} height={15} width={15}/>}
-            disabled={currentPage == totalPages-1} disableElevation>Next</Button>
-        </div>
-    }
-
     return (
         <React.Fragment>
             {(process.env.REACT_APP_USE_SPARQL === 'true') && (
@@ -819,7 +779,7 @@ export function SearchBroker(props) {
                     }
                     renderItem={renderBrokerData}
                     renderResultStats={renderResultStats}
-                    renderPagination={renderThePagination}
+                    renderPagination={renderPagination}
                     size={4}
                     style={{
                         margin: 0
@@ -829,4 +789,31 @@ export function SearchBroker(props) {
         </React.Fragment>
 
     )
+}
+
+export function renderPagination({pages, totalPages, currentPage, setPage, fragmentName}) {
+    return <div className='pagination'>
+        <Button variant='contained' 
+        onClick={() => setPage(currentPage-1)}
+        startIcon={<img src={ArrowPrev} height={15} width={15}/>}
+        disabled={currentPage == 0} disableElevation>Previous</Button>
+
+        <TextField defaultValue={currentPage+1} variant="outlined" 
+        onChange={(e) => {
+            let val = parseInt(e.target.value)
+            if(val > 0 && val <= totalPages)
+                setPage(val-1)
+        }}
+        style={{width: 50, marginRight: 12, textAlign: 'center'}} />
+        of {totalPages}
+
+        <Button variant='contained' 
+        onClick={() => setPage(currentPage+1)}
+        endIcon={<img src={ArrowNext} height={15} width={15}/>}
+        disabled={currentPage == totalPages-1} disableElevation>Next</Button>
+    </div>
+}
+
+export function renderResultStats(stats) {
+    return <p className="results">{stats.numberOfResults} Results</p>
 }

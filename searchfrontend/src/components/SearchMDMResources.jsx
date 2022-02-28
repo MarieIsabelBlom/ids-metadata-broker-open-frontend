@@ -16,6 +16,8 @@ import { Divider } from "@material-ui/core";
 
 import { getAllResources } from '../helpers/sparql/connectors';
 import { connect } from 'react-redux';
+import useExpandableFilter from "../helpers/useExpandableFilter";
+import { renderPagination, renderResultStats } from "./ConnectorBroker";
 
 class SearchMDMResources extends React.Component {
 
@@ -101,121 +103,147 @@ class SearchMDMResources extends React.Component {
         );
     }
 
+    renderResultStats(stats) {
+        return <p className="results">{stats.numberOfResults} Results</p>
+    }
+
     render() {
-        let tenant = process.env.REACT_APP_TENANT || 'eis';
+        let tenant = process.env.REACT_APP_TENANT || 'mobids';
         tenant = tenant.toLowerCase();
+        let search = <React.Fragment>
+            <DataSearch
+                componentId="search"
+                dataField={['title', 'title_en', 'title_de', 'description', 'description_de', 'description_en']}
+                URLParams={true}
+                queryFormat="or"
+                autosuggest={true}
+                        showClear={true}
+
+                onValueChange={
+                    function (value) {
+                        if (propsFromApp.location.pathname.indexOf('resources') === -1) {
+                            propsFromApp.history.push("/resources");
+                        }
+                    }
+                }
+                value={this.state.value}
+                onChange={this.handleSearch}
+
+            />
+            <SelectedFilters />
+        </React.Fragment>
+
+        let filterSection = <Grid item lg={3} md={3} xs={12}>
+            <Card className="filter-container">
+                <React.Fragment>
+                    <MultiList
+                        componentId="Keywords"
+                        dataField="keyword.keyword"
+                        style={{
+                            margin: 20
+                        }}
+                        showSearch={false}
+                        title="Keyword"
+                        URLParams={true}
+                        className="expandable expanded"
+                    />
+                    <Divider />
+                    <MultiList
+                        componentId="Publishers"
+                        dataField="publisher.keyword"
+                        style={{
+                            margin: 20
+                        }}
+                        showSearch={false}
+                        title="Publisher"
+                        URLParams={true}
+                        className="expandable"
+                    />
+                    <Divider />
+                    <MultiList
+                        componentId="Category"
+                        dataField="mobids:DataCategory.keyword"
+                        style={{
+                            margin: 20
+                        }}
+                        showSearch={false}
+                        title="MobiDS Category"
+                        URLParams={true}
+                        className="expandable"
+                    />
+
+                    <Divider />
+                    <MultiList
+                        componentId="SubCategory"
+                        dataField="mobids:DataCategoryDetail.keyword"
+                        style={{
+                            margin: 20
+                        }}
+                        showSearch={false}
+                        title="MobiDS Category Details"
+                        URLParams={true}
+                    />
+                    <Divider />
+
+                    <MultiList
+                        componentId="NutsLocation"
+                        dataField="mobids:nutsLocation.keyword"
+                        style={{
+                            margin: 20
+                        }}
+                        showSearch={false}
+                        title="NUTS Code"
+                        URLParams={true}
+                        className="expandable"
+                    />
+
+
+
+                </React.Fragment>
+            </Card>
+        </Grid>
+
         let propsFromApp = this.props;
         return (
             <div className="connectors-list">
+                {/* Helper component to use the useExpandableFilter hook in this class component */}
+                {tenant == 'mobids' ? <HookHelper /> : ''}
                 <React.Fragment>
-                    <DataSearch
-                        componentId="search"
-                        dataField={['title', 'title_en', 'title_de', 'description', 'description_de', 'description_en']}
-                        URLParams={true}
-                        queryFormat="or"
-                        style={{
-                            marginBottom: 20
-                        }}
-                         autosuggest={true}
-                                  showClear={true}
-
-                        onValueChange={
-                            function (value) {
-                                if (propsFromApp.location.pathname.indexOf('resources') === -1) {
-                                    propsFromApp.history.push("/resources");
-                                }
-                            }
-                        }
-                        value={this.state.value}
-                        onChange={this.handleSearch}
-
-                    />
-                    <SelectedFilters />
+                    {tenant != 'mobids' ? search : ''}
                     <Grid container>
+                        {/* Filter section on the left-side onnly for mobids */}
+                        {tenant == 'mobids' ? filterSection : ''}
+
                         {/* List of resources in the /query page */}
-                        <Grid item className="conn-list" lg={9} md={9} xs={12}>
-                            {(process.env.REACT_APP_USE_SPARQL === 'true') && (
-                                this.renderMobilityResources({ data: this.state.resources })
-                            )}
-                            {(process.env.REACT_APP_USE_SPARQL === 'false') && (
-                                <ReactiveList
-                                    componentId="result"
-                                    dataField="title.keyword"
-                                    pagination={true}
-                                    URLParams={true}
-                                    react={{
-                                        and: ["search", "Keywords", "Publishers", "Category", "SubCategory", "NutsLocation"]
-                                    }}
-                                    render={this.renderMobilityResources}
-                                    size={10}
-                                    style={{
-                                        marginTop: 20
-                                    }}
-                                />
-                            )}
+                        <Grid item lg={tenant == 'mobids' ? 6 : 9} md={tenant == 'mobids' ? 6 : 9} xs={12}>
+                            {tenant == 'mobids' ? search : ''}
+
+                            <div className="conn-list">
+                                {(process.env.REACT_APP_USE_SPARQL === 'true') && (
+                                    this.renderMobilityResources({ data: this.state.resources })
+                                )}
+                                {(process.env.REACT_APP_USE_SPARQL === 'false') && (
+                                    <ReactiveList
+                                        componentId="result"
+                                        dataField="title.keyword"
+                                        pagination={true}
+                                        URLParams={true}
+                                        react={{
+                                            and: ["search", "Keywords", "Publishers", "Category", "SubCategory", "NutsLocation"]
+                                        }}
+                                        render={this.renderMobilityResources}
+                                        renderResultStats={renderResultStats}
+                                        renderPagination={renderPagination}
+                                        size={5}
+                                        style={{
+                                            margin: 0
+                                        }}
+                                    />
+                                )}
+                            </div>
                         </Grid>
-                        {/* Filter section on the right-side of /query page */}
-                        <Grid item lg={3} md={3} xs={12}>
-                            <Card>
-                                <React.Fragment>
-                                    <Divider />
-                                    <MultiList
-                                        componentId="Keywords"
-                                        dataField="keyword.keyword"
-                                        style={{
-                                            margin: 20
-                                        }}
-                                        title="Keyword"
-                                        URLParams={true}
-                                    />
-                                    <Divider />
-                                    <MultiList
-                                        componentId="Publishers"
-                                        dataField="publisher.keyword"
-                                        style={{
-                                            margin: 20
-                                        }}
-                                        title="Publisher"
-                                        URLParams={true}
-                                    />
-                                    <Divider />
-                                    <MultiList
-                                        componentId="Category"
-                                        dataField="mobids:DataCategory.keyword"
-                                        style={{
-                                            margin: 20
-                                        }}
-                                        title="MobiDS Category"
-                                        URLParams={true}
-                                    />
 
-                                    <Divider />
-                                    <MultiList
-                                        componentId="SubCategory"
-                                        dataField="mobids:DataCategoryDetail.keyword"
-                                        style={{
-                                            margin: 20
-                                        }}
-                                        title="MobiDS Category Details"
-                                        URLParams={true}
-                                    />
-                                    <Divider />
-
-                                    <MultiList
-                                        componentId="NutsLocation"
-                                        dataField="mobids:nutsLocation.keyword"
-                                        style={{
-                                            margin: 20
-                                        }}
-                                        title="NUTS Code"
-                                        URLParams={true}
-                                    />
-
-
-
-                                </React.Fragment>
-                            </Card>
-                        </Grid>
+                        {tenant != 'mobids' ? filterSection : ''}
                     </Grid>
                 </React.Fragment>
             </div >
@@ -226,5 +254,11 @@ class SearchMDMResources extends React.Component {
 const mapStateToProps = state => ({
     token: state.auth.token
 })
+
+const HookHelper = () => {
+    useExpandableFilter()
+
+    return null // component does not render anything
+}
 
 export default connect(mapStateToProps)(SearchMDMResources)

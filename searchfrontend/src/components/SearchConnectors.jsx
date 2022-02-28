@@ -43,7 +43,7 @@ export default class SearchConnectors extends React.Component {
     }
 
     render() {
-        let tenant = process.env.REACT_APP_TENANT || 'eis';
+        let tenant = process.env.REACT_APP_TENANT || 'mobids';
 
         tenant = tenant.toLowerCase();
 
@@ -102,25 +102,30 @@ export default class SearchConnectors extends React.Component {
         let currentConnector = this.state.currentConnector;
         let propsFromApp = this.props;
 
+        let filterSection = <Grid item lg={3} md={3} xs={12}>
+            <Card className="filter-container">
+                {
+                    renderFilterTenant(tenant)
+                }
+            </Card>
+            {/* <Annotate /> */}
+            <br />
+            {
+                // renderQueryExpansion(tenant)
+            }
+        </Grid>
+
         return (
             <div className="connectors-list">
                 {
                     Object.entries(currentConnector).length === 0 ?
                         <React.Fragment>
                             <Grid container>
-                                <Grid item lg={3} md={3} xs={12}>
-                                    <Card className="filter-container">
-                                        {
-                                            renderFilterTenant(tenant)
-                                        }
-                                    </Card>
-                                    {/* <Annotate /> */}
-                                    <br />
-                                    {
-                                        // renderQueryExpansion(tenant)
-                                    }
-                                </Grid>
-                                <Grid item lg={6} md={6} xs={12}>
+
+                                {/* Filter section on the left-side onnly for mobids */}
+                                {tenant == 'mobids' ? filterSection : ''}
+                                
+                                <Grid item lg={tenant == 'mobids' ? 6 : 9} md={tenant == 'mobids' ? 6 : 9} xs={12}>
                                 <DataSearch
                                     componentId="search"
                                     dataField={['connector.title','connector.title_en','connector.title_de','connector.description','connector.description_de', 'participant.title', 'participant.description','participant.corporateHompage']}
@@ -148,6 +153,10 @@ export default class SearchConnectors extends React.Component {
                                         }
                                     </div>
                                 </Grid>
+
+                                {/* Filter section on the left-side onnly for mobids */}
+                                {tenant != 'mobids' ? filterSection : ''}
+
                             </Grid>
                         </React.Fragment>
                         :
