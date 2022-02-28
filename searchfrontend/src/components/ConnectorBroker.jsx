@@ -10,7 +10,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { Container, Divider } from "@material-ui/core";
+import { Container, Divider, TextField } from "@material-ui/core";
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
 import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -23,6 +23,8 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { getAllConnectors } from '../helpers/sparql/connectors';
 
+import ArrowNext from '../assets/icons/arrow-next.svg'
+import ArrowPrev from '../assets/icons/arrow-previous.svg'
 
 //The following css styles for ExpansionPanel, ExpansionPanelSummary, and ExpansionPanelDetails are taken from https://codesandbox.io/s/52fpr
 const ExpansionPanel = withStyles({
@@ -775,9 +777,27 @@ export function SearchBroker(props) {
         return <p className="results">{stats.numberOfResults} Results</p>
     }
 
-    function renderThePagination(pages, totalPages, currentPage, setPage, fragmentName) {
-        console.log("render page")
-        return <p>TODO render pagination</p>;
+    function renderThePagination({pages, totalPages, currentPage, setPage, fragmentName}) {
+        return <div className='pagination'>
+            <Button variant='contained' 
+            onClick={() => setPage(currentPage-1)}
+            startIcon={<img src={ArrowPrev} height={15} width={15}/>}
+            disabled={currentPage == 0} disableElevation>Previous</Button>
+
+            <TextField defaultValue={currentPage+1} variant="outlined" 
+            onChange={(e) => {
+                let val = parseInt(e.target.value)
+                if(val > 0 && val <= totalPages)
+                    setPage(val-1)
+            }}
+            style={{width: 50, marginRight: 12, textAlign: 'center'}} />
+            of {totalPages}
+
+            <Button variant='contained' 
+            onClick={() => setPage(currentPage+1)}
+            endIcon={<img src={ArrowNext} height={15} width={15}/>}
+            disabled={currentPage == totalPages-1} disableElevation>Next</Button>
+        </div>
     }
 
     return (
