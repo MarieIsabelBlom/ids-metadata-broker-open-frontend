@@ -385,9 +385,15 @@ class App extends React.Component {
                                 </ReactiveBase>
                             </Route>
                             <Route path="/resources/:resID">
-                                {
-                                    <BrokerResourceView {...this.props} es_url={this.brokerURL} showBackButton={true} />
-                                }
+                                <Grid container>
+                                    <Grid item md={3} xs={12}>
+                                        TODO: show filter
+                                     </Grid>
+                                    <Grid item lg={6} md={9} xs={12}>
+                                        <BrokerResourceView {...this.props} es_url={this.brokerURL} showBackButton={true} />
+                                    </Grid>
+                                    
+                                </Grid>
                             </Route>
                             <Route exact path="/resources">
                                 <ReactiveBase

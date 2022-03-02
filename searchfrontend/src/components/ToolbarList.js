@@ -13,6 +13,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import CloseIcon from '@material-ui/icons/Close';
 import { Button } from '@material-ui/core';
 
+import Logo from '../assets/MDS-Logo-black.svg'
+
 const styles = theme => ({
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
@@ -103,7 +105,7 @@ class ToolbarList extends Component {
                 <Toolbar>
                     <div className="logo-wrapper">
                         <Link style={{ textDecoration: 'none' }} className="header-logo" to="/" onClick={(event) => this.handleListItemClick(event, -1)}>
-                            <img src="./MDS-Logo-black.svg" alt="Mobility Data Space" width='200px' />
+                            <img src={Logo} alt="Mobility Data Space" width='200px' />
                         </Link>
 
                         <div className="menu-button">

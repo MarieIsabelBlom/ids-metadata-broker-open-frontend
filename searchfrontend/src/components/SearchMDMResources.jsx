@@ -66,10 +66,9 @@ class SearchMDMResources extends React.Component {
                         resource.length !== 0 ?
                             <React.Fragment>
                                 <Link to={'/resources/resource?id=' + encodeURIComponent(resource.resourceID)} >
-                                    <Divider />
                                     <Card key={resource.resourceID} style={{ border: 'none', boxShadow: "none" }}>
                                         <CardActionArea>
-                                            <CardContent>
+                                            <CardContent className="connector-content">
                                                 <Typography variant="h5" component="h2">
                                                     {resource.title_en || resource.title || resource.title_de}
                                                 </Typography>
@@ -94,6 +93,7 @@ class SearchMDMResources extends React.Component {
                                             </CardContent>
                                         </CardActionArea>
                                     </Card>
+                                    <Divider />
                                 </Link>
                             </React.Fragment>
                             : ""
@@ -215,7 +215,7 @@ class SearchMDMResources extends React.Component {
                         {tenant == 'mobids' ? filterSection : ''}
 
                         {/* List of resources in the /query page */}
-                        <Grid item lg={tenant == 'mobids' ? 6 : 9} md={tenant == 'mobids' ? 6 : 9} xs={12}>
+                        <Grid item lg={tenant == 'mobids' ? 6 : 9} md={9} xs={12}>
                             {tenant == 'mobids' ? search : ''}
 
                             <div className="conn-list">
