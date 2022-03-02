@@ -387,8 +387,7 @@ class App extends React.Component {
                             <Route path="/resources/:resID">
                                 <Grid container>
                                     <Grid item md={3} xs={12}>
-                                        TODO: show filter
-                                     </Grid>
+                                    </Grid>
                                     <Grid item lg={6} md={9} xs={12}>
                                         <BrokerResourceView {...this.props} es_url={this.brokerURL} showBackButton={true} />
                                     </Grid>

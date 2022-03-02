@@ -792,13 +792,16 @@ export function SearchBroker(props) {
 }
 
 export function renderPagination({pages, totalPages, currentPage, setPage, fragmentName}) {
+    if(totalPages == 0)
+        return null // no results means no pagination
+
     return <div className='pagination'>
         <Button variant='contained' 
         onClick={() => setPage(currentPage-1)}
         startIcon={<img src={ArrowPrev} height={15} width={15}/>}
         disabled={currentPage == 0} disableElevation>Previous</Button>
 
-        <TextField defaultValue={currentPage+1} variant="outlined" 
+        <TextField value={currentPage+1} variant="outlined" 
         onChange={(e) => {
             let val = parseInt(e.target.value)
             if(val > 0 && val <= totalPages)

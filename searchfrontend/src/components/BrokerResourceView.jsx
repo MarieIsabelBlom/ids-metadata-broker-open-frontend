@@ -377,11 +377,11 @@ export function BrokerResourceView(props) {
     let resource_description = resource.description_en || resource.description_de || resource.description;
 
     //function to display field/URI based on 'div' classname
-    function displayField(fieldLabel, fieldVal, col) {
+    function displayField(fieldLabel, fieldVal, col, className) {
         return (
-            <Grid item md={col} xs={12}>
-                <Typography className="link-title" variant="body2" gutterBottom>{fieldLabel}</Typography>
-                <Typography gutterBottom>{fieldVal}</Typography>
+            <Grid item md={col} xs={12} className={className}>
+                <Typography className="attr-title" variant="body2" gutterBottom>{fieldLabel}</Typography>
+                <Typography className="attr-content" gutterBottom>{fieldVal}</Typography>
             </Grid>
         );
     }
@@ -389,8 +389,8 @@ export function BrokerResourceView(props) {
     function displayURI(fieldLabel, fieldVal, col) {
         return (
             <Grid item md={col} xs={12}>
-                <Typography className="link-title" variant="body2" gutterBottom>{fieldLabel}</Typography>
-                <Typography className="link-content" gutterBottom><a rel="noopener noreferrer" href={`${fieldVal}`} target="_blank">{fieldVal}</a></Typography>
+                <Typography className="attr-title" variant="body2" gutterBottom>{fieldLabel}</Typography>
+                <Typography className="attr-content" gutterBottom><a rel="noopener noreferrer" href={`${fieldVal}`} target="_blank">{fieldVal}</a></Typography>
             </Grid>
         );
     }
@@ -398,8 +398,8 @@ export function BrokerResourceView(props) {
     function displayRefURI(fieldLabel, fieldVal, col) {
         return (
             <Grid item md={col} xs={12}>
-                <Typography className="link-title" variant="body2" gutterBottom>{fieldLabel}</Typography>
-                <Typography className="link-content" gutterBottom><a rel="noopener noreferrer" href={`${selfURI}/connector/connector?id=${fieldVal}`} target="_self">{fieldVal}</a></Typography>
+                <Typography className="attr-title" variant="body2" gutterBottom>{fieldLabel}</Typography>
+                <Typography className="attr-content" gutterBottom><a rel="noopener noreferrer" href={`${selfURI}/connector/connector?id=${fieldVal}`} target="_self">{fieldVal}</a></Typography>
             </Grid>
         );
     }
@@ -422,6 +422,30 @@ export function BrokerResourceView(props) {
         )
     }
 
+    /*
+    The following properties may exist or may not.
+    But, for an unkown reason, if they exist, they are an array containing only one item (object).
+
+    - resource.contract
+    - resource.contract[0].contractPermission
+    - resource.representation
+    */
+
+    function firstArrayItem(arr, prop) {
+        if(!arr || arr.length < 1)
+            return undefined
+        else if (!prop)
+            return arr[0]
+        else if (!arr[0].hasOwnProperty(prop))
+            return undefined
+
+        return arr[0][prop]
+    }
+
+    let firstContract = firstArrayItem(resource.contract)
+    let permissionAction = firstContract ? firstArrayItem(firstContract.contractPermission, 'permissionAction') : ""
+    let representationStandard = firstArrayItem(resource.representation, 'representationStandard')
+
     return (
         <div>
             <Container className="resource-view">
@@ -434,7 +458,7 @@ export function BrokerResourceView(props) {
                                 marginBottom: 10
                             }}
                             size="medium" onClick={() => { props.history.goBack(); }}>
-                            <img src={ArrowBack} alt="Back" />
+                            <img src={ArrowBack} alt="Back" width="25" />
                         </IconButton> : ""
                 }
                 <Typography className="connector-title" variant="h4" component="h1" display="block" gutterBottom>
@@ -443,7 +467,7 @@ export function BrokerResourceView(props) {
                 <div>
                     <Grid container className="main-container">
                         {
-                            resource.description ? displayField("Description", resource.description.join(", "), 12) : ""
+                            resource.description ? displayField("Description", resource.description.join(", "), 12, "attr-description") : ""
                         }
                         {
                             resource.originURI ? displayURI("Original ID", resource.originURI, 12) : ""
@@ -464,13 +488,13 @@ export function BrokerResourceView(props) {
                             resource.publisher ? displayURI("Data Publisher", resource.publisher, 6) : ""
                         }
                         {
-                            displayField("Expiry date", "TODO", 6)
+                            firstContract && firstContract.contractEnd ? displayField("Expiry date", firstContract.contractEnd.split("T")[0], 6) : ""
                         }
                         {
                             resource["mobids:DataCategory"] ? displayField("Data Category", resource["mobids:DataCategory"].join(", "), 6) : ""
                         }
                         {
-                            displayField("Permission action", "TODO", 6)
+                            permissionAction ? displayField("Permission Action", permissionAction.join(", "), 6) : ""
                         }
                         {
                             /*
@@ -494,10 +518,18 @@ export function BrokerResourceView(props) {
                             }
                             { displayField("Data Model", "TODO", 4) }
                             {
+                                resource["mobids:transportMode"] ? displayField("Transport Mode", resource["mobids:transportMode"].join(", "), 3) : ""
+                            }
+                            {
                                 resource["mobids:geoReferenceMethod"] ? displayField("Geo Reference Method", resource["mobids:geoReferenceMethod"].join(", "), 4) : ""
                             }
                             {
+                                 /*
                                 resource.contentStandard ? displayURI("Content Standard", resource.contentStandard, 4) : ""
+                                 */
+                            }
+                            {
+                                representationStandard ? displayURI("Standard", representationStandard , 6) : ""
                             }
                         </Grid>
                         
@@ -505,9 +537,6 @@ export function BrokerResourceView(props) {
                             
                             {
                                 resource["mobids:DataCategoryDetail"] ? displayField("Data Category Detail", resource["mobids:DataCategoryDetail"].join(", "), 3) : ""
-                            }
-                            {
-                                resource["mobids:transportMode"] ? displayField("Transport Mode", resource["mobids:transportMode"].join(", "), 3) : ""
                             }
                             {
                                 resource["mobids:roadNetworkCoverage"] ? displayField("Road Network Coverage", resource["mobids:roadNetworkCoverage"].join(", "), 3) : ""
@@ -539,43 +568,38 @@ export function BrokerResourceView(props) {
                         
                         {
                             resource.representation ?
-                                <Grid container className="rounded-borders">
+                                <div className="rounded-borders">
                                     <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Representation</Typography>
                                     {resource.representation.map(rep => (
-                                        <React.Fragment>
-                                            {
-                                                rep.labelMediatype ? displayField("MimeType", rep.labelMediatype, 3) : ""
-                                            }
-                                            {
-                                                rep.representationVocab ? displayURI("Domain Vocabulary", rep.representationVocab, 3) : ""
-                                            }
-                                            {
-                                                rep.representationStandard ? displayURI("Standard", rep.representationStandard, 3) : ""
-                                            }
+                                        <Grid container>
                                             {
                                                 rep.instance ?
-                                                    <span>
-                                                        {rep.instance.map(instance => (
+                                                    rep.instance.map(instance => (
                                                             <React.Fragment>
                                                                 {
-                                                                    instance.creation ? displayField("Created", instance.creation.split("T")[0], 3) : ""
+                                                                    instance.filename ? displayURI("File Name", instance.filename, 12) : ""
                                                                 }
                                                                 {
-                                                                    instance.bytesize ? displayField("Bytesize", getByteSize(instance.bytesize), 3) : ""
+                                                                    instance.creation ? displayField("Created", instance.creation.split("T")[0], 4) : ""
                                                                 }
                                                                 {
-                                                                    instance.filename ? displayURI("Filename", instance.filename, 3) : ""
+                                                                    instance.bytesize ? displayField("File Size", getByteSize(instance.bytesize), 4) : ""
                                                                 }
                                                             </React.Fragment>
-                                                        ))}
-                                                    </span> : ""
+                                                        )) : ""
                                             }
-                                        </React.Fragment>
+                                            {
+                                                rep.labelMediatype ? displayField("MimeType", rep.labelMediatype, 4) : ""
+                                            }
+                                            {/*
+                                                rep.representationVocab ? displayURI("Domain Vocabulary", rep.representationVocab, 4) : ""
+                                            */}
+                                        </Grid>
                                     ))}
-                                </Grid> : ""
+                                </div> : ""
                         }
 
-                        {user !== null && (
+                        {/*user !== null && (
                             <div className="rounded-borders">
                                 <Typography variant="body2" gutterBottom align="left">Average rating</Typography>
                                 <Rating
@@ -599,10 +623,9 @@ export function BrokerResourceView(props) {
                                 />
                                 {averageRatingValue !== null && <Box ml={2}>{labels[hover !== -1 ? hover : '']}</Box>}
                             </div>
-                        )}
+                                )*/}
 
-                        <br />
-                        {
+                        {/*
                             resource.endpoints ?
                                 <div className="rounded-borders">
                                     <Typography variant="body2" gutterBottom align="left">Resource Endpoints</Typography>
@@ -611,7 +634,7 @@ export function BrokerResourceView(props) {
                                             {/* {
                                                                 endpoint.Path ? displayField("Path", endpoint.Path, 3) : ""
                                                             } */}
-                                            {
+                                            {/*
                                                 endpoint.inboundPath ? displayField("Inbound Path", endpoint.inboundPath, 3) : ""
                                             }
                                             {
@@ -654,44 +677,41 @@ export function BrokerResourceView(props) {
                                         </React.Fragment>
                                     ))}
                                 </div> : ""
-                        }
-                        <br />
-                        
-                        <br />
+                                        */}
+
                         {
                             resource.contract ?
                                 <div className="rounded-borders">
                                     {resource.contract.map(contract => (
                                         <React.Fragment>
-                                            <span>
-                                                <Typography variant="body2" gutterBottom align="left">Attached Usage Policy</Typography>
+                                            <Typography variant="body2" gutterBottom align="left">Attached Usage Policy</Typography>
+                                            <Grid container>
                                                 {
-                                                    contract.contractProvider ? displayURI("Provider", contract.contractProvider, 3) : ""
+                                                    contract.contractProvider ? displayURI("Provider", contract.contractProvider, 12) : ""
                                                 }
-                                                {
+                                                {/*
                                                     contract.contractConsumer ? displayURI("Consumer", contract.contractConsumer, 3) : ""
-                                                }
-                                                {
+                                                */}
+                                                {/*
                                                     contract.contractRefersTo ? displayField("Refers to", contract.contractRefersTo, 3) : ""
+                                                */}
+                                                {
+                                                    contract.contractDate ? displayField("Date of signing", contract.contractDate.split("T")[0], 4) : ""
                                                 }
                                                 {
-                                                    contract.contractDate ? displayField("Date of signing", contract.contractDate.split("T")[0], 3) : ""
+                                                    contract.contractStart ? displayField("Start date", contract.contractStart.split("T")[0], 4) : ""
                                                 }
                                                 {
-                                                    contract.contractStart ? displayField("Start date", contract.contractStart.split("T")[0], 3) : ""
+                                                    contract.contractEnd ? displayField("End date", contract.contractEnd.split("T")[0], 4) : ""
                                                 }
-                                                {
-                                                    contract.contractEnd ? displayField("End date", contract.contractEnd.split("T")[0], 3) : ""
-                                                }
-                                                {
+                                                {/*
                                                     contract.contractDocument && contract.contractDocument.docTitle ? displayField("Contract Title", contract.contractDocument.docTitle.join(", "), "flow-attributes") : ""
                                                 }
                                                 {
                                                     contract.contractDocument && contract.contractDocument.docDesc ? displayField("Contract Description", contract.contractDocument.docDesc.join(", "), "flow-attributes") : ""
-                                                }
-                                            </span>
-                                            <br />
-                                            {
+                                                */}
+                                            </Grid>
+                                            {/*
                                                 contract.contractObligation ?
                                                     <span>
                                                         {contract.contractObligation.map(oblige => (
@@ -715,9 +735,8 @@ export function BrokerResourceView(props) {
                                                             </React.Fragment>
                                                         ))}
                                                     </span> : ""
-                                            }
-                                            <br />
-                                            {
+                                                            */}
+                                            {/*
                                                 contract.contractPermission ?
                                                     <span>
                                                         {contract.contractPermission.map(permission => (
@@ -741,9 +760,8 @@ export function BrokerResourceView(props) {
                                                             </React.Fragment>
                                                         ))}
                                                     </span> : ""
-                                            }
-                                            <br />
-                                            {
+                                            */}
+                                            {/*
                                                 contract.contractProhibition ?
                                                     <span>
                                                         {contract.contractProhibition.map(prohibit => (
@@ -767,19 +785,19 @@ export function BrokerResourceView(props) {
                                                             </React.Fragment>
                                                         ))}
                                                     </span> : ""
-                                            }
+                                                            */}
                                         </React.Fragment>
                                     ))}
                                 </div> : ""
                         }
                     </div> : ""}
-                    <Button color="primary" variant="outlined" onClick={() => { setOpen(!open); }}>
-                        Show/Hide JSON-LD
+                    <Button className={clsx("expandButton", open && "expanded")} variant="contained" 
+                    onClick={() => { setOpen(!open); }}>
+                        {open ? "Hide JSON-LD" : "Show JSON-LD"}
                     </Button>
-                    <br />
                     {
                         open ?
-                            <div className="rounded-borders" style={{ margin: "20px" }}>
+                            <div style={{ margin: "20px" }}>
                                 {
                                     resource.resourceAsJsonLd ? displayResourceRdf(resource.resourceAsJsonLd) : ""
                                 }

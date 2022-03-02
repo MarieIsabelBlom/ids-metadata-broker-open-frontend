@@ -4,9 +4,22 @@
     margin-bottom: 28px;
 }
 
-div .link-title {
+.resource-view div .attr-title {
     font-weight: bold;
     margin-top: 16px;
+}
+
+.resource-view .attr-content {
+    color: #707070;
+}
+
+.resource-view .attr-content > a {
+    color: #707070;
+    text-decoration: underline;
+}
+
+.resource-view div.attr-description > .attr-content {
+    color: black;
 }
 
 .resource-view .main-container > div {
@@ -16,6 +29,7 @@ div .link-title {
 .resource-view .rounded-borders {
     padding: 20px 0;
     margin: 20px 0;
+    border-color: #707070;
 }
 
 .resource-view button.expandButton {
