@@ -24,9 +24,9 @@ class CategoryItem extends React.Component {
                 <Typography gutterBottom className="category-title" component="div">
                     {cat.title}
                 </Typography>
-                <Typography className="category-text" variant="body2">
+                {/*<Typography className="category-text" variant="body2">
                     {cat.description}
-                </Typography>
+                </Typography>*/}
             </CardContent>
         </Card>
     }

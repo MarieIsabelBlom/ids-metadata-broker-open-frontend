@@ -717,7 +717,7 @@ export function SearchBroker(props) {
                                 <Typography variant="h5" component="h2">
                                     {connector.title.join(", ")}
                                 </Typography>
-                                <Typography variant="body2">
+                                <Typography variant="body2" className="connector-description">
                                     {connector.description.join(", ")}
                                 </Typography>
                                 {

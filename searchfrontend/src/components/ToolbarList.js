@@ -99,6 +99,7 @@ class ToolbarList extends Component {
         const { isAuthenticated, user } = this.props.auth;
         const { classes } = this.props;
         const selectedIndex = this.state.selectedIndex;
+        const showDashboard = false;
         
         return (
             <AppBar position={this.state.open ? "absolute" : "static"} className={clsx(classes.appBar, this.state.open ? classes.appBarOpen: classes.appBarMDS, 'appbar')}>
@@ -150,14 +151,14 @@ class ToolbarList extends Component {
                             </ListItem>
 
 
-                            <ListItem button selected={selectedIndex === 6} onClick={(event) => this.handleListItemClick(event, 6)}>
+                            {showDashboard ? <ListItem button selected={selectedIndex === 6} onClick={(event) => this.handleListItemClick(event, 6)}>
                                 <div className={clsx(classes.container, selectedIndex === 6 && classes.selectedContainer)}>
                                     <Link to="/browse" style={{ textDecoration: 'none' }}>
                                         <Typography className={classes.text}>Dashboard</Typography>
                                     </Link>
 
                                 </div>
-                            </ListItem>
+                            </ListItem> : ""}
 
                             {
                                 isAuthenticated && user.role === "admin"

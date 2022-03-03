@@ -139,14 +139,15 @@ nav .mobile-only {
     content: "";
     display: block;
     float: right;
-    background: url("../assets/icons/arrow-next.svg") no-repeat;
+    background: url("../assets/icons/arrow-right-mobile.svg") no-repeat;
     width: 18px;
     height: 18px;
-    margin-top: 3px;
+    margin-top: 5px;
 }
 
 .theme-mobids nav .menu-item.expandable.expanded::after {
-    background: url("../assets/icons/filter-close.svg") no-repeat;
+    background: url("../assets/icons/arrow-down-mobile.svg") no-repeat;
+    margin-top: 10px;
 }
 
 @media screen and (max-width: 800px) {

@@ -482,7 +482,7 @@ export function BrokerResourceView(props) {
                             resource.sovereign ? displayURI("Data Owner", resource.sovereign, 6) : ""
                         }
                         {
-                            resource.keyword ? displayField("Keyword", resource.keyword.join(", "), 6) : ""
+                            resource.keyword ? displayField("Keywords", resource.keyword.join(", "), 6) : ""
                         }
                         {
                             resource.publisher ? displayURI("Data Publisher", resource.publisher, 6) : ""

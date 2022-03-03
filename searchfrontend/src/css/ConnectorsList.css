@@ -41,6 +41,10 @@
     padding: 35px 20px;
 }
 
+.theme-mobids .connector-content .connector-description {
+    margin: 25px 0
+}
+
 .theme-mobids .data-search {
     margin-bottom: 8px;
 }
@@ -107,6 +111,11 @@
 
 .theme-mobids .filter-container .expandable.expanded > ul {
     display: block;
+    direction: rtl;
+}
+
+.theme-mobids .filter-container .expandable > ul li {
+    direction: ltr;
 }
 
 .theme-mobids .filter-container .expandable h2::after {
