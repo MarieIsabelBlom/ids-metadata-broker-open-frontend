@@ -2,7 +2,8 @@ import React from "react";
 import {
     SelectedFilters,
     DataSearch,
-    MultiList
+    MultiList,
+    SingleDropdownList
 } from "@appbaseio/reactivesearch";
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -12,12 +13,13 @@ import { Link } from 'react-router-dom';
 import { ReactiveList } from "@appbaseio/reactivesearch";
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
-import { Divider } from "@material-ui/core";
+import { Button, Divider } from "@material-ui/core";
 
 import { getAllResources } from '../helpers/sparql/connectors';
 import { connect } from 'react-redux';
 import useExpandableFilter from "../helpers/useExpandableFilter";
 import { renderPagination, renderResultStats } from "./ConnectorBroker";
+import clsx from 'clsx';
 
 class SearchMDMResources extends React.Component {
 
@@ -26,7 +28,8 @@ class SearchMDMResources extends React.Component {
         super(props);
         this.state = {
             mdmSearchValue: '',
-            resources: []
+            resources: [],
+            openSearch: true
         };
     }
 
@@ -37,6 +40,12 @@ class SearchMDMResources extends React.Component {
             window.localStorage.setItem('SearchValue', this.state.mdmSearchValue);
         });
     };
+
+    handleOpenSearch = open => {
+        this.setState({
+            openSearch: open
+        })
+    }
 
     processResourceID = id => {
         let resId;
@@ -110,26 +119,45 @@ class SearchMDMResources extends React.Component {
     render() {
         let tenant = process.env.REACT_APP_TENANT || 'mobids';
         tenant = tenant.toLowerCase();
-        let search = <React.Fragment>
-            <DataSearch
-                componentId="search"
-                dataField={['title', 'title_en', 'title_de', 'description', 'description_de', 'description_en']}
-                URLParams={true}
-                queryFormat="or"
-                autosuggest={true}
-                        showClear={true}
 
-                onValueChange={
-                    function (value) {
-                        if (propsFromApp.location.pathname.indexOf('resources') === -1) {
-                            propsFromApp.history.push("/resources");
+        let advancedSearch = <div className="advanced-filter-container">
+            <Grid item xs={12} md={3} lg={3}>
+                <SingleDropdownList
+                componentId="PublishersAdvanced"
+                dataField="publisher.keyword"
+                placeholder="Publisher"
+                className="advanced-filter"
+                />
+            </Grid>
+            <Divider style={{backgroundColor: "#B9B9B9", marginTop: 30}} />
+
+        </div>
+
+        let search = <React.Fragment>
+            <Grid container>
+                <Grid item xs={12} md={tenant == "mobids" ? 8 : 12} xl={tenant == "mobids" ? 9 : 12} ><DataSearch
+                    componentId="search"
+                    dataField={['title', 'title_en', 'title_de', 'description', 'description_de', 'description_en']}
+                    URLParams={true}
+                    queryFormat="or"
+                    autosuggest={true}
+                            showClear={true}
+
+                    onValueChange={
+                        function (value) {
+                            if (propsFromApp.location.pathname.indexOf('resources') === -1) {
+                                propsFromApp.history.push("/resources");
+                            }
                         }
                     }
+                    value={this.state.value}
+                    onChange={this.handleSearch}
+                /></Grid>
+                {tenant == "mobids" ? <Grid item md={4} xl={3}>
+                    <Button className={clsx("advanced-button", this.state.openSearch && "expanded")} onClick={() => this.handleOpenSearch(!this.state.openSearch)}>Advanced Search</Button></Grid> : ""
                 }
-                value={this.state.value}
-                onChange={this.handleSearch}
-
-            />
+            </Grid>
+            {tenant == "mobids" && this.state.openSearch ? advancedSearch : ""}
             <SelectedFilters />
         </React.Fragment>
 
@@ -229,7 +257,7 @@ class SearchMDMResources extends React.Component {
                                         pagination={true}
                                         URLParams={true}
                                         react={{
-                                            and: ["search", "Keywords", "Publishers", "Category", "SubCategory", "NutsLocation"]
+                                            and: ["search", "Keywords", "Publishers", "Category", "SubCategory", "NutsLocation", "PublishersAdvanced"]
                                         }}
                                         render={this.renderMobilityResources}
                                         renderResultStats={renderResultStats}
