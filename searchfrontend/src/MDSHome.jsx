@@ -35,28 +35,7 @@ class CategoryItem extends React.Component {
 class MDSHome extends React.Component {
 
     render() {
-        const categoryItems = [
-            {
-                "title": "Traffic information",
-                "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod",
-                "icon": "./search.svg"
-            },
-            {
-                "title": "Roadworks and Road conditions",
-                "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod",
-                "icon": "./search.svg"
-            },
-            {
-                "title": "Traffic Flow Information",
-                "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod",
-                "icon": "./search.svg"
-            },
-            {
-                "title": "Parking Information",
-                "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod",
-                "icon": "./search.svg"
-            }
-        ]
+        const categoryItems = require("./data/categories.json")
         const showButtons = false, showTrusted = false;
 
         return <Container maxWidth="md">
