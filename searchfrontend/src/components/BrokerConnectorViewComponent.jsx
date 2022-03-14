@@ -230,7 +230,6 @@ export function BrokerConnectorViewComponent(props) {
                 {
                     connector.securityProfile ? displayField("Security Profile", connector.securityProfile, "inline-attributes") : ""
                 }
-
                 <br />
                 {
                     resources.length !== 0 ?

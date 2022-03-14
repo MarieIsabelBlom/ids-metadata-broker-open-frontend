@@ -186,6 +186,21 @@ class App extends React.Component {
         this.brokerURL = new URL(this.brokerURL).toString();
     }
 
+    /*
+    setBrokerURL is only called onCompomentMount 
+    and therefore not available for some Routing paths.
+
+    Better: Use this method to get the broker url dynamically. Do not use this.brokerURL.
+    */
+    getBrokerURL = () => {
+        if(this.brokerURL)
+            return this.brokerURL
+        else if (window._env_ === undefined)
+            return new URL('http://localhost:9200').toString();
+        else
+            return new URL(window._env_.REACT_APP_BROKER_URL).toString();
+    }
+
     handleDrawerOpen = () => {
         this.setState({
             open: true
@@ -368,7 +383,7 @@ class App extends React.Component {
                             </Route>
                             <Route path="/connector/:resID">
                                 {
-                                    <BrokerConnectorViewComponent {...this.props} es_url={this.brokerURL} showBackButton={true} />
+                                    <BrokerConnectorViewComponent {...this.props} es_url={this.getBrokerURL()} showBackButton={true} />
 
                                 }
                             </Route>
@@ -376,7 +391,7 @@ class App extends React.Component {
                                 <ReactiveBase
                                     app={this.getElasticSearchIndex(this.tenant)}
                                     credentials="null"
-                                    url={this.brokerURL}
+                                    url={this.getBrokerURL()}
                                     analytics
                                 >
                                     {
@@ -389,7 +404,7 @@ class App extends React.Component {
                                     <Grid item md={3} xs={12}>
                                     </Grid>
                                     <Grid item lg={6} md={9} xs={12}>
-                                        <BrokerResourceView {...this.props} es_url={this.brokerURL} showBackButton={true} />
+                                        <BrokerResourceView {...this.props} es_url={this.getBrokerURL()} showBackButton={true} />
                                     </Grid>
                                     
                                 </Grid>
@@ -398,7 +413,7 @@ class App extends React.Component {
                                 <ReactiveBase
                                     app="resources"
                                     credentials="null"
-                                    url={this.brokerURL}
+                                    url={this.getBrokerURL()}
                                     analytics
                                 >
                                     <SearchMDMResources {...this.props} />

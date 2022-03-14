@@ -31,7 +31,7 @@ export function BrokerResourceView(props) {
 
     let targetURI = props.es_url
     let selfURI = props.es_url
-
+    
     //uncomment when merging with master branch M.P.
     if (typeof (targetURI) !== 'undefined' && targetURI != null) {
         if (targetURI.includes("/es")) {
@@ -396,10 +396,12 @@ export function BrokerResourceView(props) {
     }
 
     function displayRefURI(fieldLabel, fieldVal, col) {
+        let absoluteUriPart = "" // use relative path for now
+
         return (
             <Grid item md={col} xs={12}>
                 <Typography className="attr-title" variant="body2" gutterBottom>{fieldLabel}</Typography>
-                <Typography className="attr-content" gutterBottom><a rel="noopener noreferrer" href={`${selfURI}/connector/connector?id=${fieldVal}`} target="_self">{fieldVal}</a></Typography>
+                <Typography className="attr-content" gutterBottom><a rel="noopener noreferrer" href={`${absoluteUriPart}/connector/connector?id=${fieldVal}`} target="_self">{fieldVal}</a></Typography>
             </Grid>
         );
     }

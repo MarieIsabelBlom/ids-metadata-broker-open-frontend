@@ -23,6 +23,12 @@ export default class SearchConnectors extends React.Component {
         };
     }
 
+    updateCurrentConnector = (obj) => {
+        this.setState({
+            currentConnector: obj
+        })
+    }
+
     handleSearch = value => {
         this.setState({
             value
