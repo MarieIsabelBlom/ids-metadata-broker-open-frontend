@@ -10,6 +10,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Container, Divider } from "@material-ui/core";
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
+import { Link } from "react-router-dom";
 
 import { useSelector } from 'react-redux';
 import { getConnector, prepareConnectorFormat } from '../helpers/sparql/connectors';
@@ -244,6 +245,12 @@ export function BrokerConnectorViewComponent(props) {
                                         }
                                     </ExpansionPanelSummary>
                                     <ExpansionPanelDetails>
+
+                                        <Link to={'/resources/resource?id=' + resource.resourceID } target="_blank">
+                                            {resource.resourceID}
+                                        </Link>
+
+                                        <br /><br />
                                     {
                                                 resource.originURI ? displayURI("Original ID", resource.originURI, "inline-attributes") : ""
                         }

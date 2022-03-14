@@ -5,10 +5,8 @@ import {
 } from "@appbaseio/reactivesearch";
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
-import Typography from '@material-ui/core/Typography';
-import { SearchBroker, BrokerConnectorView, BrokerFilter } from "./ConnectorBroker";
+import { SearchBroker, BrokerFilter } from "./ConnectorBroker";
 import { SearchParis, ParisConnectorView, ParisFilter } from "./ConnectorParis";
-import { propertyArray } from '../propertyArray';
 // import Query from "../Query.jsx";
 import '../css/ConnectorsList.css'
 
@@ -57,10 +55,8 @@ export default class SearchConnectors extends React.Component {
             let obj = this.state.currentConnector;
             if (name === 'paris') {
                 return <ParisConnectorView updateCurrentConnector={this.updateCurrentConnector} connector={obj} />;
-            } else if (name === 'eis') {
-                return <BrokerConnectorView updateCurrentConnector={this.updateCurrentConnector} connector={obj} />;
-            } else
-                return <BrokerConnectorView updateCurrentConnector={this.updateCurrentConnector} connector={obj} />;
+            }
+            // for mobids: Connector is now only callable using Links and Routing
         }
 
         const renderTenant = (name) => {
@@ -70,11 +66,11 @@ export default class SearchConnectors extends React.Component {
                 )
             } else if (name === 'eis') {
                 return (
-                    <SearchBroker updateCurrentConnector={this.updateCurrentConnector} />
+                    <SearchBroker  />
                 )
             } else {
                 return (
-                    <SearchBroker updateCurrentConnector={this.updateCurrentConnector} />
+                    <SearchBroker />
                 )
             }
         }
@@ -160,7 +156,7 @@ export default class SearchConnectors extends React.Component {
                                     </div>
                                 </Grid>
 
-                                {/* Filter section on the left-side onnly for mobids */}
+                                {/* Filter section on the left-side only for mobids */}
                                 {tenant != 'mobids' ? filterSection : ''}
 
                             </Grid>
