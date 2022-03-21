@@ -28,7 +28,8 @@ export function BrokerFilter(props) {
             <MultiList
                 componentId="list-2"
                 dataField="catalog.resources.keyword.keyword"
-                showSearch={false}
+                showSearch={true}
+                showCount={false}
                 title="Keyword"
                 className="expandable expanded"
                 URLParams={true}
@@ -37,7 +38,8 @@ export function BrokerFilter(props) {
             <MultiList
                 componentId="list-3"
                 dataField="catalog.resources.publisher.keyword"
-                showSearch={false}
+                showSearch={true}
+                showCount={false}
                 title="Publisher"
                 className="expandable"
                 URLParams={true}
@@ -47,7 +49,8 @@ export function BrokerFilter(props) {
             <MultiList
                 componentId="list-6"
                 dataField="catalog.resources.language.keyword"
-                showSearch={false}
+                showSearch={true}
+                showCount={false}
                 title="Resource Language"
                 className="expandable"
                 URLParams={true}
@@ -56,7 +59,8 @@ export function BrokerFilter(props) {
             <MultiList
                 componentId="list-1"
                 dataField="connector.securityProfile.keyword"
-                showSearch={false}
+                showSearch={true}
+                showCount={false}
                 title="Connector Security Profile"
                 className="expandable"
                 URLParams={true}

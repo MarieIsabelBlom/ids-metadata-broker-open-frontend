@@ -10,6 +10,8 @@ import { SearchParis, ParisConnectorView, ParisFilter } from "./ConnectorParis";
 // import Query from "../Query.jsx";
 import '../css/ConnectorsList.css'
 
+import SearchIcon from '../assets/icons/search.svg'
+
 export default class SearchConnectors extends React.Component {
     constructor(props) {
         super(props);
@@ -104,7 +106,7 @@ export default class SearchConnectors extends React.Component {
         let currentConnector = this.state.currentConnector;
         let propsFromApp = this.props;
 
-        let filterSection = <Grid item lg={3} md={3} xs={12}>
+        let filterSection = <Grid item xl={3} md={4} xs={12}>
             <Card className="filter-container">
                 {
                     renderFilterTenant(tenant)
@@ -127,12 +129,17 @@ export default class SearchConnectors extends React.Component {
                                 {/* Filter section on the left-side onnly for mobids */}
                                 {tenant == 'mobids' ? filterSection : ''}
                                 
-                                <Grid item lg={tenant == 'mobids' ? 6 : 9} md={9} xs={12}>
+                                <Grid item
+                                xl={tenant == 'mobids' ? 6 : 9}
+                                md={tenant == 'mobids' ? 8 : 9} xs={12}
+                                className="search-column-container">
+                                    
                                 <DataSearch
                                     componentId="search"
                                     dataField={['connector.title','connector.title_en','connector.title_de','connector.description','connector.description_de', 'participant.title', 'participant.description','participant.corporateHompage']}
                                     URLParams={true}
                                     queryFormat="or"
+                                    icon={<img src={SearchIcon} className="search-icon" />}
                                     className="data-search"
                                         value={this.state.value}
                                         autosuggest={true}

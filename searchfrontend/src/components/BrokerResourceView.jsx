@@ -16,6 +16,7 @@ import { getResource } from '../helpers/sparql/connectors';
 
 import '../css/ConnectorView.css'
 import ArrowBack from '../assets/icons/arrow-back.svg'
+import { Link } from "react-router-dom";
 
 export function BrokerResourceView(props) {
 
@@ -453,15 +454,15 @@ export function BrokerResourceView(props) {
             <Container className="resource-view">
                 {
                     props.showBackButton ?
-                        <IconButton aria-label="go back" 
+                        <Link to="/resources"><IconButton aria-label="go back" 
                             style={{
                                 color: "black",
                                 padding: 0,
                                 marginBottom: 10
                             }}
-                            size="medium" onClick={() => { props.history.goBack(); }}>
+                            size="medium">
                             <img src={ArrowBack} alt="Back" width="25" />
-                        </IconButton> : ""
+                        </IconButton></Link> : ""
                 }
                 <Typography className="connector-title" variant="h4" component="h1" display="block" gutterBottom>
                     {resource_title ? resource_title : "Unknown Resource"}

@@ -3,7 +3,8 @@ import {
     SelectedFilters,
     DataSearch,
     MultiList,
-    SingleDropdownList
+    SingleDropdownList,
+    MultiDropdownList
 } from "@appbaseio/reactivesearch";
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -20,6 +21,8 @@ import { connect } from 'react-redux';
 import useExpandableFilter from "../helpers/useExpandableFilter";
 import { renderPagination, renderResultStats } from "./ConnectorBroker";
 import clsx from 'clsx';
+
+import SearchIcon from '../assets/icons/search.svg'
 
 class SearchMDMResources extends React.Component {
 
@@ -122,27 +125,53 @@ class SearchMDMResources extends React.Component {
 
         let advancedSearch = <div className="advanced-filter-container">
             <Grid item xs={12} md={3} lg={3}>
-                <SingleDropdownList
-                componentId="PublishersAdvanced"
-                dataField="publisher.keyword"
-                placeholder="Publisher"
-                className="advanced-filter"
+                <MultiDropdownList
+                    componentId="adv_category"
+                    dataField="mobids:DataCategory.keyword"
+                    placeholder="Data Category"
+                    className="advanced-filter"
+                    filterLabel="Data Category"
+                    showCount={false}
                 />
             </Grid>
-            <Divider style={{backgroundColor: "#B9B9B9", marginTop: 30}} />
+
+            <Grid item xs={12} md={3} lg={3}>
+                <MultiDropdownList
+                    componentId="adv_publishers"
+                    dataField="publisher.keyword"
+                    placeholder="Publisher"
+                    className="advanced-filter"
+                    filterLabel="Publisher"
+                    showCount={false}
+                />
+            </Grid>
+            <Grid item xs={12} md={3} lg={3}>
+                <MultiDropdownList
+                    componentId="adv_transport"
+                    dataField="mobids:transportMode.keyword"
+                    placeholder="Transport Mode"
+                    className="advanced-filter"
+                    filterLabel="Transport Mode"
+                    showCount={false}
+                />
+            </Grid>
+            <Divider style={{backgroundColor: "#B9B9B9", marginTop: 30, marginBottom: 30 }} />
 
         </div>
 
         let search = <React.Fragment>
             <Grid container>
-                <Grid item xs={12} md={tenant == "mobids" ? 8 : 12} xl={tenant == "mobids" ? 9 : 12} ><DataSearch
+                <Grid item xs={12} md={tenant == "mobids" ? 7 : 12}
+                 lg={tenant == "mobids" ? 8 : 12}
+                  xl={tenant == "mobids" ? 9 : 12} >
+                    <DataSearch
                     componentId="search"
                     dataField={['title', 'title_en', 'title_de', 'description', 'description_de', 'description_en']}
                     URLParams={true}
                     queryFormat="or"
                     autosuggest={true}
-                            showClear={true}
-
+                    showClear={true}
+                    icon={<img src={SearchIcon} className="search-icon" />}
                     onValueChange={
                         function (value) {
                             if (propsFromApp.location.pathname.indexOf('resources') === -1) {
@@ -153,15 +182,15 @@ class SearchMDMResources extends React.Component {
                     value={this.state.value}
                     onChange={this.handleSearch}
                 /></Grid>
-                {tenant == "mobids" ? <Grid item md={4} xl={3}>
+                {tenant == "mobids" ? <Grid item md={5} lg={4} xl={3}>
                     <Button className={clsx("advanced-button", this.state.openSearch && "expanded")} onClick={() => this.handleOpenSearch(!this.state.openSearch)}>Advanced Search</Button></Grid> : ""
                 }
             </Grid>
             {tenant == "mobids" && this.state.openSearch ? advancedSearch : ""}
-            <SelectedFilters />
+            <SelectedFilters className="selected-filters" />
         </React.Fragment>
 
-        let filterSection = <Grid item lg={3} md={3} xs={12}>
+        let filterSection = <Grid item xl={3} md={4} xs={12}>
             <Card className="filter-container">
                 <React.Fragment>
                     <MultiList
@@ -170,8 +199,9 @@ class SearchMDMResources extends React.Component {
                         style={{
                             margin: 20
                         }}
-                        showSearch={false}
-                        title="Keyword"
+                        showSearch={true}
+                        showCount={false}
+                        title="Keywords"
                         URLParams={true}
                         className="expandable expanded"
                     />
@@ -182,12 +212,13 @@ class SearchMDMResources extends React.Component {
                         style={{
                             margin: 20
                         }}
-                        showSearch={false}
+                        showSearch={true}
+                        showCount={false}
                         title="Publisher"
                         URLParams={true}
                         className="expandable"
                     />
-                    <Divider />
+                    {/*<Divider />
                     <MultiList
                         componentId="Category"
                         dataField="mobids:DataCategory.keyword"
@@ -223,7 +254,7 @@ class SearchMDMResources extends React.Component {
                         title="NUTS Code"
                         URLParams={true}
                         className="expandable"
-                    />
+                    />*/}
 
 
 
@@ -243,7 +274,10 @@ class SearchMDMResources extends React.Component {
                         {tenant == 'mobids' ? filterSection : ''}
 
                         {/* List of resources in the /query page */}
-                        <Grid item lg={tenant == 'mobids' ? 6 : 9} md={9} xs={12}>
+                        <Grid item xl={tenant == 'mobids' ? 6 : 9}
+                        md={tenant == 'mobids' ? 8 : 9}
+                        xs={12} 
+                        className="search-column-container">
                             {tenant == 'mobids' ? search : ''}
 
                             <div className="conn-list">
@@ -257,7 +291,7 @@ class SearchMDMResources extends React.Component {
                                         pagination={true}
                                         URLParams={true}
                                         react={{
-                                            and: ["search", "Keywords", "Publishers", "Category", "SubCategory", "NutsLocation", "PublishersAdvanced"]
+                                            and: ["search", "Keywords", "adv_publishers"]
                                         }}
                                         render={this.renderMobilityResources}
                                         renderResultStats={renderResultStats}

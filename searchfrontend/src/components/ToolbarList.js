@@ -38,7 +38,7 @@ const styles = theme => ({
         padding: '0 8px',
     },
     selectedContainer: {
-        background: 'linear-gradient(180deg, #FFF 40%, #FF0 0)',
+        background: 'linear-gradient(180deg, #FFF0 40%, #FF0 0)',
     },
     appBarIconDiv: {
         display: 'flex',
