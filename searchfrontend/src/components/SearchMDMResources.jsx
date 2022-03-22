@@ -76,9 +76,9 @@ class SearchMDMResources extends React.Component {
                 {
                     data.map(resource => (
                         resource.length !== 0 ?
-                            <React.Fragment>
+                            <React.Fragment key={resource.resourceID}>
                                 <Link to={'/resources/resource?id=' + encodeURIComponent(resource.resourceID)} >
-                                    <Card key={resource.resourceID} style={{ border: 'none', boxShadow: "none" }}>
+                                    <Card  style={{ border: 'none', boxShadow: "none" }}>
                                         <CardActionArea>
                                             <CardContent className="connector-content">
                                                 <Typography variant="h5" component="h2">

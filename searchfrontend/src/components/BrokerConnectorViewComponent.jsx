@@ -162,7 +162,8 @@ export function BrokerConnectorViewComponent(props) {
                             col={12}
                             label="Resources ID">
                                 {resources.map(resource => (
-                                    <Link to={'/resources/resource?id=' + resource.resourceID } target="_blank" 
+                                    <Link to={'/resources/resource?id=' + resource.resourceID } target="_blank"
+                                    key={resource.resourceID} 
                                     className="resource-link">
                                         {resource.title ? resource.title.join(", ") : "Unknown Resource" }
                                     </Link>
