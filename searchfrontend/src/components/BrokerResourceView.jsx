@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { Container, Divider, Grid } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import Button from '@material-ui/core/Button';
-import Rating from '@material-ui/lab/Rating';
-import Box from '@material-ui/core/Box';
 import axios from 'axios';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
@@ -15,8 +11,7 @@ import { mongodb_handlerURL } from '../urlConfig';
 import { getResource } from '../helpers/sparql/connectors';
 
 import '../css/ConnectorView.css'
-import ArrowBack from '../assets/icons/arrow-back.svg'
-import { Link } from "react-router-dom";
+import { BrokerAttribute, BrokerAttributeUrl, BrokerViewComponent } from "./BrokerViewComponent";
 
 export function BrokerResourceView(props) {
 
@@ -28,7 +23,6 @@ export function BrokerResourceView(props) {
     let [resource, setResource] = useState({});
 
     let [open, setOpen] = React.useState(false);
-    let [openSecondary, setOpenSecondary] = React.useState(false);
 
     let targetURI = props.es_url
     let selfURI = props.es_url
@@ -373,37 +367,22 @@ export function BrokerResourceView(props) {
         }
     }
 
-
-    let resource_title = resource.mainTitle || resource.title_en || resource.title || resource.title_de;
-    let resource_description = resource.description_en || resource.description_de || resource.description;
-
     //function to display field/URI based on 'div' classname
     function displayField(fieldLabel, fieldVal, col, className) {
+        if(!fieldVal)
+            return ""
+
         return (
-            <Grid item md={col} xs={12} className={className}>
-                <Typography className="attr-title" variant="body2" gutterBottom>{fieldLabel}</Typography>
-                <Typography className="attr-content" gutterBottom>{fieldVal}</Typography>
-            </Grid>
+            <BrokerAttribute label={fieldLabel} value={fieldVal} col={col} className={className} />
         );
     }
 
     function displayURI(fieldLabel, fieldVal, col) {
-        return (
-            <Grid item md={col} xs={12}>
-                <Typography className="attr-title" variant="body2" gutterBottom>{fieldLabel}</Typography>
-                <Typography className="attr-content" gutterBottom><a rel="noopener noreferrer" href={`${fieldVal}`} target="_blank">{fieldVal}</a></Typography>
-            </Grid>
-        );
-    }
-
-    function displayRefURI(fieldLabel, fieldVal, col) {
-        let absoluteUriPart = "" // use relative path for now
+        if(!fieldVal)
+            return ""
 
         return (
-            <Grid item md={col} xs={12}>
-                <Typography className="attr-title" variant="body2" gutterBottom>{fieldLabel}</Typography>
-                <Typography className="attr-content" gutterBottom><a rel="noopener noreferrer" href={`${absoluteUriPart}/connector/connector?id=${fieldVal}`} target="_self">{fieldVal}</a></Typography>
-            </Grid>
+            <BrokerAttributeUrl label={fieldLabel} value={fieldVal} col={col} />
         );
     }
 
@@ -427,7 +406,7 @@ export function BrokerResourceView(props) {
 
     /*
     The following properties may exist or may not.
-    But, for an unkown reason, if they exist, they are an array containing only one item (object).
+    But, for an unknown reason, if they exist, they are an array containing only one item (object).
 
     - resource.contract
     - resource.contract[0].contractPermission
@@ -447,44 +426,174 @@ export function BrokerResourceView(props) {
 
     let firstContract = firstArrayItem(resource.contract)
     let representationStandard = firstArrayItem(resource.representation, 'representationStandard')
+    let resource_title = resource.mainTitle || resource.title_en || resource.title || resource.title_de;
+    let resource_description = resource.description_en || resource.description_de || resource.description;
 
     return (
         <div>
-            <Container className="resource-view">
-                {
-                    props.showBackButton ?
-                        <Link to="/resources"><IconButton aria-label="go back" 
-                            style={{
-                                color: "black",
-                                padding: 0,
-                                marginBottom: 10
-                            }}
-                            size="medium">
-                            <img src={ArrowBack} alt="Back" width="25" />
-                        </IconButton></Link> : ""
-                }
-                <Typography className="connector-title" variant="h4" component="h1" display="block" gutterBottom>
-                    {resource_title ? resource_title : "Unknown Resource"}
-                </Typography>
+            <BrokerViewComponent 
+            showBackButton={props.showBackButton}
+            title={resource_title ? resource_title : "Unknown Resource"}
+            showMore={
+                <React.Fragment>
+                        <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Resource Meta Data</Typography>
+                        <Grid container>      
+                            {
+                                resource.language ? displayField("Language", resource.language.join(", "), 4) : ""
+                            }
+                            {
+                                displayField("Version", resource.version, 4)
+                            }
+                            {
+                               displayField("Content Type", resource.contentType, 4)
+                            }
+                            {
+                                displayURI("Content Standard", resource.contentStandard, 4)
+                            }
+                        </Grid>
+                        
+                        <div className="rounded-borders">
+                            <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Resource Description</Typography>
+                            <Grid container>
+                                {
+                                    resource["mobids:transportMode"] ? displayField("Transport Mode", resource["mobids:transportMode"].join(", "), 4) : ""
+                                }
+                                {
+                                    // TODO: add data model
+                                    displayField("Data Model", "TODO", 4)
+                                }
+                                {
+                                    resource["mobids:geoReferenceMethod"] ? displayField("Geo Reference Method", resource["mobids:geoReferenceMethod"].join(", "), 4) : ""
+                                }
+                                {
+                                    displayURI("Standard", representationStandard , 4)
+                                }
+                            </Grid>
+                        </div>
+                        
+                        {
+                            resource.representation ?
+                                <div className="rounded-borders">
+                                    <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Representation</Typography>
+                                    {resource.representation.map(rep => (
+                                        <Grid container>
+                                            {
+                                                rep.instance ?
+                                                    rep.instance.map(instance => (
+                                                            <React.Fragment>
+                                                                {
+                                                                    displayURI("File Name", instance.filename, 12)
+                                                                }
+                                                                {
+                                                                    instance.creation ? displayField("Created", instance.creation.split("T")[0], 4) : ""
+                                                                }
+                                                                {
+                                                                    instance.bytesize ? displayField("File Size", getByteSize(instance.bytesize), 4) : ""
+                                                                }
+                                                            </React.Fragment>
+                                                        )) : ""
+                                            }
+                                            {
+                                                displayField("MimeType", rep.labelMediatype, 4)
+                                            }
+                                            {
+                                                displayURI("Domain Vocabulary", rep.representationVocab, 4)
+                                            }
+                                            {
+                                                displayURI("Standard License", resource.labelStandardLicense, 4)
+                                            }
+                                            {
+                                                displayURI("Sample Resource", resource.sample, 4)
+                                            }
+                                        </Grid>
+                                    ))}
+                                </div> : ""
+                        }
+
+                        {/*user !== null && (
+                            <div className="rounded-borders">
+                                <Typography variant="body2" gutterBottom align="left">Average rating</Typography>
+                                <Rating
+                                    name="simple-controlled"
+                                    value={averageRatingValue}
+                                    precision={0.05}
+                                    readOnly
+                                />
+                                <Typography variant="body2" gutterBottom align="left">(based on {noOfRatings} ratings)</Typography>
+
+                                <Typography variant="body2" gutterBottom align="left">My rating</Typography>
+                                <Rating
+                                    name="simple-controlled"
+                                    value={myRatingValue}
+                                    onChange={(event, newValue) => {
+                                        setNewRatingValue(newValue);
+                                    }}
+                                    onChangeActive={(event, newHover) => {
+                                        setHover(newHover);
+                                    }}
+                                />
+                                {averageRatingValue !== null && <Box ml={2}>{labels[hover !== -1 ? hover : '']}</Box>}
+                            </div>
+                                )*/}
+
+                        {
+                            resource.contract ?
+                                <div className="rounded-borders">
+                                    {resource.contract.map(contract => (
+                                        <React.Fragment>
+                                            <Typography variant="body2" gutterBottom align="left">Offer information</Typography>
+                                            <Grid container>
+                                                {
+                                                    displayURI("Provider", contract.contractProvider, 12)
+                                                }
+                                                {/*
+                                                    contract.contractConsumer ? displayURI("Consumer", contract.contractConsumer, 4) : ""
+                                                */}
+                                                {/*
+                                                    contract.contractRefersTo ? displayField("Refers to", contract.contractRefersTo, 4) : ""
+                                                */}
+                                                {
+                                                    contract.contractDate ? displayField("Date of signing", contract.contractDate.split("T")[0], 4) : ""
+                                                }
+                                                {
+                                                    contract.contractStart ? displayField("Start date", contract.contractStart.split("T")[0], 4) : ""
+                                                }
+                                                {
+                                                    contract.contractEnd ? displayField("End date", contract.contractEnd.split("T")[0], 4) : ""
+                                                }
+                                                {/*
+                                                    contract.contractDocument && contract.contractDocument.docTitle ? displayField("Contract Title", contract.contractDocument.docTitle.join(", "), 4) : ""
+                                                }
+                                                {
+                                                    contract.contractDocument && contract.contractDocument.docDesc ? displayField("Contract Description", contract.contractDocument.docDesc.join(", "), 4) : ""
+                                                */}
+                                            </Grid>
+                                        </React.Fragment>
+                                    ))}
+                                </div> : ""
+                        }
+                    </React.Fragment>
+            }
+            parentLink="/resources">
                 <div>
                     <Grid container className="main-container">
                         {
                             resource.description ? displayField("Description", resource.description.join(", "), 12, "attr-description") : ""
                         }
                         {
-                            resource.originURI ? displayURI("Original ID", resource.originURI, 12) : ""
+                            displayURI("Original ID", resource.originURI, 12)
                         }
                         {
-                            //resource.connectorID ? displayRefURI("Internal Connector ID", resource.connectorID, 12) : ""
+                            //displayRefURI("Internal Connector ID", resource.connectorID, 12)
                         }
                     </Grid>
 
                     <Grid container className="rounded-borders">
                         {
-                            resource.sovereign ? displayURI("Data Owner", resource.sovereign, 6) : ""
+                            displayURI("Data Owner", resource.sovereign, 6)
                         }
                         {
-                            resource.publisher ? displayURI("Data Publisher", resource.publisher, 6) : ""
+                            displayURI("Data Publisher", resource.publisher, 6)
                         }
                         {
                             // TODO: category
@@ -498,7 +607,7 @@ export function BrokerResourceView(props) {
                             resource.keyword ? displayField("Keywords", resource.keyword.join(", "), 6) : ""
                         }
                         {
-                            resource.paymentModality ? displayURI("Payment Modality", resource.paymentModality, 6) : ""
+                            displayURI("Payment Modality", resource.paymentModality, 6)
                         }
                         {
                             firstContract && firstContract.contractEnd ? displayField("Expiry date", firstContract.contractEnd.split("T")[0], 6) : ""
@@ -572,177 +681,23 @@ export function BrokerResourceView(props) {
                             }
                         </Grid>
                     </div> : ""}
-
-                    <Button className={clsx("expandButton", openSecondary && "expanded")} variant="contained" 
-                    onClick={() => { setOpenSecondary(!openSecondary); }} style={{marginTop: 60}}>
-                        {openSecondary ? "Show less" : "Show more"}
-                    </Button>
-                    {openSecondary ? <div className="secondary-view">
-                        <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Resource Meta Data</Typography>
-                        <Grid container>      
-                            {
-                                resource.language ? displayField("Language", resource.language.join(", "), 4) : ""
-                            }                                                  
-                            { 
-                                // displayField("Trust level", trustLevel, 4) 
-                            }
-                            {
-                                resource.version ? displayField("Version", resource.version, 4) : ""
-                            }
-                            {
-                                resource.contentType ? displayField("Content Type", resource.contentType, 4) : ""
-                            }
-                            {
-                                resource.contentStandard ? displayURI("Content Standard", resource.contentStandard, 4) : ""
-                            }
-                        </Grid>
-                        
-                        <div className="rounded-borders">
-                            <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Resource Description</Typography>
-                            <Grid container>
-                                {
-                                    resource["mobids:transportMode"] ? displayField("Transport Mode", resource["mobids:transportMode"].join(", "), 4) : ""
-                                }
-                                {
-                                    // TODO: add sub-category
-                                    displayField("Data Model", "TODO", 4)
-                                }
-                                {
-                                    resource["mobids:geoReferenceMethod"] ? displayField("Geo Reference Method", resource["mobids:geoReferenceMethod"].join(", "), 4) : ""
-                                }
-                                {
-                                    representationStandard ? displayURI("Standard", representationStandard , 4) : ""
-                                }
-                                {
-                                    //resource["mobids:DataCategoryDetail"] ? displayField("Data Category Detail", resource["mobids:DataCategoryDetail"].join(", "), 4) : ""
-                                }
-                                {
-                                    //resource["mobids:roadNetworkCoverage"] ? displayField("Road Network Coverage", resource["mobids:roadNetworkCoverage"].join(", "), 4) : ""
-                                }
-                            </Grid>
-                        </div>
-                        
-                        {
-                            resource.representation ?
-                                <div className="rounded-borders">
-                                    <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Representation</Typography>
-                                    {resource.representation.map(rep => (
-                                        <Grid container>
-                                            {
-                                                rep.instance ?
-                                                    rep.instance.map(instance => (
-                                                            <React.Fragment>
-                                                                {
-                                                                    instance.filename ? displayURI("File Name", instance.filename, 12) : ""
-                                                                }
-                                                                {
-                                                                    instance.creation ? displayField("Created", instance.creation.split("T")[0], 4) : ""
-                                                                }
-                                                                {
-                                                                    instance.bytesize ? displayField("File Size", getByteSize(instance.bytesize), 4) : ""
-                                                                }
-                                                            </React.Fragment>
-                                                        )) : ""
-                                            }
-                                            {
-                                                rep.labelMediatype ? displayField("MimeType", rep.labelMediatype, 4) : ""
-                                            }
-                                            {
-                                                rep.representationVocab ? displayURI("Domain Vocabulary", rep.representationVocab, 4) : ""
-                                            }
-                                            {
-                                                resource.labelStandardLicense ? displayURI("Standard License", resource.labelStandardLicense, 4) : ""
-                                            }
-                                            {
-                                                resource.sample ? displayURI("Sample Resource", resource.sample, 4) : ""
-                                            }
-                                        </Grid>
-                                    ))}
-                                </div> : ""
-                        }
-
-                        {/*user !== null && (
-                            <div className="rounded-borders">
-                                <Typography variant="body2" gutterBottom align="left">Average rating</Typography>
-                                <Rating
-                                    name="simple-controlled"
-                                    value={averageRatingValue}
-                                    precision={0.05}
-                                    readOnly
-                                />
-                                <Typography variant="body2" gutterBottom align="left">(based on {noOfRatings} ratings)</Typography>
-
-                                <Typography variant="body2" gutterBottom align="left">My rating</Typography>
-                                <Rating
-                                    name="simple-controlled"
-                                    value={myRatingValue}
-                                    onChange={(event, newValue) => {
-                                        setNewRatingValue(newValue);
-                                    }}
-                                    onChangeActive={(event, newHover) => {
-                                        setHover(newHover);
-                                    }}
-                                />
-                                {averageRatingValue !== null && <Box ml={2}>{labels[hover !== -1 ? hover : '']}</Box>}
-                            </div>
-                                )*/}
-
-                        {
-                            resource.contract ?
-                                <div className="rounded-borders">
-                                    {resource.contract.map(contract => (
-                                        <React.Fragment>
-                                            <Typography variant="body2" gutterBottom align="left">Offer information</Typography>
-                                            <Grid container>
-                                                {
-                                                    contract.contractProvider ? displayURI("Provider", contract.contractProvider, 12) : ""
-                                                }
-                                                {/*
-                                                    contract.contractConsumer ? displayURI("Consumer", contract.contractConsumer, 4) : ""
-                                                */}
-                                                {/*
-                                                    contract.contractRefersTo ? displayField("Refers to", contract.contractRefersTo, 4) : ""
-                                                */}
-                                                {
-                                                    contract.contractDate ? displayField("Date of signing", contract.contractDate.split("T")[0], 4) : ""
-                                                }
-                                                {
-                                                    contract.contractStart ? displayField("Start date", contract.contractStart.split("T")[0], 4) : ""
-                                                }
-                                                {
-                                                    contract.contractEnd ? displayField("End date", contract.contractEnd.split("T")[0], 4) : ""
-                                                }
-                                                {/*
-                                                    contract.contractDocument && contract.contractDocument.docTitle ? displayField("Contract Title", contract.contractDocument.docTitle.join(", "), 4) : ""
-                                                }
-                                                {
-                                                    contract.contractDocument && contract.contractDocument.docDesc ? displayField("Contract Description", contract.contractDocument.docDesc.join(", "), 4) : ""
-                                                */}
-                                            </Grid>
-                                        </React.Fragment>
-                                    ))}
-                                </div> : ""
-                        }
-                    </div> : ""}
-                    <Button className={clsx("expandButton", open && "expanded")} variant="contained" 
-                    onClick={() => { setOpen(!open); }}>
-                        {open ? "Hide JSON-LD" : "Show JSON-LD"}
-                    </Button>
-                    {
-                        open ?
-                            <div style={{ margin: "20px" }}>
-                                {
-                                    resource.resourceAsJsonLd ? displayResourceRdf(resource.resourceAsJsonLd) : ""
-                                }
-                            </div>
-                            : ""
-                    }
                 </div>
-                <br />
+            </BrokerViewComponent>
 
-                <br />
-
-            </Container>
+            <Button className={clsx("expandButton", open && "expanded")} variant="contained"
+                onClick={() => { setOpen(!open); }}>
+                {open ? "Hide JSON-LD" : "Show JSON-LD"}
+            </Button>
+            {
+                open ?
+                    <div style={{ margin: "20px" }}>
+                        {
+                            resource.resourceAsJsonLd ? displayResourceRdf(resource.resourceAsJsonLd) : ""
+                        }
+                    </div>
+                    : ""
+            }
+            <br /><br />
         </div>
     );
 }
