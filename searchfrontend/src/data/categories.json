@@ -38,5 +38,9 @@
     {
         "title": "Infrastructure",
         "icon": "categories/10_Infrastructure.svg"
+    },
+    {
+        "title": "Miscellaneous",
+        "icon": "categories/11_Miscellaneous.svg"
     }
 ]
