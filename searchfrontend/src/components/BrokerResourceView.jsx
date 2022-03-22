@@ -446,7 +446,6 @@ export function BrokerResourceView(props) {
     }
 
     let firstContract = firstArrayItem(resource.contract)
-    let permissionAction = firstContract ? firstArrayItem(firstContract.contractPermission, 'permissionAction') : ""
     let representationStandard = firstArrayItem(resource.representation, 'representationStandard')
 
     return (
@@ -476,7 +475,7 @@ export function BrokerResourceView(props) {
                             resource.originURI ? displayURI("Original ID", resource.originURI, 12) : ""
                         }
                         {
-                            resource.connectorID ? displayRefURI("Internal Connector ID", resource.connectorID, 12) : ""
+                            //resource.connectorID ? displayRefURI("Internal Connector ID", resource.connectorID, 12) : ""
                         }
                     </Grid>
 
@@ -485,89 +484,143 @@ export function BrokerResourceView(props) {
                             resource.sovereign ? displayURI("Data Owner", resource.sovereign, 6) : ""
                         }
                         {
+                            resource.publisher ? displayURI("Data Publisher", resource.publisher, 6) : ""
+                        }
+                        {
+                            // TODO: category
+                            resource["mobids:DataCategory"] ? displayField("Data Category", resource["mobids:DataCategory"].join(", "), 6) : ""
+                        }
+                        {
+                            // TODO: add sub-category
+                            displayField("Data Sub-Category", "TODO", 6)
+                        }
+                        {
                             resource.keyword ? displayField("Keywords", resource.keyword.join(", "), 6) : ""
                         }
                         {
-                            resource.publisher ? displayURI("Data Publisher", resource.publisher, 6) : ""
+                            resource.paymentModality ? displayURI("Payment Modality", resource.paymentModality, 6) : ""
                         }
                         {
                             firstContract && firstContract.contractEnd ? displayField("Expiry date", firstContract.contractEnd.split("T")[0], 6) : ""
                         }
-                        {
-                            resource["mobids:DataCategory"] ? displayField("Data Category", resource["mobids:DataCategory"].join(", "), 6) : ""
-                        }
-                        {
-                            permissionAction ? displayField("Permission Action", permissionAction.join(", "), 6) : ""
-                        }
-                        {
-                            /*
-                            resource.labelStandardLicense ? displayURI("Standard License", resource.labelStandardLicense, 3) : ""
-                            */
-                        }
                     </Grid>
+                    {firstContract ? <div className="rounded-borders">
+                        <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Usage Policy</Typography>
+                        <Grid container>
+                            {
+                                firstContract.contractObligation ?
+                                    firstContract.contractObligation.map(oblige => (
+                                        <React.Fragment>
+                                            {
+                                                oblige.dutyConstraint ?
+                                                    oblige.dutyConstraint.map(constraint => (
+                                                        <React.Fragment>
+                                                            {
+                                                                constraint.leftOperand || constraint.operator || constraint.rightOperand ? displayField("Duty Constraint", constraint.leftOperand + " " + constraint.operator + " " + constraint.rightOperand, 6) : ""
+                                                            }
+                                                        </React.Fragment>
+                                                    ))
+                                                    : ""
+                                            }
+                                            {
+                                                oblige.dutyAction ? displayField("Duty Action", oblige.dutyAction.join(", "), 6) : ""
+                                            }
+                                        </React.Fragment>
+                                    )) : ""
+                            }
+                            {
+                                firstContract.contractPermission ?
+                                    firstContract.contractPermission.map(permission => (
+                                        <React.Fragment>
+                                            {
+                                                permission.permissionConstraint ?
+                                                    permission.permissionConstraint.map(constraint => (
+                                                        <React.Fragment>
+                                                            {
+                                                                constraint.leftOperand || constraint.operator || constraint.rightOperand ? displayField("Permission Constraint", constraint.leftOperand + " " + constraint.operator + " " + constraint.rightOperand, 6) : ""
+                                                            }
+                                                        </React.Fragment>
+                                                    ))
+                                                    : ""
+                                            }
+                                            {
+                                                permission.permissionAction ? displayField("Permission Action", permission.permissionAction.join(", "), 6) : ""
+                                            }
+                                        </React.Fragment>
+                                    )) : ""
+                            }
+                            {
+                                firstContract.contractProhibition ?
+                                    firstContract.contractProhibition.map(prohibit => (
+                                        <React.Fragment>
+                                            {
+                                                prohibit.prohibitionConstraint ?
+                                                    prohibit.prohibitionConstraint.map(constraint => (
+                                                        <React.Fragment>
+                                                            {
+                                                                constraint.leftOperand || constraint.operator || constraint.rightOperand ? displayField("Prohibition Constraint", constraint.leftOperand + " " + constraint.operator + " " + constraint.rightOperand, 6) : ""
+                                                            }
+                                                        </React.Fragment>
+                                                    ))
+                                                    : ""
+                                            }
+                                            {
+                                                prohibit.prohibitionAction ? displayField("Prohibition Action", prohibit.prohibitionAction.join(", "), 6) : ""
+                                            }
+                                        </React.Fragment>
+                                    )) : ""
+                            }
+                        </Grid>
+                    </div> : ""}
 
-                    <Button className={clsx("expandButton", openSecondary && "expanded")} variant="contained" onClick={() => { setOpenSecondary(!openSecondary); }}>
+                    <Button className={clsx("expandButton", openSecondary && "expanded")} variant="contained" 
+                    onClick={() => { setOpenSecondary(!openSecondary); }} style={{marginTop: 60}}>
                         {openSecondary ? "Show less" : "Show more"}
                     </Button>
-                    {openSecondary ? <div className="secondaryView">
+                    {openSecondary ? <div className="secondary-view">
                         <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Resource Meta Data</Typography>
                         <Grid container>      
                             {
                                 resource.language ? displayField("Language", resource.language.join(", "), 4) : ""
                             }                                                  
-                            { displayField("Trust level", trustLevel, 4) }
+                            { 
+                                // displayField("Trust level", trustLevel, 4) 
+                            }
                             {
                                 resource.version ? displayField("Version", resource.version, 4) : ""
                             }
-                            { displayField("Data Model", "TODO", 4) }
                             {
-                                resource["mobids:transportMode"] ? displayField("Transport Mode", resource["mobids:transportMode"].join(", "), 3) : ""
+                                resource.contentType ? displayField("Content Type", resource.contentType, 4) : ""
                             }
                             {
-                                resource["mobids:geoReferenceMethod"] ? displayField("Geo Reference Method", resource["mobids:geoReferenceMethod"].join(", "), 4) : ""
-                            }
-                            {
-                                 /*
                                 resource.contentStandard ? displayURI("Content Standard", resource.contentStandard, 4) : ""
-                                 */
-                            }
-                            {
-                                representationStandard ? displayURI("Standard", representationStandard , 6) : ""
                             }
                         </Grid>
                         
-                        {/*<div className="rounded-borders">
-                            
-                            {
-                                resource["mobids:DataCategoryDetail"] ? displayField("Data Category Detail", resource["mobids:DataCategoryDetail"].join(", "), 3) : ""
-                            }
-                            {
-                                resource["mobids:roadNetworkCoverage"] ? displayField("Road Network Coverage", resource["mobids:roadNetworkCoverage"].join(", "), 3) : ""
-                            }
-                            
-                            {
-                                resource["mobids:nutsLocation"] ? displayField("NUTS Code", resource["mobids:nutsLocation"].join(", "), 3) : ""
-                            }
-                    
-                            {
-                                resource.contentType ? displayField("Content Type", resource.contentType, 3) : ""
-                            }
-                            {
-                                resource.paymentModality ? displayURI("Payment Modality", resource.paymentModality, 3) : ""
-                            }
-                            {
-                                resource.sample ? displayURI("Sample Resource", resource.sample, 3) : ""
-                            }
-                            {
-                                resource.temporalCoverages && resource.temporalCoverages.length !== 0 ?
-                                    <React.Fragment>
-                                        {resource.temporalCoverages.map(resTempInterval => (
-                                            resTempInterval.temporalCoverageInterval ? displayField("Temporal Coverage of the Content", `Begin: ${resTempInterval.temporalCoverageInterval.begin.split("T")[0]} End: ${resTempInterval.temporalCoverageInterval.end.split("T")[0]}`, 3) : ""
-                                        ))
-                                        }
-                                    </React.Fragment> : ""
-                            }
-                        </div>*/}
+                        <div className="rounded-borders">
+                            <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Resource Description</Typography>
+                            <Grid container>
+                                {
+                                    resource["mobids:transportMode"] ? displayField("Transport Mode", resource["mobids:transportMode"].join(", "), 4) : ""
+                                }
+                                {
+                                    // TODO: add sub-category
+                                    displayField("Data Model", "TODO", 4)
+                                }
+                                {
+                                    resource["mobids:geoReferenceMethod"] ? displayField("Geo Reference Method", resource["mobids:geoReferenceMethod"].join(", "), 4) : ""
+                                }
+                                {
+                                    representationStandard ? displayURI("Standard", representationStandard , 4) : ""
+                                }
+                                {
+                                    //resource["mobids:DataCategoryDetail"] ? displayField("Data Category Detail", resource["mobids:DataCategoryDetail"].join(", "), 4) : ""
+                                }
+                                {
+                                    //resource["mobids:roadNetworkCoverage"] ? displayField("Road Network Coverage", resource["mobids:roadNetworkCoverage"].join(", "), 4) : ""
+                                }
+                            </Grid>
+                        </div>
                         
                         {
                             resource.representation ?
@@ -594,9 +647,15 @@ export function BrokerResourceView(props) {
                                             {
                                                 rep.labelMediatype ? displayField("MimeType", rep.labelMediatype, 4) : ""
                                             }
-                                            {/*
+                                            {
                                                 rep.representationVocab ? displayURI("Domain Vocabulary", rep.representationVocab, 4) : ""
-                                            */}
+                                            }
+                                            {
+                                                resource.labelStandardLicense ? displayURI("Standard License", resource.labelStandardLicense, 4) : ""
+                                            }
+                                            {
+                                                resource.sample ? displayURI("Sample Resource", resource.sample, 4) : ""
+                                            }
                                         </Grid>
                                     ))}
                                 </div> : ""
@@ -628,75 +687,21 @@ export function BrokerResourceView(props) {
                             </div>
                                 )*/}
 
-                        {/*
-                            resource.endpoints ?
-                                <div className="rounded-borders">
-                                    <Typography variant="body2" gutterBottom align="left">Resource Endpoints</Typography>
-                                    {resource.endpoints.map(endpoint => (
-                                        <React.Fragment>
-                                            {/* {
-                                                                endpoint.Path ? displayField("Path", endpoint.Path, 3) : ""
-                                                            } */}
-                                            {/*
-                                                endpoint.inboundPath ? displayField("Inbound Path", endpoint.inboundPath, 3) : ""
-                                            }
-                                            {
-                                                endpoint.outboundPath ? displayField("Outbound Path", endpoint.outboundPath, 3) : ""
-                                            }
-                                            {
-                                                endpoint.endpointArtifacts ?
-                                                    <span>
-                                                        {endpoint.endpointArtifacts.map(artifact => (
-                                                            <React.Fragment>
-                                                                {
-                                                                    artifact.creation ? displayField("Created", artifact.creation.split("T")[0], 3) : ""
-                                                                }
-                                                                {
-                                                                    artifact.bytesize ? displayField("Size", getByteSize(artifact.bytesize), 3) : ""
-                                                                }
-                                                                {
-                                                                    artifact.filename ? displayField("File name", artifact.filename, 3) : ""
-                                                                }
-                                                            </React.Fragment>
-                                                        ))}
-                                                    </span> : ""
-                                            }
-                                            {
-                                                endpoint.endpointHost ?
-                                                    <span>
-                                                        {endpoint.endpointHost.map(host => (
-                                                            <React.Fragment>
-                                                                {
-                                                                    host.protocol ? displayField("Protocol", host.protocol, 3) : ""
-                                                                }
-                                                                {
-                                                                    host.accessURL ? displayURI("URL", host.accessURL, 3) : ""
-                                                                }
-                                                            </React.Fragment>
-                                                        ))}
-                                                    </span> : ""
-                                            }
-                                            <Divider />
-                                        </React.Fragment>
-                                    ))}
-                                </div> : ""
-                                        */}
-
                         {
                             resource.contract ?
                                 <div className="rounded-borders">
                                     {resource.contract.map(contract => (
                                         <React.Fragment>
-                                            <Typography variant="body2" gutterBottom align="left">Attached Usage Policy</Typography>
+                                            <Typography variant="body2" gutterBottom align="left">Offer information</Typography>
                                             <Grid container>
                                                 {
                                                     contract.contractProvider ? displayURI("Provider", contract.contractProvider, 12) : ""
                                                 }
                                                 {/*
-                                                    contract.contractConsumer ? displayURI("Consumer", contract.contractConsumer, 3) : ""
+                                                    contract.contractConsumer ? displayURI("Consumer", contract.contractConsumer, 4) : ""
                                                 */}
                                                 {/*
-                                                    contract.contractRefersTo ? displayField("Refers to", contract.contractRefersTo, 3) : ""
+                                                    contract.contractRefersTo ? displayField("Refers to", contract.contractRefersTo, 4) : ""
                                                 */}
                                                 {
                                                     contract.contractDate ? displayField("Date of signing", contract.contractDate.split("T")[0], 4) : ""
@@ -708,87 +713,12 @@ export function BrokerResourceView(props) {
                                                     contract.contractEnd ? displayField("End date", contract.contractEnd.split("T")[0], 4) : ""
                                                 }
                                                 {/*
-                                                    contract.contractDocument && contract.contractDocument.docTitle ? displayField("Contract Title", contract.contractDocument.docTitle.join(", "), "flow-attributes") : ""
+                                                    contract.contractDocument && contract.contractDocument.docTitle ? displayField("Contract Title", contract.contractDocument.docTitle.join(", "), 4) : ""
                                                 }
                                                 {
-                                                    contract.contractDocument && contract.contractDocument.docDesc ? displayField("Contract Description", contract.contractDocument.docDesc.join(", "), "flow-attributes") : ""
+                                                    contract.contractDocument && contract.contractDocument.docDesc ? displayField("Contract Description", contract.contractDocument.docDesc.join(", "), 4) : ""
                                                 */}
                                             </Grid>
-                                            {/*
-                                                contract.contractObligation ?
-                                                    <span>
-                                                        {contract.contractObligation.map(oblige => (
-                                                            <React.Fragment>
-                                                                {
-                                                                    oblige.dutyConstraint ?
-                                                                        <span>
-                                                                            {oblige.dutyConstraint.map(constraint => (
-                                                                                <React.Fragment>
-                                                                                    {
-                                                                                        constraint.leftOperand || constraint.operator || constraint.rightOperand ? displayField("Duty Constraint", constraint.leftOperand + " " + constraint.operator + " " + constraint.rightOperand, "flow-attributes") : ""
-                                                                                    }
-                                                                                </React.Fragment>
-                                                                            ))}
-                                                                        </span>
-                                                                        : ""
-                                                                }
-                                                                {
-                                                                    oblige.dutyAction ? displayField("Duty Action", oblige.dutyAction.join(", "), 3) : ""
-                                                                }
-                                                            </React.Fragment>
-                                                        ))}
-                                                    </span> : ""
-                                                            */}
-                                            {/*
-                                                contract.contractPermission ?
-                                                    <span>
-                                                        {contract.contractPermission.map(permission => (
-                                                            <React.Fragment>
-                                                                {
-                                                                    permission.permissionConstraint ?
-                                                                        <span>
-                                                                            {permission.permissionConstraint.map(constraint => (
-                                                                                <React.Fragment>
-                                                                                    {
-                                                                                        constraint.leftOperand || constraint.operator || constraint.rightOperand ? displayField("Permission Constraint", constraint.leftOperand + " " + constraint.operator + " " + constraint.rightOperand, "flow-attributes") : ""
-                                                                                    }
-                                                                                </React.Fragment>
-                                                                            ))}
-                                                                        </span>
-                                                                        : ""
-                                                                }
-                                                                {
-                                                                    permission.permissionAction ? displayField("Permission Action", permission.permissionAction.join(", "), 3) : ""
-                                                                }
-                                                            </React.Fragment>
-                                                        ))}
-                                                    </span> : ""
-                                            */}
-                                            {/*
-                                                contract.contractProhibition ?
-                                                    <span>
-                                                        {contract.contractProhibition.map(prohibit => (
-                                                            <React.Fragment>
-                                                                {
-                                                                    prohibit.prohibitionConstraint ?
-                                                                        <span>
-                                                                            {prohibit.prohibitionConstraint.map(constraint => (
-                                                                                <React.Fragment>
-                                                                                    {
-                                                                                        constraint.leftOperand || constraint.operator || constraint.rightOperand ? displayField("Prohibition Constraint", constraint.leftOperand + " " + constraint.operator + " " + constraint.rightOperand, "flow-attributes") : ""
-                                                                                    }
-                                                                                </React.Fragment>
-                                                                            ))}
-                                                                        </span>
-                                                                        : ""
-                                                                }
-                                                                {
-                                                                    prohibit.prohibitionAction ? displayField("Prohibition Action", prohibit.prohibitionAction.join(", "), 3) : ""
-                                                                }
-                                                            </React.Fragment>
-                                                        ))}
-                                                    </span> : ""
-                                                            */}
                                         </React.Fragment>
                                     ))}
                                 </div> : ""
