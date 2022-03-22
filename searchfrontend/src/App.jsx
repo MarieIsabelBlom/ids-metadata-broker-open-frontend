@@ -382,10 +382,13 @@ class App extends React.Component {
                                 <Dashboard />
                             </Route>
                             <Route path="/connector/:resID">
-                                {
-                                    <BrokerConnectorViewComponent {...this.props} es_url={this.getBrokerURL()} showBackButton={true} />
-
-                                }
+                                <Grid container>
+                                    <Grid item md={3} xs={12}>
+                                    </Grid>
+                                    <Grid item lg={6} md={9} xs={12}>
+                                        <BrokerConnectorViewComponent {...this.props} es_url={this.getBrokerURL()} showBackButton={true} />
+                                    </Grid>
+                                </Grid>
                             </Route>
                             <Route exact path="/connector">
                                 <ReactiveBase
@@ -406,7 +409,6 @@ class App extends React.Component {
                                     <Grid item lg={6} md={9} xs={12}>
                                         <BrokerResourceView {...this.props} es_url={this.getBrokerURL()} showBackButton={true} />
                                     </Grid>
-                                    
                                 </Grid>
                             </Route>
                             <Route exact path="/resources">
