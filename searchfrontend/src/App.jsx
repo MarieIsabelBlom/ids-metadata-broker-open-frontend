@@ -378,9 +378,9 @@ class App extends React.Component {
                             <Route exact path="/">
                                 <MDSHome />
                             </Route>
-                            <Route path="/browse">
+                            { this.tenant !== 'mobids' ? <Route path="/browse">
                                 <Dashboard />
-                            </Route>
+                            </Route> : ""}
                             <Route path="/connector/:resID">
                                 <Grid container>
                                     <Grid item md={3} xs={12}>
