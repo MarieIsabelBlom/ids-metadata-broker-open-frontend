@@ -43,7 +43,7 @@ class ResourceKeywordsView extends Component {
         })
     } else {
       axios
-        .post('/es/registrations/_msearch?',
+        .post('http://localhost:9200/registrations/_msearch?',
           '{"preference":"list-2"}\n{"query":{"match_all":{}},"size":0,"aggs":{"catalog.resources.keyword.keyword":{"terms":{"field":"catalog.resources.keyword.keyword","size":100,"order":{"_count":"desc"}}}}}\n'
           , {
             headers: {
