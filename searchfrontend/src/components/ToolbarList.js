@@ -109,6 +109,7 @@ class ToolbarList extends Component {
         const { classes } = this.props;
         const showDashboard = false;
         const selectedPath = this.props.location.pathname;
+        const mobilityForumUrl = "http://forum.mobility-dataspace.eu/"
 
         return (
             <AppBar position={this.state.open ? "absolute" : "static"} className={clsx(classes.appBar, this.state.open ? classes.appBarOpen: classes.appBarMDS, 'appbar')}>
@@ -185,13 +186,16 @@ class ToolbarList extends Component {
                             }
                         </List>
 
-                        <div className='mobile-only menu-item'>MDS Forum</div>
-                        <div className='mobile-only menu-item'>Contact</div>
+                        <div className='mobile-only menu-item'><a href={mobilityForumUrl} target="_blank">MDS Forum</a></div>
+                        <div className='mobile-only menu-item'><a>Contact</a></div>
                     </nav>
 
                     <div className={classes.appBarIconDiv}>
                         <div className={clsx("login-button", "mobile-hidden")}>
-                            <Button>MDS Forum</Button>
+                            <Button
+                            onClick={() => {
+                                window.open(mobilityForumUrl, "_blank");
+                            }}>MDS Forum</Button>
                         </div>
                     </div>
 

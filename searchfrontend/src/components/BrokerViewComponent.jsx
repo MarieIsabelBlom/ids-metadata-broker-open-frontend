@@ -71,7 +71,7 @@ export function BrokerAttributeUrl(props) {
             col={props.col}
             className={props.className}
             label={props.label}>
-                <a rel="noopener noreferrer" href={`${props.value}`} target="_blank">{props.value}</a>
+                <a rel="noopener noreferrer" href={props.value} target="_blank">{props.value}</a>
         </BrokerAttribute>
     )
 }
