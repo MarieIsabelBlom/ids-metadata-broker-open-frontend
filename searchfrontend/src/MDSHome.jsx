@@ -17,7 +17,7 @@ class CategoryItem extends React.Component {
             <CardMedia
                 component="img"
                 height="180"
-                image={cat.icon}
+                image={require(`./assets/${cat.icon}`).default}
                 alt={cat.title}
             />
             <CardContent>
