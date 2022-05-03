@@ -124,39 +124,42 @@ class SearchMDMResources extends React.Component {
         tenant = tenant.toLowerCase();
 
         let advancedSearch = <div className="advanced-filter-container">
-            <Grid item xs={12} md={3} lg={3}>
-                <MultiDropdownList
-                    componentId="adv_category"
-                    dataField="mobids:DataCategory.keyword"
-                    placeholder="Data Category"
-                    className="advanced-filter"
-                    filterLabel="Data Category"
-                    showCount={false}
-                />
-            </Grid>
-
-            <Grid item xs={12} md={3} lg={3}>
-                <MultiDropdownList
-                    componentId="adv_publishers"
-                    dataField="publisher.keyword"
-                    placeholder="Publisher"
-                    className="advanced-filter"
-                    filterLabel="Publisher"
-                    showCount={false}
-                />
-            </Grid>
-            <Grid item xs={12} md={3} lg={3}>
-                <MultiDropdownList
-                    componentId="adv_transport"
-                    dataField="mobids:transportMode.keyword"
-                    placeholder="Transport Mode"
-                    className="advanced-filter"
-                    filterLabel="Transport Mode"
-                    showCount={false}
-                />
+            <Grid container>
+                <Grid item xs={12} md={4}>
+                    <MultiDropdownList
+                        componentId="adv_category"
+                        dataField="mds:dataCategory.keyword"
+                        placeholder="Data Category"
+                        className="advanced-filter"
+                        filterLabel="Data Category"
+                        showCount={false}
+                        URLParams={true}
+                    />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <MultiDropdownList
+                        componentId="adv_subcategory"
+                        dataField="mds:dataSubcategory.keyword"
+                        placeholder="Data Subcategory"
+                        className="advanced-filter"
+                        filterLabel="Data Subcategory"
+                        showCount={false}
+                        URLParams={true}
+                    />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <MultiDropdownList
+                        componentId="adv_transport"
+                        dataField="mds:transportMode.keyword"
+                        placeholder="Transport Mode"
+                        className="advanced-filter"
+                        filterLabel="Transport Mode"
+                        showCount={false}
+                        URLParams={true}
+                    />
+                </Grid>
             </Grid>
             <Divider style={{backgroundColor: "#B9B9B9", marginTop: 30, marginBottom: 30 }} />
-
         </div>
 
         let search = <React.Fragment>
@@ -181,6 +184,7 @@ class SearchMDMResources extends React.Component {
                     }
                     value={this.state.value}
                     onChange={this.handleSearch}
+                    style={{marginRight: 5}}
                 /></Grid>
                 {tenant == "mobids" ? <Grid item md={5} lg={4} xl={3}>
                     <Button className={clsx("advanced-button", this.state.openSearch && "expanded")} onClick={() => this.handleOpenSearch(!this.state.openSearch)}>Advanced Search</Button></Grid> : ""
@@ -218,46 +222,6 @@ class SearchMDMResources extends React.Component {
                         URLParams={true}
                         className="expandable"
                     />
-                    {/*<Divider />
-                    <MultiList
-                        componentId="Category"
-                        dataField="mobids:DataCategory.keyword"
-                        style={{
-                            margin: 20
-                        }}
-                        showSearch={false}
-                        title="MobiDS Category"
-                        URLParams={true}
-                        className="expandable"
-                    />
-
-                    <Divider />
-                    <MultiList
-                        componentId="SubCategory"
-                        dataField="mobids:DataCategoryDetail.keyword"
-                        style={{
-                            margin: 20
-                        }}
-                        showSearch={false}
-                        title="MobiDS Category Details"
-                        URLParams={true}
-                    />
-                    <Divider />
-
-                    <MultiList
-                        componentId="NutsLocation"
-                        dataField="mobids:nutsLocation.keyword"
-                        style={{
-                            margin: 20
-                        }}
-                        showSearch={false}
-                        title="NUTS Code"
-                        URLParams={true}
-                        className="expandable"
-                    />*/}
-
-
-
                 </React.Fragment>
             </Card>
         </Grid>
@@ -291,7 +255,7 @@ class SearchMDMResources extends React.Component {
                                         pagination={true}
                                         URLParams={true}
                                         react={{
-                                            and: ["search", "Keywords", "adv_publishers"]
+                                            and: ["search", "Keywords", "Publishers", "adv_category", "adv_subcategory", "adv_transport"]
                                         }}
                                         render={this.renderMobilityResources}
                                         renderResultStats={renderResultStats}

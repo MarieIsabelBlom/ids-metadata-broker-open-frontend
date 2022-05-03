@@ -7,13 +7,15 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import { Typography } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 class CategoryItem extends React.Component {
 
     render() {
         let cat = this.props.category
+        let link = `/resources?adv_category=["${cat.key}"]`
 
-        return <Card className="category">
+        return <Link to={link}><Card className="category">
             <CardMedia
                 component="img"
                 height="180"
@@ -28,7 +30,7 @@ class CategoryItem extends React.Component {
                     {cat.description}
                 </Typography>*/}
             </CardContent>
-        </Card>
+        </Card></Link>
     }
 }
 

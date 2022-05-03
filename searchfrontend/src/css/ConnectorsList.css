@@ -179,6 +179,10 @@
     background: url("../assets/icons/filter-close.svg") no-repeat;
 }
 
+.advanced-filter {
+    margin: 5px;
+}
+
 .advanced-filter button {
     border-radius: 32px;
     padding: 12px 18px;
@@ -193,7 +197,7 @@
 }
 
 .advanced-filter-container {
-    margin: 30px 0;
+    margin-top: 30px;
 }
 
 .advanced-filter div > ul {
@@ -212,6 +216,10 @@
 
 .advanced-filter div > ul > li span::after {
     border-color: #707070;
+}
+
+.theme-mobids .selected-filters {
+    margin-top: 30px;
 }
 
 .theme-mobids .selected-filters > a {
@@ -235,7 +243,6 @@
     background-color: #FFFF00;
     font-size: 16px;
     padding: 10px 30px;
-    margin-left: 8px;
     font-weight: normal;
     border-radius: 32px;
     width: 100%;

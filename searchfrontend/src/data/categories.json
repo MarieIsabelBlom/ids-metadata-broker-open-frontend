@@ -1,46 +1,57 @@
 [
     {
-        "title": "Traffic information",
-        "icon": "categories/01_Traffic_Information.svg"
+        "title": "Traffic Information",
+        "icon": "categories/01_Traffic_Information.svg",
+        "key": "TrafficInformation"
     },
     {
-        "title": "Roadworks and Road conditions",
-        "icon": "categories/02_Roadworks_Road_conditions.svg"
+        "title": "Roadworks and Road Conditions",
+        "icon": "categories/02_Roadworks_Road_conditions.svg",
+        "key": "RoadworksRoadConditions"
     },
     {
         "title": "Traffic Flow Information",
-        "icon": "categories/03_Traffic_Flow_Information.svg"
+        "icon": "categories/03_Traffic_Flow_Information.svg",
+        "key": "TrafficFlowInformation"
     },
     {
         "title": "Parking Information",
-        "icon": "categories/04_Parking-Information.svg"
+        "icon": "categories/04_Parking-Information.svg",
+        "key": "ParkingInformation"
     },
     {
         "title": "Fuel Price and Electromobility",
-        "icon": "categories/05_Fuel-Price-and-Electromobility.svg"
+        "icon": "categories/05_Fuel-Price-and-Electromobility.svg",
+        "key": "FuelPriceElectromobility"
     },
     {
         "title": "Traffic Signs and Speed Information",
-        "icon": "categories/06_Traffic_Signs_and_Speed_Information.svg"
+        "icon": "categories/06_Traffic_Signs_and_Speed_Information.svg",
+        "key": "TrafficSignsSpeedInformation"
     },
     {
         "title": "Weather Information",
-        "icon": "categories/07_Weather_Information.svg"
+        "icon": "categories/07_Weather_Information.svg",
+        "key": "WeatherInformation"
     },
     {
         "title": "Public Transport Information",
-        "icon": "categories/08_Public_Transport_Information.svg"
+        "icon": "categories/08_Public_Transport_Information.svg",
+        "key": "PublicTransportInformation"
     },
     {
         "title": "Car und Bike Sharing",
-        "icon": "categories/09_Car_und_Bike_Sharing.svg"
+        "icon": "categories/09_Car_und_Bike_Sharing.svg",
+        "key": "CarBikeSharing"
     },
     {
         "title": "Infrastructure",
-        "icon": "categories/10_Infrastructure.svg"
+        "icon": "categories/10_Infrastructure.svg",
+        "key": "Infrastructure"
     },
     {
         "title": "Various",
-        "icon": "categories/11_Miscellaneous.svg"
+        "icon": "categories/11_Miscellaneous.svg",
+        "key": "Miscellaneous"
     }
 ]
