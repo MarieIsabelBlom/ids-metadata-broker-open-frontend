@@ -71,6 +71,7 @@ class SearchMDMResources extends React.Component {
     }
 
     renderMobilityResources = ({ data }) => {
+        console.log(data)
         return (
             <React.Fragment>
                 {
@@ -82,26 +83,11 @@ class SearchMDMResources extends React.Component {
                                         <CardActionArea>
                                             <CardContent className="connector-content">
                                                 <Typography variant="h5" component="h2">
-                                                    {resource.title_en || resource.title || resource.title_de}
+                                                    {resource.title_en || resource.title || resource.title_de }
                                                 </Typography>
-                                                <Typography variant="subtitle1" gutterBottom>
+                                                <Typography variant="body2" className="connector-description">
                                                     {resource.description_en || resource.description || resource.description_de}
                                                 </Typography>
-                                                <Typography variant="body1">
-                                                    {resource.publisher ? "Publisher: " + resource.publisher : ""
-                                                    }
-                                                </Typography>
-                                                <Typography variant="body1">
-                                                    {resource.sovereign ? "Sovereign: " + resource.sovereign : ""
-                                                    }
-                                                </Typography>
-                                                <Typography variant="body2">
-                                                    {resource.labelStandardLicense ? "Standard License: " + resource.labelStandardLicense.map(val => val.split("_").join(" "))
-                                                        : ""
-                                                    }
-                                                </Typography>
-
-
                                             </CardContent>
                                         </CardActionArea>
                                     </Card>
@@ -163,10 +149,11 @@ class SearchMDMResources extends React.Component {
         </div>
 
         let search = <React.Fragment>
-            <Grid container>
-                <Grid item xs={12} md={tenant == "mobids" ? 7 : 12}
-                 lg={tenant == "mobids" ? 8 : 12}
-                  xl={tenant == "mobids" ? 9 : 12} >
+            <Grid container className="search-container">
+                <Grid item
+                xs={12} md={tenant == "mobids" ? 7 : 12}
+                lg={tenant == "mobids" ? 8 : 12}
+                xl={tenant == "mobids" ? 9 : 12} >
                     <DataSearch
                     componentId="search"
                     dataField={['title', 'title_en', 'title_de', 'description', 'description_de', 'description_en']}

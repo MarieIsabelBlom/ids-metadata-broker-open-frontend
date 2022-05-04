@@ -4,6 +4,14 @@
     }
 }
 
+.theme-mobids .search-container > div {
+    margin-top: 15px;
+}
+
+.theme-mobids .search-container {
+    margin-top: -15px;
+}
+
 .theme-mobids .search-column-container {
     padding-left: 30px;
 }
@@ -97,7 +105,8 @@
 .theme-mobids .filter-container {
     padding: 0 30px;
     box-shadow: none;
-    color: #8F8F8F
+    color: #8F8F8F;
+    margin-bottom: 20px;
 }
 
 .theme-mobids .filter-container > div {
@@ -123,6 +132,7 @@
     background-color: white;
     box-shadow: none;
     margin-right: 12px;
+    min-width: 16px;
 }
 
 .theme-mobids .filter-container input:checked + label::after {
@@ -153,7 +163,7 @@
 .theme-mobids .filter-container .expandable.expanded > ul {
     display: block;
     max-height: 400px;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .theme-mobids .filter-container .expandable.expanded > input {
@@ -208,10 +218,12 @@
     color: #707070;
     min-width: 250px;
     padding: 12px;
+    background: #FAFAFA;
 }
 
 .advanced-filter div > ul > li {
-    background-color: #FAFAFA !important;
+    background-color: #FAFAFA !important;  
+    font-size: 13px;
 }
 
 .advanced-filter div > ul > li span::after {
