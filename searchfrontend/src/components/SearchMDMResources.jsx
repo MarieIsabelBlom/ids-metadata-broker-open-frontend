@@ -3,7 +3,6 @@ import {
     SelectedFilters,
     DataSearch,
     MultiList,
-    SingleDropdownList,
     MultiDropdownList
 } from "@appbaseio/reactivesearch";
 import Grid from '@material-ui/core/Grid';
@@ -99,11 +98,7 @@ class SearchMDMResources extends React.Component {
             </React.Fragment >
         );
     }
-
-    renderResultStats(stats) {
-        return <p className="results">{stats.numberOfResults} Results</p>
-    }
-
+    
     render() {
         let tenant = process.env.REACT_APP_TENANT || 'mobids';
         tenant = tenant.toLowerCase();

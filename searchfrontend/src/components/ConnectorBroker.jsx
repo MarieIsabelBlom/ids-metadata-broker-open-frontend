@@ -203,5 +203,5 @@ export function renderPagination({pages, totalPages, currentPage, setPage, fragm
 }
 
 export function renderResultStats(stats) {
-    return <p className="results">{stats.numberOfResults} Results</p>
+    return <p className="results">{stats.numberOfResults} {stats.numberOfResults == 1 ? "Result" : "Results"}</p>
 }
