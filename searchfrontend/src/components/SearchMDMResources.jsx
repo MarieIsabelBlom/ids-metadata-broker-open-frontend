@@ -71,7 +71,6 @@ class SearchMDMResources extends React.Component {
     }
 
     renderMobilityResources = ({ data }) => {
-        console.log(data)
         return (
             <React.Fragment>
                 {
@@ -83,7 +82,7 @@ class SearchMDMResources extends React.Component {
                                         <CardActionArea>
                                             <CardContent className="connector-content">
                                                 <Typography variant="h5" component="h2">
-                                                    {resource.title_en || resource.title || resource.title_de }
+                                                    {resource.title_en || resource.title || resource.title_de}
                                                 </Typography>
                                                 <Typography variant="body2" className="connector-description">
                                                     {resource.description_en || resource.description || resource.description_de}

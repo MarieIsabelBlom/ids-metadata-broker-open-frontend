@@ -41,8 +41,8 @@ class MDSHome extends React.Component {
         const showButtons = false, showTrusted = false;
 
         return <Container maxWidth="md">
-            <h1 component="h1" id="home-title">Welcome to Mobility<br />Data Space Catalog</h1>
-            <p id="home-subtitle">Get acces to different data Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.</p>
+            <h1 component="h1" id="home-title">Welcome to Mobility Data Space Catalog</h1>
+            <p id="home-subtitle">Your starting point for data exchange: Simply click on the preferred category, select the desired data and get in touch with the data provider.</p>
             {showButtons ? <Box className="button-container">
                 <span className="button-light">Choose your data category <img src="./arrow-right.svg" alt="Search" height='15px' /></span>
                 <span className="button-default">Get in touch</span>
