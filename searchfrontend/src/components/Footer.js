@@ -21,10 +21,10 @@ class Footer extends Component {
                                 <Link to="/imprint">Legal Notice</Link>
                             </ListItem>
                             <ListItem button>
-                                <a href="https://mobility-dataspace.eu/#c317">Contact</a>
+                                <a href="https://mobility-dataspace.eu/#c317" target="_blank">Contact</a>
                             </ListItem>
                             <ListItem button>
-                                <Link to="/data-protection">Data Protection Policy</Link>
+                                <a href="https://mobility-dataspace.eu/privacy-policy">Data Protection Policy</a>
                             </ListItem>
                         </List>
                     </Grid>
