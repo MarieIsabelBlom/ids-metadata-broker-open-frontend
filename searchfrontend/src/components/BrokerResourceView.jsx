@@ -456,14 +456,13 @@ export function BrokerResourceView(props) {
                             <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Resource Description</Typography>
                             <Grid container>
                                 {
-                                    resource["mobids:transportMode"] ? displayField("Transport Mode", resource["mobids:transportMode"].join(", "), 4) : ""
+                                    resource["mds:transportMode"] ? displayField("Transport Mode", resource["mds:transportMode"].join(", "), 4) : ""
                                 }
                                 {
-                                    // TODO: add data model
-                                    displayField("Data Model", "TODO", 4)
+                                    displayField("Data Model", resource["mds:dataModel"], 4)
                                 }
                                 {
-                                    resource["mobids:geoReferenceMethod"] ? displayField("Geo Reference Method", resource["mobids:geoReferenceMethod"].join(", "), 4) : ""
+                                    resource["mds:geoReferenceMethod"] ? displayField("Geo Reference Method", resource["mds:geoReferenceMethod"].join(", "), 4) : ""
                                 }
                                 {
                                     displayURI("Standard", representationStandard , 4)
@@ -596,12 +595,10 @@ export function BrokerResourceView(props) {
                             displayURI("Data Publisher", resource.publisher, 6)
                         }
                         {
-                            // TODO: category
-                            resource["mobids:DataCategory"] ? displayField("Data Category", resource["mobids:DataCategory"].join(", "), 6) : ""
+                            resource["mds:dataCategory"] ? displayField("Data Category", resource["mds:dataCategory"].join(", "), 6) : ""
                         }
                         {
-                            // TODO: add sub-category
-                            displayField("Data Sub-Category", "TODO", 6)
+                            resource["mds:dataSubcategory"] ? displayField("Data Sub-Category", resource["mds:dataSubcategory"].join(", "), 6) : ""
                         }
                         {
                             resource.keyword ? displayField("Keywords", resource.keyword.join(", "), 6) : ""

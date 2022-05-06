@@ -3,6 +3,42 @@ import Container from '@material-ui/core/Container';
 
 
 const ImprintView = () => (
+
+  <Container maxWidth="md">
+    <h1>Legal Notice</h1>
+    <p>Information required under section 5(1) of the German Telemedia Act (Telemediengesetz – TMG)</p>
+    <h3>DRM Datenraum Mobilität GmbH</h3>
+    <p>
+      <b>Postal address:</b><br />
+      Karolinenplatz 4<br />
+      c/o  acatech – Deutsche Akademie der Technikwissenschaften e.V.<br />
+      80333 Munich, Germany
+    </p>
+    <p>
+      <b>Contact</b><br />
+      Tel.: +49 89 520309-0<br />
+      E-mail: <a href="mailto:contact@mobility-dataspace.eu">contact@mobility-dataspace.eu</a>
+    </p>
+    <p>
+      Represented by:<br />
+      Manfred Rauhmeier, Michael Schäfer
+    </p>
+    <p>
+      Registered with<br />
+      Munich Local Court<br />
+      under HRB 267003
+    </p>
+    <p>
+      <b>VAT identification number</b><br />
+      DE 345960882
+    </p>
+    <br />
+    <h3>Realisation of the website</h3>
+    <p>
+      Design: <a href="https://www.olli.design" target="_blank">olli design</a><br />
+      Programming: <a href="https://www.lakdev.de/" target="_blank">L&amp;K development</a>
+    </p>
+=======
   <Container maxWidth="sm">
         <h2 style={{boxSizing: 'border-box', fontStyle: 'normal', fontVariantLigatures: 'normal', fontVariantCaps: 'normal', orphans: 2, textAlign: 'start', textIndent: '0px', textTransform: 'none', whiteSpace: 'normal', widows: 2, wordSpacing: '0px', WebkitTextStrokeWidth: '0px', textDecorationThickness: 'initial', textDecorationStyle: 'initial', textDecorationColor: 'initial', margin: '0.9rem 0px 0.45rem', padding: '0px', color: 'rgb(31, 130, 192)', fontWeight: 200, fontSize: '1.8rem', lineHeight: '2.2rem', fontFamily: 'FrutigerLTW02, "Helvetica Neue", Helvetica, Arial, sans-serif', letterSpacing: 'normal', backgroundColor: 'rgb(255, 255, 255)'}}><span style={{fontSize: '36px'}}>Imprint</span></h2>
         <hr />
@@ -46,6 +82,7 @@ const ImprintView = () => (
         <p style={{boxSizing: 'border-box', fontSize: '14px', fontStyle: 'normal', fontVariantLigatures: 'normal', fontVariantCaps: 'normal', orphans: 2, textAlign: 'start', textIndent: '0px', textTransform: 'none', whiteSpace: 'normal', widows: 2, wordSpacing: '0px', WebkitTextStrokeWidth: '0px', textDecorationThickness: 'initial', textDecorationStyle: 'initial', textDecorationColor: 'initial', margin: '0px 0px 1rem', padding: '0px', lineHeight: '2.2rem', color: 'rgb(85, 85, 85)', fontFamily: 'FrutigerLTW02, "Helvetica Neue", Helvetica, Arial, sans-serif', fontWeight: 200, letterSpacing: 'normal', backgroundColor: 'rgb(255, 255, 255)'}}>Wir übernehmen keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.</p>
         <p style={{boxSizing: 'border-box', fontSize: '14px', fontStyle: 'normal', fontVariantLigatures: 'normal', fontVariantCaps: 'normal', orphans: 2, textAlign: 'start', textIndent: '0px', textTransform: 'none', whiteSpace: 'normal', widows: 2, wordSpacing: '0px', WebkitTextStrokeWidth: '0px', textDecorationThickness: 'initial', textDecorationStyle: 'initial', textDecorationColor: 'initial', margin: '0px 0px 1rem', padding: '0px', lineHeight: '2.2rem', color: 'rgb(85, 85, 85)', fontFamily: 'FrutigerLTW02, "Helvetica Neue", Helvetica, Arial, sans-serif', fontWeight: 200, letterSpacing: 'normal', backgroundColor: 'rgb(255, 255, 255)'}}>Wir sind bemüht, das Webangebot stets aktuell und inhaltlich richtig sowie vollständig anzubieten. Dennoch ist das Auftreten von Fehlern nicht völlig auszuschließen. Das Fraunhofer-Institut bzw. die Fraunhofer-Gesellschaft übernimmt keine Haftung für die Aktualität, die inhaltliche Richtigkeit sowie für die Vollständigkeit der in ihrem Webangebot eingestellten Informationen. Dies bezieht sich auf eventuelle Schäden materieller oder ideeller Art Dritter, die durch die Nutzung dieses Webangebotes verursacht wurden.</p>
         <p style={{boxSizing: 'border-box', fontSize: '14px', fontStyle: 'normal', fontVariantLigatures: 'normal', fontVariantCaps: 'normal', orphans: 2, textAlign: 'start', textIndent: '0px', textTransform: 'none', whiteSpace: 'normal', widows: 2, wordSpacing: '0px', WebkitTextStrokeWidth: '0px', textDecorationThickness: 'initial', textDecorationStyle: 'initial', textDecorationColor: 'initial', margin: '0px', padding: '0px', lineHeight: '2.2rem', color: 'rgb(85, 85, 85)', fontFamily: 'FrutigerLTW02, "Helvetica Neue", Helvetica, Arial, sans-serif', fontWeight: 200, letterSpacing: 'normal', backgroundColor: 'rgb(255, 255, 255)'}}>Geschützte Marken und Namen, Bilder und Texte werden auf unseren Seiten in der Regel nicht als solche kenntlich gemacht. Das Fehlen einer solchen Kennzeichnung bedeutet jedoch nicht, dass es sich um einen freien Namen, ein freies Bild oder einen freien Text im Sinne des Markenzeichenrechts handelt.</p>
+
   </Container>
 
 );

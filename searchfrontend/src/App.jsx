@@ -22,15 +22,11 @@ import ToolbarList from './components/ToolbarList';
 
 import "./css/App.scss"
 import "./css/MDS.css"
-import FhgResourceView from "./components/ConnectorFhg";
 import Maintainer from "./components/Maintainer";
 import UsageControl from "./components/UsageControl";
 import ParticipantList from "./components/ParticipantList";
-import Tooltip from '@material-ui/core/Tooltip';
 import SearchMDMResources from './components/SearchMDMResources';
 import { BrokerResourceView } from './components/BrokerResourceView';
-import { SearchBroker, BrokerConnectorView, BrokerFilter } from "./components/ConnectorBroker";
-import { SearchParis, ParisConnectorView } from "./components/ConnectorParis";
 
 import { Provider } from 'react-redux';
 import store from './store';
@@ -41,7 +37,6 @@ import Adminx from './components/Adminx';
 import { BrokerConnectorViewComponent } from './components/BrokerConnectorViewComponent';
 
 import { elasticsearchURL } from './urlConfig';
-import { FlashOnOutlined, FormatLineSpacingRounded } from '@material-ui/icons';
 import Footer from './components/Footer';
 
 const drawerWidth = 300;
@@ -179,16 +174,12 @@ class App extends React.Component {
     tenant = this.tenant.toLowerCase();
 
     setBrokerURL = () => {
-        if (window._env_ === undefined)
-            this.brokerURL = 'http://localhost:9200';
-        else
-            this.brokerURL = window._env_.REACT_APP_BROKER_URL;
-        this.brokerURL = new URL(this.brokerURL).toString();
+        this.brokerURL = this.getBrokerURL()
     }
 
     /*
-    setBrokerURL is only called onCompomentMount 
-    and therefore not available for some Routing paths.
+    setBrokerURL is only called onComponentMount 
+    and therefore not available for some routing paths.
 
     Better: Use this method to get the broker url dynamically. Do not use this.brokerURL.
     */
