@@ -174,17 +174,16 @@ class App extends React.Component {
     tenant = this.tenant.toLowerCase();
 
     setBrokerURL = () => {
-        this.brokerURL = this.getBrokerURL()
+        this.brokerURL = this.getBrokerURL(false)
     }
 
     /*
-    setBrokerURL is only called onComponentMount 
-    and therefore not available for some routing paths.
-
+    setBrokerURL is only called onComponentMount and therefore not available for some routing paths.
     Better: Use this method to get the broker url dynamically. Do not use this.brokerURL.
+    Call this method with useStored = false to ignore current values in this.brokerURL
     */
-    getBrokerURL = () => {
-        if(this.brokerURL)
+    getBrokerURL = (useStored = true) => {
+        if(this.brokerURL && useStored)
             return this.brokerURL
         else if (window._env_ === undefined)
             return new URL('http://localhost:9200').toString();
