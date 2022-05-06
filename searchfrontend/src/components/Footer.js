@@ -34,7 +34,7 @@ class Footer extends Component {
                     <Grid className="footer-right" item xs={6} lg={3} md={3}  >
                         <p className="modified">  Last Modified: {new Date(document.lastModified).getDate() + "." + parseInt(new Date(document.lastModified).getMonth() + 1) + "." + new Date(document.lastModified).getFullYear()}</p>
                         <p>&nbsp;</p>
-                        <p><a className="copyright" href="https://www.iais.fraunhofer.de/.org/">© {new Date().getFullYear()}&nbsp;Mobility Data Space</a></p>
+                        <p>© {new Date().getFullYear()}&nbsp;Mobility Data Space</p>
                     </Grid>
 
                 </Grid>
