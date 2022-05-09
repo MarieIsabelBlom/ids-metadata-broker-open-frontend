@@ -173,23 +173,16 @@ class App extends React.Component {
     tenant = process.env.REACT_APP_TENANT || 'mobids';
     tenant = this.tenant.toLowerCase();
 
-    setBrokerURL = () => {
-        this.brokerURL = this.getBrokerURL()
-    }
-
     /*
-    setBrokerURL is only called onComponentMount 
-    and therefore not available for some routing paths.
-
-    Better: Use this method to get the broker url dynamically. Do not use this.brokerURL.
+    Do not initialize broker URL in componentDidMount because it is only called onComponentMount.
+    Get Broker URL dynamically to make it available for all routing paths.
     */
-    getBrokerURL = () => {
-        if(this.brokerURL)
-            return this.brokerURL
-        else if (window._env_ === undefined)
-            return new URL('http://localhost:9200').toString();
-        else
-            return new URL(window._env_.REACT_APP_BROKER_URL).toString();
+    getBrokerURL = () => {        
+        // development only
+        return new URL('http://localhost:9200').toString();
+
+        // uncomment for deployment
+        //return new URL('/es', 'http://localhost').toString();
     }
 
     handleDrawerOpen = () => {
@@ -266,7 +259,6 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        this.setBrokerURL();
         this.setState({
             resource: window.localStorage.getItem("resource")
         })
@@ -416,7 +408,7 @@ class App extends React.Component {
                                 <ReactiveBase
                                     app={this.getElasticSearchIndex(this.tenant)}
                                     credentials="null"
-                                    url={this.brokerURL}
+                                    url={this.getBrokerURL()}
                                     analytics
                                 >
                                     {
