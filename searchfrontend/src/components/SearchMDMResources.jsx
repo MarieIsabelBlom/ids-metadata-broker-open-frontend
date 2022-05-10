@@ -241,7 +241,7 @@ class SearchMDMResources extends React.Component {
                                         render={this.renderMobilityResources}
                                         renderResultStats={renderResultStats}
                                         renderPagination={renderPagination}
-                                        size={5}
+                                        size={10}
                                         style={{
                                             margin: 0
                                         }}
