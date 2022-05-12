@@ -13,7 +13,7 @@ class CategoryItem extends React.Component {
 
     render() {
         let cat = this.props.category
-        let link = `/resources?adv_category=["${cat.key}"]`
+        let link = `/resources?adv_category=["${encodeURIComponent(cat.key)}"]`
 
         return <Link to={link}><Card className="category">
             <CardMedia

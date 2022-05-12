@@ -174,10 +174,10 @@ export function BrokerConnectorViewComponent(props) {
 
                 <Grid container className="rounded-borders">
                     {
-                        displayURI("Curator", provider.curator, 6)
+                        displayURI("Curator", provider.curatorAsUri, 6)
                     }
                     {
-                        displayURI("Maintainer", provider.maintainer, 6)
+                        displayURI("Maintainer", provider.maintainerAsUri, 6)
                     }
                 </Grid>
         </BrokerViewComponent>

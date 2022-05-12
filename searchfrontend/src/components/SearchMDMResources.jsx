@@ -193,7 +193,7 @@ class SearchMDMResources extends React.Component {
                     <Divider />
                     <MultiList
                         componentId="Publishers"
-                        dataField="publisher.keyword"
+                        dataField="publisherAsUri.keyword"
                         style={{
                             margin: 20
                         }}
