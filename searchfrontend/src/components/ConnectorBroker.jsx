@@ -38,7 +38,7 @@ export function BrokerFilter(props) {
             <Divider />
             <MultiList
                 componentId="list-3"
-                dataField="catalog.resources.publisher.keyword"
+                dataField="catalog.resources.publisherAsUri.keyword"
                 showSearch={true}
                 showCount={false}
                 title="Publisher"
@@ -116,7 +116,7 @@ export function SearchBroker(props) {
                                             Curator
                                         </Typography>
                                         <Typography component="p" className="link-content">
-                                            {provider.curator}
+                                            {provider.curatorAsUri}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={6}>
@@ -124,7 +124,7 @@ export function SearchBroker(props) {
                                             Maintainer
                                         </Typography>
                                         <Typography component="p" className="link-content">
-                                            {provider.maintainer}
+                                            {provider.maintainerAsUri}
                                         </Typography>
                                     </Grid>
                                 </Grid>

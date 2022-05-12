@@ -589,10 +589,10 @@ export function BrokerResourceView(props) {
 
                     <Grid container className="rounded-borders">
                         {
-                            displayURI("Data Owner", resource.sovereign, 6)
+                            displayURI("Data Owner", resource.sovereignAsUri, 6)
                         }
                         {
-                            displayURI("Data Publisher", resource.publisher, 6)
+                            displayURI("Data Publisher", resource.publisherAsUri, 6)
                         }
                         {
                             resource["mds:dataCategory"] ? displayField("Data Category", resource["mds:dataCategory"].join(", "), 6) : ""

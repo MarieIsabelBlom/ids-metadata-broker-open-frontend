@@ -8,7 +8,7 @@ volumes:
 services:
 
   broker-core:
-    image: registry.gitlab.cc-asp.fraunhofer.de/eis-ids/broker/core:5.0.0-DataCategory
+    image: registry.gitlab.cc-asp.fraunhofer.de/eis-ids/broker/core:5.0.0-RELEASECANDIDATE
     volumes:
      # - /etc/idscert/localhost:/etc/cert/
       - /etc/cert:/etc/cert/
