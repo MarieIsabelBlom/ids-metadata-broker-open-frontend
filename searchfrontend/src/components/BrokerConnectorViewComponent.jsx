@@ -128,7 +128,7 @@ export function BrokerConnectorViewComponent(props) {
         showMore={
             <Grid container>
                 {
-                    displayURI("Access URL", connector.accessUrl)
+                    displayURI("Connector URI", connector.originURI)
                 }
                 {
                     displayField("Software Version", connector.connectorVersion)
@@ -153,7 +153,7 @@ export function BrokerConnectorViewComponent(props) {
                     }
                     
                     {
-                        displayURI("Connector URI", connector.originURI, 12)
+                        displayURI("Access URL", connector.accessUrl, 12)                        
                     }
 
                     {
