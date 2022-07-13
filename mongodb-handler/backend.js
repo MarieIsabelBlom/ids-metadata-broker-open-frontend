@@ -17,6 +17,7 @@ console.log("MongoDB Endpoint: " + mongodb_endpoint);
 
 const userRoutes = require('./routes/users');
 const authRoutes = require('./routes/auth');
+const idsmsg = require('./routes/idsmsg');
 
 const app = express();
 
@@ -39,6 +40,7 @@ addAdmin("admin", process.env.ADMIN_PASSWORD);
 
 app.use('/users', userRoutes);
 app.use('/auth', authRoutes);
+app.use('/ids', idsmsg);
 
 app.listen(PORT, function() {
     console.log("User backend server running on Port: " + PORT);
