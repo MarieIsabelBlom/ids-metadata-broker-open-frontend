@@ -12,6 +12,9 @@ import { getResource } from '../helpers/sparql/connectors';
 
 import '../css/ConnectorView.css'
 import { BrokerAttribute, BrokerAttributeUrl, BrokerViewComponent } from "./BrokerViewComponent";
+import RequestDialog from "./RequestDialog";
+
+
 
 export function BrokerResourceView(props) {
 
@@ -377,6 +380,26 @@ export function BrokerResourceView(props) {
         );
     }
 
+    function displayfieldLink(fieldLabel, fieldVal, col, className) {
+        let col1 = col ? col : 4
+        if(!fieldVal)
+        return ""
+
+        return (
+          <Grid item md={col1} xs={12} className={className}>
+            <Typography className="attr-title" variant="body2" gutterBottom>
+              <RequestDialog fieldVal={fieldLabel} />
+            </Typography>
+            <Typography className="attr-content" gutterBottom>
+            {fieldVal}
+            </Typography>
+            </Grid>
+        );
+      }
+
+
+
+
     function displayURI(fieldLabel, fieldVal, col) {
         if(!fieldVal)
             return ""
@@ -439,16 +462,16 @@ export function BrokerResourceView(props) {
                         <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Resource Meta Data</Typography>
                         <Grid container>      
                             {
-                                resource.language ? displayField("Language", resource.language.join(", "), 4) : ""
+                                resource.language ? displayfieldLink("Language", resource.language.join(", "), 4) : ""
                             }
                             {
-                                displayField("Version", resource.version, 4)
+                                displayfieldLink("Version", resource.version, 4)
                             }
                             {
-                               displayField("Content Type", resource.contentType, 4)
+                               displayfieldLink("Content Type", resource.contentType, 4)
                             }
                             {
-                                displayURI("Content Standard", resource.contentStandard, 4)
+                                displayfieldLink("Content Standard", resource.contentStandard, 4)
                             }
                         </Grid>
                         
@@ -481,28 +504,28 @@ export function BrokerResourceView(props) {
                                                     rep.instance.map(instance => (
                                                             <React.Fragment>
                                                                 {
-                                                                    displayURI("File Name", instance.filename, 12)
+                                                                    displayfieldLink("File Name", instance.filename, 12)
                                                                 }
                                                                 {
-                                                                    instance.creation ? displayField("Created", instance.creation.split("T")[0], 4) : ""
+                                                                    instance.creation ? displayfieldLink("Created", instance.creation.split("T")[0], 4) : ""
                                                                 }
                                                                 {
-                                                                    instance.bytesize ? displayField("File Size", getByteSize(instance.bytesize), 4) : ""
+                                                                    instance.bytesize ? displayfieldLink("File Size", getByteSize(instance.bytesize), 4) : ""
                                                                 }
                                                             </React.Fragment>
                                                         )) : ""
                                             }
                                             {
-                                                displayField("MimeType", rep.labelMediatype, 4)
+                                                displayfieldLink("MimeType", rep.labelMediatype, 4)
                                             }
                                             {
-                                                displayURI("Domain Vocabulary", rep.representationVocab, 4)
+                                                displayfieldLink("Domain Vocabulary", rep.representationVocab, 4)
                                             }
                                             {
-                                                displayURI("Standard License", resource.labelStandardLicense, 4)
+                                                displayfieldLink("Standard License", resource.labelStandardLicense, 4)
                                             }
                                             {
-                                                displayURI("Sample Resource", resource.sample, 4)
+                                                displayfieldLink("Sample Resource", resource.sample, 4)
                                             }
                                         </Grid>
                                     ))}
@@ -555,10 +578,10 @@ export function BrokerResourceView(props) {
                                                     contract.contractDate ? displayField("Date of signing", contract.contractDate.split("T")[0], 4) : ""
                                                 }
                                                 {
-                                                    contract.contractStart ? displayField("Start date", contract.contractStart.split("T")[0], 4) : ""
+                                                    contract.contractStart ? displayfieldLink("Start date", contract.contractStart.split("T")[0], 4) : ""
                                                 }
                                                 {
-                                                    contract.contractEnd ? displayField("End date", contract.contractEnd.split("T")[0], 4) : ""
+                                                    contract.contractEnd ? displayfieldLink("End date", contract.contractEnd.split("T")[0], 4) : ""
                                                 }
                                                 {/*
                                                     contract.contractDocument && contract.contractDocument.docTitle ? displayField("Contract Title", contract.contractDocument.docTitle.join(", "), 4) : ""
@@ -577,7 +600,7 @@ export function BrokerResourceView(props) {
                 <div>
                     <Grid container className="main-container">
                         {
-                            resource.description ? displayField("Description", resource.description.join(", "), 12, "attr-description") : ""
+                            resource.description ? displayfieldLink("Description", resource.description.join(", "), 12, "attr-description") : ""
                         }
                         {
                             displayURI("Original ID", resource.originURI, 12)
@@ -589,10 +612,10 @@ export function BrokerResourceView(props) {
 
                     <Grid container className="rounded-borders">
                         {
-                            displayURI("Data Owner", resource.sovereignAsUri, 6)
+                            displayfieldLink("Data Owner", resource.sovereignAsUri, 6)
                         }
                         {
-                            displayURI("Data Publisher", resource.publisherAsUri, 6)
+                            displayfieldLink("Data Publisher", resource.publisherAsUri, 6)
                         }
                         {
                             resource["mds:dataCategory"] ? displayField("Data Category", resource["mds:dataCategory"].join(", "), 6) : ""
@@ -601,13 +624,13 @@ export function BrokerResourceView(props) {
                             resource["mds:dataSubcategory"] ? displayField("Data Sub-Category", resource["mds:dataSubcategory"].join(", "), 6) : ""
                         }
                         {
-                            resource.keyword ? displayField("Keywords", resource.keyword.join(", "), 6) : ""
+                            resource.keyword ? displayfieldLink("Keywords", resource.keyword.join(", "), 6) : ""
                         }
                         {
                             displayURI("Payment Modality", resource.paymentModality, 6)
                         }
                         {
-                            firstContract && firstContract.contractEnd ? displayField("Expiry date", firstContract.contractEnd.split("T")[0], 6) : ""
+                            firstContract && firstContract.contractEnd ? displayfieldLink("Expiry date", firstContract.contractEnd.split("T")[0], 6) : ""
                         }
                     </Grid>
                     {firstContract ? <div className="rounded-borders">

@@ -62,7 +62,7 @@ function ToolbarLinkFunction(props) {
     return (
         <ListItem button className={props.className} selected={props.selected} onClick={props.onClick}>
             <div className={clsx(classes.container, props.selected && classes.selectedContainer)}>
-                <Link to={props.linkTo} style={{ textDecoration: 'none' }}>
+                <Link to={props.external? {pathname: props.linkTo } : props.linkTo} target={props.external && "_blank"} style={{ textDecoration: 'none' }}>
                     <Typography className={classes.text}>{props.label}</Typography>
                 </Link>
             </div>
@@ -111,6 +111,7 @@ class ToolbarList extends Component {
         const selectedPath = this.props.location.pathname;
         const mobilityForumUrl = "http://forum.mobility-dataspace.eu/"
         const mobilityContactUrl = "https://mobility-dataspace.eu/#c317"
+        const idsVocabularyProviderUrl = "https://demo3.iais.fraunhofer.de/mds/vocob/"
 
         return (
             <AppBar position={this.state.open ? "absolute" : "static"} className={clsx(classes.appBar, this.state.open ? classes.appBarOpen: classes.appBarMDS, 'appbar')}>
@@ -154,6 +155,13 @@ class ToolbarList extends Component {
                                 selected={selectedPath.startsWith('/connector')}
                                 onClick={this.handleDrawerClose}
                                 label="Connectors" />
+
+                                <ToolbarLink
+                                linkTo={idsVocabularyProviderUrl}
+                                selected={selectedPath.startsWith('/vp')}
+                                onClick={this.handleDrawerClose}
+                                external={true}
+                                label="IDS Vocabulary Provider" />
 
 
                             {
