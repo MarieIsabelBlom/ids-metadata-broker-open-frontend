@@ -173,7 +173,7 @@ const RequestDialog = (props) => {
     // Create function inside useEffect so that the function is only
     // created everytime the useEffect runs and not every render.
     const fetchData = async () => {
-      let backendUrl = 'http://localhost:4000' + "/ids";
+      let backendUrl = mongodb_handlerURL + "/ids";
       try {
         let response = await fetch(backendUrl, {
           method: "POST",
@@ -241,7 +241,7 @@ const RequestDialog = (props) => {
   };
   const onSubmit = async (e) => {
     e.preventDefault();
-    let backendUrl = 'http://localhost:4000' + "/ids";
+    let backendUrl = mongodb_handlerURL + "/ids";
     try {
       let response = await fetch(backendUrl, {
         method: "POST",
