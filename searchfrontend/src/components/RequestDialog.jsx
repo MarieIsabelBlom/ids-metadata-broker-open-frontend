@@ -9,22 +9,29 @@ import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
+
+import "../css/Jsonld.css";	
+import Jsonld from "./Jsonld";
+
 import { mongodb_handlerURL } from "../urlConfig";
 
 const getModalStyle = () => {
-  const top = 45;
+  const top = 48;
   const left = 50;
 
   return {
     top: `${top}%`,
     left: `${left}%`,
     transform: `translate(-${top}%, -${left}%)`,
+    overflow: "auto",	
+    height: "100%",	
+    display: "block",
   };
 };
 
 const styles = (theme) => ({
   paper: {
-    height: "850px",
+    height: "auto",
     position: "absolute",
     width: theme.spacing(100),
     backgroundColor: theme.palette.background.paper,
@@ -67,7 +74,7 @@ const styles = (theme) => ({
 
 const RequestDialog = (props) => {
   //  console.log(props.fieldVal);
-  let IDS_PREFIX = "https://w3id.org/idsa/core/";
+  let IDS_PREFIX = "http://vocol.fraunhofer.de/vmo/";
   const IDSVOCABULARY_URL = "https://demo3.iais.fraunhofer.de/mds/infrastructure/";
 
   const [msg, setmsg] = useState("");
@@ -108,24 +115,35 @@ const RequestDialog = (props) => {
       "ids:tokenValue": "{{dat}}",
     },
     "ids:requestedElement": {
-      "@id": IDS_PREFIX + (props.fieldVal.replace(/\s/g, '')).replace(/(^\w|\s\w)/g, m => m.toLowerCase()),
+      "@id": prefix,
     },
   };
+  
+  //IDS_PREFIX + (props.fieldVal.replace(/\s/g, '')).replace(/(^\w|\s\w)/g, m => m.toLowerCase()),
+
   const [payload, setpayload] = useState(payloadbody);
 
   const parseInstance = (object) => {
     if (object) {
-      const instanceSet = new Set();
-      if (object.head.vars[2] === "preferredNamespacePrefix") {
-        //for closed src vocol
-        for (let i = 0; i < object.results.bindings.length; i++) {
-          console.log(object.results.bindings[i]);
-          const ontologyMetadata = {
-            instance: object.results.bindings[i].preferredNamespacePrefix.value,
-            uri: object.results.bindings[i].preferredNamespaceUri.value,
-            graph: object.results.bindings[i].graph.value,
-          };
-          instanceSet.add(ontologyMetadata);
+      const instanceSet = [];	
+      if (object.head.vars[2] === "preferredNamespacePrefix") {	
+        //for closed src vocol	
+        for (let i = 0; i < object.results.bindings.length; i++) {	
+          console.log(object.results.bindings[i]);	
+          if (object.results.bindings[i].preferredNamespacePrefix) {	
+            const ontologyMetadata = {	
+              instance:	
+                object.results.bindings[i].preferredNamespacePrefix.value,	
+              uri: object.results.bindings[i].preferredNamespaceUri.value,	
+              graph: object.results.bindings[i].graph.value,	
+            };	
+            let itemExists = instanceSet.some(	
+              (item) => item.instance === ontologyMetadata.instance	
+            );	
+            if (!itemExists) {	
+              instanceSet.push(ontologyMetadata);	
+            }	
+          }	
         }
         const instance = [...instanceSet];
         setInstanceList(instance);
@@ -151,34 +169,34 @@ const RequestDialog = (props) => {
     }
   };
 
-//   useEffect(() => {
-//     // Create function inside useEffect so that the function is only
-//     // created everytime the useEffect runs and not every render.
-//     const fetchData = async () => {
-//       let backendUrl = mongodb_handlerURL + "/ids";
-//       try {
-//         let response = await fetch(backendUrl, {
-//           method: "POST",
-//           headers: {
-//             Accept: "application/json",
-//             "Content-Type": "application/json",
-//           },
-//           body: JSON.stringify({ url: url, payload: payload }),
-//         });
-//         if (response.ok) {
-//           let data = await response.json();
-//           let instance = parseJsonLd(data);
-//           parseInstance(instance);
-//           setPrefix("");
-//         } else {
-//           console.log(response);
-//         }
-//       } catch (e) {
-//         console.log(e);
-//       }
-//     };
-//     fetchData();
-//   }, [url]);
+  useEffect(() => {
+    // Create function inside useEffect so that the function is only
+    // created everytime the useEffect runs and not every render.
+    const fetchData = async () => {
+      let backendUrl = 'http://localhost:4000' + "/ids";
+      try {
+        let response = await fetch(backendUrl, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ url: url, payload: payload }),
+        });
+        if (response.ok) {
+          let data = await response.json();
+          let instance = parseJsonLd(data);
+          parseInstance(instance);
+          setPrefix("");
+        } else {
+          console.log(response);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchData();
+  }, [url]);
 
   const handleChange = (event) => {
     seturl(event.target.value);
@@ -209,10 +227,10 @@ const RequestDialog = (props) => {
     let item = instanceList.find((element) => element.uri === value);
     if (item) {
       setCurrentInstance(item.uri);
-      setPrefix(item.uri + props.fieldVal);
+      setPrefix(item.uri + (props.fieldVal.replace(/\s/g, '')).replace(/(^\w|\s\w)/g, m => m.toLowerCase()));
     }
   };
-
+  // IDS_PREFIX + (props.fieldVal.replace(/\s/g, '')).replace(/(^\w|\s\w)/g, m => m.toLowerCase()),
   const parseJsonLd = (payload) => {
     let splitted_msg = payload.split("\r\n");
     let boundary = splitted_msg[0];
@@ -223,7 +241,7 @@ const RequestDialog = (props) => {
   };
   const onSubmit = async (e) => {
     e.preventDefault();
-    let backendUrl = mongodb_handlerURL + "/ids";
+    let backendUrl = 'http://localhost:4000' + "/ids";
     try {
       let response = await fetch(backendUrl, {
         method: "POST",
@@ -244,6 +262,20 @@ const RequestDialog = (props) => {
       setmsg("Bad request");
     }
   };
+
+  		
+  const config = {	
+    w: 600,	
+    h: 400,	
+    maxLabelWidth: 250,	
+    tipClassName: "tip-class",	
+  };	
+  const cardStyle = {	
+    display: "block",	
+    width: 630,	
+    marginLeft: 7,	
+  };	
+
 
   return (
     <div className={props.classes.loginForm}>
@@ -347,15 +379,15 @@ const RequestDialog = (props) => {
               value={msg}
               inputProps={{ readOnly: true }}
             />
-            {/*
-            {Object.keys(nodes).length > 0 && (
-              <Card style={{ style: "height:700px" }}>
-                <CardContent>
-                  <VisNetwork nodes={nodes} />
-                </CardContent>
-              </Card>
+            
+            {Object.keys(nodes).length > 0 && (	
+              <Card style={cardStyle}>	
+                <CardContent>	
+                  <Jsonld data={nodes} config={config}></Jsonld>	
+                </CardContent>	
+              </Card>	
             )}
-            */}
+
           </div>
         </div>
       </Modal>
