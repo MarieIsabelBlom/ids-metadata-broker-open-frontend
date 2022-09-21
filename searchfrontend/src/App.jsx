@@ -14,6 +14,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { Route, Link } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import SearchConnectors from "./components/SearchConnectors";
+import SearchConnectorsAdmin from "./components/SearchConnectorsAdmin";
 import SearchFhgResources from "./components/SearchFhgResources";
 import DataPrivacyView from "./DataPrivacyView";
 import ImprintView from "./ImprintView";
@@ -28,7 +29,9 @@ import UsageControl from "./components/UsageControl";
 import ParticipantList from "./components/ParticipantList";
 import Tooltip from '@material-ui/core/Tooltip';
 import SearchMDMResources from './components/SearchMDMResources';
+import SearchMDMResourcesAdmin from './components/SearchMDMResourcesAdmin';
 import { BrokerResourceView } from './components/BrokerResourceView';
+import { BrokerResourceViewAdmin } from './components/BrokerResourceViewAdmin';
 import { SearchBroker, BrokerConnectorView, BrokerFilter } from "./components/ConnectorBroker";
 import { SearchParis, ParisConnectorView } from "./components/ConnectorParis";
 
@@ -39,6 +42,7 @@ import LoginOrLogout from './components/auth/LoginOrLogout';
 import SidebarList from './components/SidebarList';
 import Adminx from './components/Adminx';
 import { BrokerConnectorViewComponent } from './components/BrokerConnectorViewComponent';
+import { BrokerConnectorViewComponentAdmin } from './components/BrokerConnectorViewComponentAdmin';
 
 import { elasticsearchURL } from './urlConfig';
 import { FlashOnOutlined, FormatLineSpacingRounded } from '@material-ui/icons';
@@ -178,28 +182,24 @@ class App extends React.Component {
     tenant = process.env.REACT_APP_TENANT || 'mobids';
     tenant = this.tenant.toLowerCase();
 
-    setBrokerURL = () => {
-        if (window._env_ === undefined)
-            this.brokerURL = 'http://localhost:9200';
-        else
-            this.brokerURL = window._env_.REACT_APP_BROKER_URL;
-        this.brokerURL = new URL(this.brokerURL).toString();
-    }
+    getBrokerURL = () => {        
+        // development only
+       // return new URL(window._env_.REACT_APP_BROKER_URL).toString();
 
+        // uncomment for deployment
+        if(window._env_ === undefined)
+            return new URL('/es', window.location.origin).toString()
+       else
+           return new URL('/es', window._env_.REACT_APP_BROKER_URL).toString();
+    }
     /*
     setBrokerURL is only called onCompomentMount 
     and therefore not available for some Routing paths.
 
     Better: Use this method to get the broker url dynamically. Do not use this.brokerURL.
-    */
-    getBrokerURL = () => {
-        if(this.brokerURL)
-            return this.brokerURL
-        else if (window._env_ === undefined)
-            return new URL('http://localhost:9200').toString();
-        else
-            return new URL(window._env_.REACT_APP_BROKER_URL).toString();
-    }
+     getBrokerURL = () => {*/
+   
+
 
     handleDrawerOpen = () => {
         this.setState({
@@ -260,7 +260,7 @@ class App extends React.Component {
             return (
                 <SearchFhgResources {...this.props} updateResource={this.updateResource} />
             )
-        } else {
+        } else if (name === 'mobids') {
             return (
                 <SearchConnectors {...this.props} />
             )
@@ -275,7 +275,7 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        this.setBrokerURL();
+   
         this.setState({
             resource: window.localStorage.getItem("resource")
         })
@@ -390,6 +390,27 @@ class App extends React.Component {
                                     </Grid>
                                 </Grid>
                             </Route>
+                            <Route path="/connectoradmin/:resID">
+                                <Grid container>
+                                    <Grid item md={3} xs={12}>
+                                    </Grid>
+                                    <Grid item lg={6} md={9} xs={12}>
+                                        <BrokerConnectorViewComponentAdmin {...this.props} es_url={this.getBrokerURL()} showBackButton={true} />
+                                    </Grid>
+                                </Grid>
+                            </Route>
+                            <Route exact path="/connectoradmin">
+                                <ReactiveBase
+                                    app={this.getElasticSearchIndex(this.tenant)}
+                                    credentials="null"
+                                    url={this.getBrokerURL()}
+                                    analytics
+                                >
+                                    {
+                                        this.renderComponentTenant(this.tenant)
+                                    }
+                                </ReactiveBase>
+                            </Route>
                             <Route exact path="/connector">
                                 <ReactiveBase
                                     app={this.getElasticSearchIndex(this.tenant)}
@@ -411,6 +432,15 @@ class App extends React.Component {
                                     </Grid>
                                 </Grid>
                             </Route>
+                            <Route path="/resourcesadmin/:resID">
+                                <Grid container>
+                                    <Grid item md={3} xs={12}>
+                                    </Grid>
+                                    <Grid item lg={6} md={9} xs={12}>
+                                        <BrokerResourceViewAdmin {...this.props} es_url={this.getBrokerURL()} showBackButton={true} />
+                                    </Grid>
+                                </Grid>
+                            </Route>
                             <Route exact path="/resources">
                                 <ReactiveBase
                                     app="resources"
@@ -421,11 +451,21 @@ class App extends React.Component {
                                     <SearchMDMResources {...this.props} />
                                 </ReactiveBase>
                             </Route>
+                            <Route exact path="/resourcesadmin">
+                                <ReactiveBase
+                                    app="resources"
+                                    credentials="null"
+                                    url={this.getBrokerURL()}
+                                    analytics
+                                >
+                                    <SearchMDMResourcesAdmin {...this.props} />
+                                </ReactiveBase>
+                                </Route>
                             <Route exact path="/participants">
                                 <ReactiveBase
                                     app={this.getElasticSearchIndex(this.tenant)}
                                     credentials="null"
-                                    url={this.brokerURL}
+                                    url={this.getBrokerURL}
                                     analytics
                                 >
                                     {
@@ -451,6 +491,7 @@ class App extends React.Component {
                             <Route path="/admin">
                                 <Adminx />
                             </Route>
+                            
                         </Container>
                         {footerPos2}
                     </main>

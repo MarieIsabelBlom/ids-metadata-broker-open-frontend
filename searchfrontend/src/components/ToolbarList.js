@@ -168,20 +168,20 @@ class ToolbarList extends Component {
                             {
                                 isAuthenticated && user.role === "admin"
                                     ? <ToolbarLink
-                                        linkTo="/admin"
-                                        selected={selectedPath.startsWith('/admin')}
+                                        linkTo="/resourcesadmin"
+                                        selected={selectedPath.startsWith('/resourcesadmin')}
                                         onClick={this.handleDrawerClose}
-                                        label="Admin" />
+                                        label="ResourcesAdmin" />
                                     : ""
                             }
 
                             {
                                 isAuthenticated && user.role === "admin"
                                     ? <ToolbarLink
-                                        linkTo="/maintainer"
-                                        selected={selectedPath.startsWith('/maintainer')}
+                                        linkTo="/connectoradmin"
+                                        selected={selectedPath.startsWith('/connectoradmin')}
                                         onClick={this.handleDrawerClose}
-                                        label="Maintainer" />
+                                        label="ConnectorsAdmin" />
                                     : ""
                             }
                         </List>
@@ -198,7 +198,7 @@ class ToolbarList extends Component {
                             }}>MDS Forum</Button>
                         </div>
                     </div>
-
+                            
                 </Toolbar>
             </AppBar>
         )

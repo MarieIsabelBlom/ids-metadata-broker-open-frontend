@@ -15,3 +15,7 @@ export const ADD_USER = "ADD_USER"
 export const UPDATE_USER = "UPDATE_USER"
 export const DELETE_USER = "DELETE_USER"
 export const CLEAR_USER = "CLEAR_USER"
+
+//Delete Connector or Resource
+export const DELETE_SUCCESS = "DELETE_SUCCESS"
+export const DELETE_FAIL = "DELETE_FAIL"

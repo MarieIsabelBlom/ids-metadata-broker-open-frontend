@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { Container, Divider, TextField } from "@material-ui/core";
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
+import { BrokerViewComponent } from "./BrokerViewComponent";
 
 import { useSelector } from 'react-redux';
 import { getAllConnectors } from '../helpers/sparql/connectors';
@@ -20,6 +21,7 @@ import ArrowPrev from '../assets/icons/arrow-previous.svg'
 import useExpandableFilter from "../helpers/useExpandableFilter";
 
 export function BrokerFilter(props) {
+
 
     useExpandableFilter()
 
@@ -72,6 +74,7 @@ export function BrokerFilter(props) {
 
 export function SearchBroker(props) {
 
+    let ParentLink = window.location.pathname;
 
     const [connectors, setConnectors] = useState([]);
     const token = useSelector(state => state.auth.token);
@@ -93,10 +96,168 @@ export function SearchBroker(props) {
         let provider = res.provider;
         let connector = res.connector;
         // let type = res._type;
-      return (
 
+        if (ParentLink=='/connectoradmin') return (
+            <React.Fragment key={process.env.REACT_APP_USE_SPARQL === 'true' ? encodeURIComponent(connector.originURI) : encodeURIComponent(res._id)}>
+                <Link to={'/connectoradmin/connector?id=' + (process.env.REACT_APP_USE_SPARQL === 'true' ? encodeURIComponent(connector.originURI) : encodeURIComponent(res._id))} >
+                    <Card key={res._id} style={{ border: 'none', boxShadow: "none" }} onClick={() => handleBrokerClick(res)}>
+                        <CardActionArea>
+                            <CardContent className="connector-content">
+                                <Typography variant="h5" component="h2">
+                                    {connector.title.join(", ")}
+                                </Typography>
+                                <Typography variant="body2" className="connector-description">
+                                    {connector.description.join(", ")}
+                                </Typography>
+                                {
+                                    resources && resources.description ?
+                                        <div className="connector-resource connector-content-container">
+                                            <Typography component="p" className="link-title">
+                                                Resource Description
+                                            </Typography>
+                                            <Typography variant="body2" component="p">
+                                                {resources.description}
+                                            </Typography>
+                                        </div>
+                                    : ""
+                                }
+                                
+                                <Grid container className="connector-links connector-content-container">
+                                    <Grid item xs={6}>
+                                        <Typography component="p" className="link-title">
+                                            Curator
+                                        </Typography>
+                                        <Typography component="p" className="link-content">
+                                            {provider.curator}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography component="p" className="link-title">
+                                            Maintainer
+                                        </Typography>
+                                        <Typography component="p" className="link-content">
+                                            {provider.maintainer}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            </CardContent>
+                        </CardActionArea>
+                    </Card>
+                    <Divider />
+                </Link>
+            </React.Fragment>
+        )
+
+      else return (
             <React.Fragment key={process.env.REACT_APP_USE_SPARQL === 'true' ? encodeURIComponent(connector.originURI) : encodeURIComponent(res._id)}>
                 <Link to={'/connector/connector?id=' + (process.env.REACT_APP_USE_SPARQL === 'true' ? encodeURIComponent(connector.originURI) : encodeURIComponent(res._id))} >
+                    <Card key={res._id} style={{ border: 'none', boxShadow: "none" }} onClick={() => handleBrokerClick(res)}>
+                        <CardActionArea>
+                            <CardContent className="connector-content">
+                                <Typography variant="h5" component="h2">
+                                    {connector.title.join(", ")}
+                                </Typography>
+                                <Typography variant="body2" className="connector-description">
+                                    {connector.description.join(", ")}
+                                </Typography>
+                                {
+                                    resources && resources.description ?
+                                        <div className="connector-resource connector-content-container">
+                                            <Typography component="p" className="link-title">
+                                                Resource Description
+                                            </Typography>
+                                            <Typography variant="body2" component="p">
+                                                {resources.description}
+                                            </Typography>
+                                        </div>
+                                    : ""
+                                }
+                                
+                                <Grid container className="connector-links connector-content-container">
+                                    <Grid item xs={6}>
+                                        <Typography component="p" className="link-title">
+                                            Curator
+                                        </Typography>
+                                        <Typography component="p" className="link-content">
+                                            {provider.curator}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography component="p" className="link-title">
+                                            Maintainer
+                                        </Typography>
+                                        <Typography component="p" className="link-content">
+                                            {provider.maintainer}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            </CardContent>
+                        </CardActionArea>
+                    </Card>
+                    <Divider />
+                </Link>
+            </React.Fragment>
+        );
+    }
+
+    return (
+        <React.Fragment>
+            {(process.env.REACT_APP_USE_SPARQL === 'true') && (
+                connectors.map((connector) => (
+                    renderBrokerData(connector)
+                ))
+            )}
+            {(process.env.REACT_APP_USE_SPARQL === 'false') && (
+                <ReactiveList
+                    componentId="result"
+                    dataField="connector.title.keyword"
+                    pagination={true}
+                    URLParams={true}
+                    react={{
+                        and: ["search", "list-1", "list-3", "list-2", "list-4", "list-6"]
+                    }
+                    }
+                    renderItem={renderBrokerData}
+                    renderResultStats={renderResultStats}
+                    renderPagination={renderPagination}
+                    size={4}
+                    style={{
+                        margin: 0
+                    }}
+                />
+            )}
+        </React.Fragment>
+
+    )
+}
+
+export function SearchBrokerAdmin(props) {
+
+
+    const [connectors, setConnectors] = useState([]);
+    const token = useSelector(state => state.auth.token);
+
+    useEffect(() => {
+        getAllConnectors(token).then(data => {
+            setConnectors(data);
+        });
+    }, []);
+
+    function handleBrokerClick(e) {
+        //props.updateCurrentConnector(e);
+        // we do not need to inform the parent component anymore because we use routing/links instead
+    }
+
+    function renderBrokerData(res) {
+        let objCatalog = res.catalog ? res.catalog[0] : [];
+        let resources = objCatalog.resources ? objCatalog.resources[0] : null;
+        let provider = res.provider;
+        let connector = res.connector;
+        // let type = res._type;
+        
+        if (parentLink=='/connectoradmin') return (
+            <React.Fragment key={process.env.REACT_APP_USE_SPARQL === 'true' ? encodeURIComponent(connector.originURI) : encodeURIComponent(res._id)}>
+                <Link to={'/connectoradmin/connector?id=' + (process.env.REACT_APP_USE_SPARQL === 'true' ? encodeURIComponent(connector.originURI) : encodeURIComponent(res._id))} >
                     <Card key={res._id} style={{ border: 'none', boxShadow: "none" }} onClick={() => handleBrokerClick(res)}>
                         <CardActionArea>
                             <CardContent className="connector-content">

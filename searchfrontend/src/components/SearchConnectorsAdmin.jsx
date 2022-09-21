@@ -5,14 +5,14 @@ import {
 } from "@appbaseio/reactivesearch";
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
-import { SearchBroker,SearchBrokerAdmin, BrokerFilter } from "./ConnectorBrokerAdmin";
+import { SearchBroker, BrokerFilter } from "./ConnectorBrokerAdmin";
 import { SearchParis, ParisConnectorView, ParisFilter } from "./ConnectorParis";
 // import Query from "../Query.jsx";
 import '../css/ConnectorsList.css'
 
 import SearchIcon from '../assets/icons/search.svg'
 
-export default class SearchConnectors extends React.Component {
+export default class SearchConnectorsAdmin extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -35,7 +35,8 @@ export default class SearchConnectors extends React.Component {
         });
     };
     componentDidMount() {
-        let tenant = process.env.REACT_APP_TENANT || 'eis';
+        let tenant = process.env.REACT_APP_TENANT || 'mobids';
+        console.log('1');
 
         this.setState({
             currentConnectorTenant: tenant
@@ -58,6 +59,7 @@ export default class SearchConnectors extends React.Component {
             if (name === 'paris') {
                 return <ParisConnectorView updateCurrentConnector={this.updateCurrentConnector} connector={obj} />;
             }
+
             // for mobids: Connector is now only callable using Links and Routing
         }
 
@@ -70,18 +72,11 @@ export default class SearchConnectors extends React.Component {
                 return (
                     <SearchBroker  />
                 )
-            } else if (name=='mobids') {
-                return (
-                    <SearchBroker />
-
-                )
             } else {
                 return (
                     <SearchBroker />
-
                 )
             }
-
         }
 
         const renderFilterTenant = (name) => {
@@ -132,7 +127,7 @@ export default class SearchConnectors extends React.Component {
                     Object.entries(currentConnector).length === 0 ?
                         <React.Fragment>
                             <Grid container>
-
+                    
                                 {/* Filter section on the left-side onnly for mobids */}
                                 {tenant == 'mobids' ? filterSection : ''}
                                 
@@ -154,8 +149,8 @@ export default class SearchConnectors extends React.Component {
                                         onChange={this.handleSearch}
                                         onValueChange={
                                             function (value) {
-                                                if (propsFromApp.location.pathname.indexOf('connector') === -1) {
-                                                    propsFromApp.history.push("/connector");
+                                                if (propsFromApp.location.pathname.indexOf('connectoradmin') === -1) {
+                                                    propsFromApp.history.push("/connectoradmin");
                                                 }
                                             }
                                         }

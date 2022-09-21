@@ -7,7 +7,9 @@ import {
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
-  LOGOUT_SUCCESS
+  LOGOUT_SUCCESS,
+  DELETE_SUCCESS,
+  DELETE_FAIL
 } from './types';
 
 import { mongodb_handlerURL } from '../urlConfig';
@@ -96,5 +98,11 @@ export const login = ({ username, password }) => dispatch => {
 export const logout = () => {
   return {
     type: LOGOUT_SUCCESS
+  }
+}
+
+export const deletion = () => {
+  return {
+    type: DELETE_SUCCESS
   }
 }
