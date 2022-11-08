@@ -21,7 +21,7 @@ export function BrokerConnectorViewComponent(props) {
 
     let targetURI = props.es_url
     let selfURI = props.es_url
-    if (typeof (targetURI) !== 'undefined' && targetURI != null) {
+   /* if (typeof (targetURI) !== 'undefined' && targetURI != null) {
         if (targetURI.includes("/es")) {
 
             targetURI = targetURI + "/es"
@@ -32,7 +32,7 @@ export function BrokerConnectorViewComponent(props) {
     }
     else {
         targetURI = "/es"
-    }
+    } */
 
     const token = useSelector(state => state.auth.token);
 

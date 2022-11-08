@@ -12,6 +12,9 @@ import { getResource } from '../helpers/sparql/connectors';
 
 import '../css/ConnectorView.css'
 import { BrokerAttribute, BrokerAttributeUrl, BrokerViewComponent } from "./BrokerViewComponent";
+import DeleteResource from "./auth/DeleteResource";
+
+
 
 export function BrokerResourceViewAdmin(props) {
 
@@ -21,7 +24,7 @@ export function BrokerResourceViewAdmin(props) {
     }, []); //the [] braces means to run it when the component is mounted/loaded
 
     let [resource, setResource] = useState({});
-
+    let [id, setId] = useState([]);
     let [open, setOpen] = React.useState(false);
 
     let targetURI = props.es_url
@@ -67,9 +70,11 @@ export function BrokerResourceViewAdmin(props) {
 
     let [trustLevel, setTrustLevel] = useState("");
 
+   
+
     useEffect(() => {
         if (Object.keys(resource).length !== 0) {
-            const resourceURI = resource.resourceID;
+          const resourceURI = resource.resourceID;
 
             let TRUST_LEVEL_QUERY = `
             PREFIX ids: <https://w3id.org/idsa/core/>
@@ -328,6 +333,7 @@ export function BrokerResourceViewAdmin(props) {
             //getting a resource based on the ID
             getResource(token, validResourceId).then(data => {
                 setResource(data);
+                setId(id);
             });
         } else {
             let validResourceId;
@@ -337,8 +343,11 @@ export function BrokerResourceViewAdmin(props) {
                 resourceId = resourceId.split("=")[1];
                 // The id's of the object will contain unique paths added by the elastic search. Here in the resourceId: https://iais.fraunhofer.de/eis/ids/someBroker/catalog541260824/1091662930/1213443818, the valid resource id excludes the last path. So the valid url is: https://iais.fraunhofer.de/eis/ids/someBroker/catalog541260824/1091662930
                 validResourceId = resourceId;
+                ResourceURI = window.validResourceId;
                 console.log(validResourceId)
             }
+           
+            
             //find and get the respective validResourceId in Elastic search
 
             axios.get(targetURI + "resources/_search?pretty&size=1000", {  // .get(targetURI + "/resources/_search?size=1000&pretty", {
@@ -429,6 +438,7 @@ const timestamp = dateObject.toLocaleString() //2019-12-9 10:30:15
         return arr[0][prop]
     }
 
+    let ResourceURI = resource.originURI
     let firstContract = firstArrayItem(resource.contract)
     let representationStandard = firstArrayItem(resource.representation, 'representationStandard')
     let resource_title = resource.mainTitle || resource.title_en || resource.title || resource.title_de;
@@ -454,12 +464,66 @@ const timestamp = dateObject.toLocaleString() //2019-12-9 10:30:15
                         }  {
                             displayField("last changed", timestamp, 6)
                         }
-
-
+                    <DeleteResource />
+                   
                     </Grid>
                 </div>
             </BrokerViewComponent>
             <br /><br />
         </div>
     );
+
 }
+
+
+let resourceId = decodeURIComponent(window.location.search);
+    let validResourceId;
+    // The id of the resource will be appended in the url. eg.., https://<hostname>/resources/resource?id=https%3A%2F%2Fiais.fraunhofer.de%2Feis%2Fids%2FsomeBroker%2Fcatalog541260824%2F1091662930%2F1213443818
+    if (resourceId !== null && resourceId !== "") {
+        //split the above url to get only the resource id
+        resourceId = resourceId.split("=")[1];
+        // The id's of the object will contain unique paths added by the elastic search. Here in the resourceId: https://iais.fraunhofer.de/eis/ids/someBroker/catalog541260824/1091662930/1213443818, the valid resource id excludes the last path. So the valid url is: https://iais.fraunhofer.de/eis/ids/someBroker/catalog541260824/1091662930
+        validResourceId = resourceId;
+       
+        console.log("validResourceId "+ validResourceId)
+    }
+   
+
+axios.get('http://localhost:9200/resources/_search?pretty&size=1000', {  // .get(targetURI + "/resources/_search?size=1000&pretty", {
+    data: {
+        query: {
+            term: {
+                _id: validResourceId
+            }
+        }
+    }
+})
+.then(response => {
+    console.log(response)
+
+    if (response.status === 200) {
+        const resVal = response.data.hits.hits.find(({ _id }) => _id === validResourceId);
+
+
+        if (resVal !== null)
+            setResource(resVal._source)
+    }
+})
+.catch(err => {
+    console.log("An error occured: " + err);
+})
+
+
+
+export const ResourceURI = validResourceId;  
+
+//export const ResourceURI = () => {
+ //   let ResourceURI = decodeURIComponent(props.location.search);
+//}
+
+
+
+
+
+
+  

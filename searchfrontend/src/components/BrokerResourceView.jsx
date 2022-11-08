@@ -69,7 +69,7 @@ export function BrokerResourceView(props) {
 
     useEffect(() => {
         if (Object.keys(resource).length !== 0) {
-            const resourceURI = resource.resourceID;
+         const resourceURI = resource.resourceID;
 
             let TRUST_LEVEL_QUERY = `
             PREFIX ids: <https://w3id.org/idsa/core/>
@@ -354,7 +354,7 @@ export function BrokerResourceView(props) {
                     console.log(response)
 
                     if (response.status === 200) {
-                        const resVal = response.data.hits.hits.find(({ _id }) => _id === validResourceId);
+                     const resVal = response.data.hits.hits.find(({ _id }) => _id === validResourceId);
 
 
                         if (resVal !== null)

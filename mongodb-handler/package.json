@@ -4,16 +4,20 @@
   "description": "dockerized node js app",
   "main": "backend.js",
   "scripts": {
-    "start": "node backend.js"
+    "start": "node backend.js",
+    "dev": "nodemon backend.js"
   },
   "dependencies": {
+    "axios": "^1.1.2",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "form-data": "^4.0.0",
     "http-proxy-middleware": "^1.0.6",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.9.26"
+    "mongoose": "^5.9.26",
+    "nodemon": "^2.0.20"
   }
 }

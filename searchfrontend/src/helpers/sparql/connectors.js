@@ -1,4 +1,5 @@
 
+
 import { mongodb_handlerURL } from '../../urlConfig';
 
 //namespaces
@@ -273,7 +274,7 @@ export const getAllConnectors = (token) => {
         });
 }
 
-const prepareConnectorsObject = (queryResult) => {
+export const prepareConnectorsObject = (queryResult) => {
     let connectors = {};
     let queryResultByLines = queryResult.split(/\n/);
     for (let i = 1; i < queryResultByLines.length - 1; i++) {
@@ -486,6 +487,7 @@ const getConnectorAndProvider = (connectorProperties, connector) => {
     }
     return connector;
 }
+
 
 
 const setTemporalCoverages = (connectorObject, resource, temporalCoverages) => {
@@ -888,6 +890,7 @@ const getResources = (connectorObject, connectorId) => {
     return resources;
 }
 
+
 export const prepareConnectorFormat = (data, connectorId) => {
 
     let connectorURI = '<' + connectorId + '>';
@@ -910,7 +913,10 @@ export const prepareConnectorFormat = (data, connectorId) => {
     connector.resources = resources;
 
     return connector;
+    
 }
+
+
 
 export const getAllResources = (token) => {
     let GET_ALL_RESOURCES = `
@@ -1029,6 +1035,13 @@ const getConnectorURIFromResource = (queryResult) => {
     let line = queryResultByLines[1].split(/\t/);
     let connector = line[0];
     return connector;
+}
+
+export const getConnectorURI = (queryResult) => {
+    let queryResultByLines = queryResult.split(/\n/);
+    let line = queryResultByLines[1].split(/\t/);
+    let ConnectorURI = line[0];
+    return ConnectorURI;
 }
 
 export const getResource = (token, id) => {

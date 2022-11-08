@@ -10,13 +10,15 @@ import {
 import { returnErrors } from './errorActions';
 import { tokenConfig } from './authActions';
 
-import { mongodb_handlerURL } from '../urlConfig';
+//import { mongodb_handlerURL } from '../urlConfig';
 
 export const setUsersLoading = () => {
   return {
     type: USERS_LOADING
   }
 }
+
+const mongodb_handlerURL = 'http://localhost:4000';
 
 export const getUsers = () => (dispatch, getState) => {
   dispatch(setUsersLoading());

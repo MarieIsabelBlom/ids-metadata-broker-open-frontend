@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { returnErrors } from './errorActions';
 
+
 import {
   USER_LOADED,
   USER_LOADING,
@@ -13,13 +14,16 @@ import {
 } from './types';
 
 import { mongodb_handlerURL } from '../urlConfig';
+import { elasticsearchURL } from '../urlConfig';
+
+
 
 // Check token & load user
 export const loadUser = () => (dispatch, getState) => {
   // User loading
   dispatch({ type: USER_LOADING });
 
-  axios.get(mongodb_handlerURL + '/auth/user', tokenConfig(getState))
+  axios.get('http://localhost:4000' + '/auth/user', tokenConfig(getState))
     .then(res => dispatch({
       type: USER_LOADED,
       payload: res.data
@@ -70,7 +74,7 @@ export const login = ({ username, password }) => dispatch => {
   const body = JSON.stringify({ username, password });
 
   axios
-    .post(mongodb_handlerURL + '/auth', body, config)
+    .post('http://localhost:4000' + '/auth', body, config)
     .then(res =>
       dispatch({
         type: LOGIN_SUCCESS,
@@ -101,8 +105,98 @@ export const logout = () => {
   }
 }
 
-export const deletion = () => {
-  return {
-    type: DELETE_SUCCESS
+
+export const deleteconnectors = () => dispatch => {
+
+  let resourceId = decodeURIComponent(window.location.search);
+  if (resourceId !== null && resourceId !== "") {
+      resourceId = resourceId.split("=")[1];
   }
+
+axios.get('http://localhost:9200/registrations/_search?size=1000&pretty' , {
+  data: {
+      query: {
+          term: {
+              _id: resourceId
+          }
+      }
+  }
+})
+.then(response => {
+    if (response.status === 200) {
+        const connector = response.data.hits.hits;
+        const fconnector = [response.data.hits.hits.find(({ _id }) => _id === resourceId)];
+        fconnector.map(conn => {
+                let id = conn._id;
+                let connector = conn._source.connector;
+                let originURI = connector.originURI;
+                console.log(JSON.stringify(originURI))   
+       axios.get('http://localhost:4000' + '/data/clean/connector/' + originURI )
+        .then ((originURI) => {
+           console.log("cleaning Request for Connector " , JSON.stringify(originURI));})
+        .catch(err => {
+          if (err.response) {
+            dispatch(returnErrors(err.response.data, err.response.status))
+            console.log('Fehler')
+          } else {
+            dispatch(returnErrors({ msg: 'Network Error' }, 400))
+          }
+          dispatch({
+            type: DELETE_FAIL
+          })
+        }) 
+      })  
+        
+        }
+    })
+        .catch(err => {
+            console.log("An error occured: " + err);
+        })
 }
+
+
+
+export const deleteresource = () => dispatch => {
+  
+  let resourceId = decodeURIComponent(window.location.search);
+  if (resourceId !== null && resourceId !== "") {
+      resourceId = resourceId.split("=")[1];
+  }
+
+axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , {
+  data: {
+      query: {
+          term: {
+              _id: resourceId
+          }
+      }
+  }
+})
+.then(response => {
+    if (response.status === 200) {
+        const fresource = [response.data.hits.hits.find(({ _id }) => _id === resourceId)];
+        fresource.map(resource => {
+                let ResourceURI = resource._source.resourceID;
+                console.log(JSON.stringify(ResourceURI))   
+
+  axios.get('http://localhost:4000' + '/data/clean/resource/' + ResourceURI )
+    .then ((ResourceURI) => {
+       console.log("cleaning Request for Resource " , JSON.stringify(ResourceURI));})
+    .catch(err => {
+      if (err.response) {
+        dispatch(returnErrors(err.response.data, err.response.status))
+      } else {
+        dispatch(returnErrors({ msg: 'Network Error' }, 400))
+      }
+      dispatch({
+        type: DELETE_FAIL
+      })
+    })
+  })
+    }
+  })
+  .catch(err => {
+      console.log("An error occured: " + err);
+  })
+}
+

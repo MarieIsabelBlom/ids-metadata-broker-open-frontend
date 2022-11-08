@@ -8,8 +8,15 @@ const proxyadminMiddleware = require('./middleware/proxyadmin');
 const auth = require('./middleware/auth');
 const admin = require('./middleware/admin');
 
+
 // use dotenv to read MONGODB_ENDPOINT in a .env file, mainly for testing
 require('dotenv/config')
+
+const corsOptions ={
+  origin:'*', 
+  credentials:true,            //access-control-allow-credentials:true
+  optionSuccessStatus:200,
+}
 
 const PORT = process.env.PORT || 4000;
 const mongodb_endpoint = process.env.MONGODB_ENDPOINT;
@@ -17,6 +24,7 @@ console.log("MongoDB Endpoint: " + mongodb_endpoint);
 
 const userRoutes = require('./routes/users');
 const authRoutes = require('./routes/auth');
+const dataRoutes = require('./routes/data');
 
 const app = express();
 
@@ -25,7 +33,7 @@ app.use('/proxy', proxyMiddleware);
 app.use('/proxyadmin', auth, admin, proxyadminMiddleware);
 
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Connect to MogonDB
@@ -37,8 +45,10 @@ mongoose.connect(
 
 addAdmin("admin", process.env.ADMIN_PASSWORD);
 
+
 app.use('/users', userRoutes);
 app.use('/auth', authRoutes);
+app.use('/data', dataRoutes);
 
 app.listen(PORT, function() {
     console.log("User backend server running on Port: " + PORT);

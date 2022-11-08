@@ -105,7 +105,7 @@ class Login extends React.Component {
     }
 
     // Attempt to login
-    this.props.login(user);
+   this.props.login(user);
 
   }
 

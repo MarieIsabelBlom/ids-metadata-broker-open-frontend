@@ -184,18 +184,17 @@ class App extends React.Component {
 
     getBrokerURL = () => {        
         // development only
-       // return new URL(window._env_.REACT_APP_BROKER_URL).toString();
+        return new URL('http://localhost:9200').toString();
 
         // uncomment for deployment
-        if(window._env_ === undefined)
-            return new URL('/es', window.location.origin).toString()
-       else
-           return new URL('/es', window._env_.REACT_APP_BROKER_URL).toString();
+       // if(window._env_ === undefined)
+      //      return new URL('/es', window.location.origin).toString()
+      // else
+      //     return new URL('/es', window._env_.REACT_APP_BROKER_URL).toString();
     }
     /*
     setBrokerURL is only called onCompomentMount 
     and therefore not available for some Routing paths.
-
     Better: Use this method to get the broker url dynamically. Do not use this.brokerURL.
      getBrokerURL = () => {*/
    

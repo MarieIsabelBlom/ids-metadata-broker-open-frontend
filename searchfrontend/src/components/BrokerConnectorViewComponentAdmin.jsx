@@ -2,16 +2,20 @@ import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { Container, Divider, Grid } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import LoginOrLogout from './auth/LoginOrLogout';
 import { useSelector } from 'react-redux';
-import { getConnector, prepareConnectorFormat } from '../helpers/sparql/connectors';
+import { getConnector, prepareConnectorFormat, prepareConnectorsObject } from '../helpers/sparql/connectors';
 import { BrokerAttribute, BrokerAttributeUrl, BrokerViewComponent } from "./BrokerViewComponent";
-import Delete from "./auth/Delete";
+import { deleteconnectors } from "../actions/authActions";
+import DeleteConnector from "./auth/DeleteConnector";
+import DeleteResource from "./auth/DeleteResource";
+
+
 
 export function BrokerConnectorViewComponentAdmin(props) {
 
     let [provider, setProvider] = useState({});
     let [connector, setConnector] = useState({});
+    let [originURI, setoriginURI] = useState({});
     let [id, setId] = useState([]);
     let [objCatalog, setObjCatalog] = useState([]);
     let [resourcesArray, setResourcesArray] = useState([]);
@@ -53,6 +57,7 @@ export function BrokerConnectorViewComponentAdmin(props) {
                 setConnector(connector.connector);
                 setProvider(connector.provider);
                 setResourcesArray(connector.resources);
+                setoriginURI(connector.originURI);
             });
         } else {
             let validResourceId;
@@ -129,9 +134,9 @@ export function BrokerConnectorViewComponentAdmin(props) {
         parentLink="/connectoradmin"
         showBackButton={props.showBackButton}>
                 <Grid container className="main-container">
-          {
-                    displayField("Connector ID", id, 6)
-                }
+                {
+                        displayURI("Connector URI", connector.originURI, 12)
+                    }
                     {
                         resources.length !== 0 ?
                             <BrokerAttribute
@@ -152,8 +157,19 @@ export function BrokerConnectorViewComponentAdmin(props) {
                     {
                         displayURI("Maintainer", provider.maintainer, 6)
                     }
-                  <Delete />  
+                  
+                  <DeleteResource isConnector/>  
                 </Grid>
         </BrokerViewComponent>
     );
 }
+let resourceId = decodeURIComponent(window.location.search);
+export let validResourceId;
+// The id of the resource will be appended in the url. eg.., https://<hostname>/resources/resource?id=https%3A%2F%2Fiais.fraunhofer.de%2Feis%2Fids%2FsomeBroker%2Fcatalog541260824%2F1091662930%2F1213443818
+if (resourceId !== null && resourceId !== "") {
+    //split the above url to get only the resource id
+    resourceId = resourceId.split("=")[1];
+    // The id's of the object will contain unique paths added by the elastic search. Here in the resourceId: https://iais.fraunhofer.de/eis/ids/someBroker/catalog541260824/1091662930/1213443818, the valid resource id excludes the last path. So the valid url is: https://iais.fraunhofer.de/eis/ids/someBroker/catalog541260824/1091662930
+    validResourceId = resourceId;
+}
+

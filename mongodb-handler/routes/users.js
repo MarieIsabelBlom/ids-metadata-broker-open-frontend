@@ -81,4 +81,4 @@ router.delete('/delete/:id', auth, admin, function(req, res) {
 });
 
 
-module.exports = router
+module.exports = router;
