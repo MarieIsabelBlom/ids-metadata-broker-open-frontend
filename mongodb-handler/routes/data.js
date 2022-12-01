@@ -1,12 +1,14 @@
 const express = require('express');
-const router = express.Router({ mergeParams : true });
+const router = express.Router({ mergeParams: true });
 const Deletion = require('../models/Deletion');
+const User = require('../models/User');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const FormData = require('form-data');
 const axios = require('axios');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
+
 
 
 require('dotenv/config')
@@ -18,8 +20,10 @@ const formData = new FormData();
 const url = 'http://localhost:8080/infrastructure';
 
 
+router.use(auth, admin);
+
 //Route for Sending a Deletion Message to Delete a Connector to the Broker
-router.get('/clean/resource/:uri(*)', auth, admin, async (req, res) => {
+router.get('/clean/resource/:uri(*)', async (req, res) => {
 
     try {
         const ResourceURI = req.params.uri;
@@ -32,9 +36,9 @@ router.get('/clean/resource/:uri(*)', auth, admin, async (req, res) => {
        
       };
         console.log ('cleaning request for Resource', ResourceURI)
-        res.send(ResourceURI);
+       // res.send(ResourceURI);
         
-        // fs.readFile('./messages/ResourceUnavailable.json', (err,data)  =>{
+       
        fs.readFile(resourcemessage, (err, data) => {
           if (err) throw err;
           if(data != null){
@@ -43,13 +47,11 @@ router.get('/clean/resource/:uri(*)', auth, admin, async (req, res) => {
           ResourceUnavailable['ids:affectedResource']['@id'] = ResourceURI;
        
 
-        fs.writeFile(resourcemessage, JSON.stringify(ResourceUnavailable,null,4), (err) => {
+        fs.writeFile(resourcemessage, JSON.stringify(ResourceUnavailable,null,4), async (err) => {
           if (err) {
             console.log(err);
           } else {
-        console.log('ResourceID is successfully added');
-        
-
+        console.log('ResourceID is successfully added');        
 
 formData.append('header', JSON.stringify(ResourceUnavailable));
 
@@ -62,7 +64,7 @@ const config = {
     data: formData
 };
 try {
-    let response = axios(config);
+    let response = await axios(config);
     res.status(response.status).json(response.data);
     console.log(ResourceURI, 'is successfully deleted');
 } catch (err) {
@@ -94,7 +96,7 @@ try {
        
       };
         console.log ('cleaning request for Connector', ConnectorURI)
-        res.send(ConnectorURI);
+       // res.send(ConnectorURI);
        
           fs.readFile(connectormessage, (err, data) => {
             if (err) throw err;
@@ -105,11 +107,11 @@ try {
             ConnectorUnavailable['ids:affectedConnector']['@id'] = ConnectorURI;
          
   
-          fs.writeFile(connectormessage, JSON.stringify(ConnectorUnavailable,null,4), (err) => {
+          fs.writeFile(connectormessage, JSON.stringify(ConnectorUnavailable,null,4), async (err) => {
             if (err) {
               console.log(err);
             } else {
-          console.log('successfully added');
+          console.log('ConnectorID successfully added');
   
 formData.append('header', JSON.stringify(ConnectorUnavailable));
 
@@ -122,7 +124,7 @@ const config = {
     data: formData
 };
 try {
-    let response = axios(config);
+    let response = await axios(config);
     res.status(response.status).json(response.data);
     console.log(ConnectorURI, 'is successfully deleted');
 } catch (err) {
@@ -161,7 +163,7 @@ router.post('/addreason', async (req, res) => {
         })
         
 
-        router.get('/', auth, (req, res) => {
+        router.get('/', (req, res) => {
           Deletion.find(function(err, dbdata) {
               if (err) {
                   console.log(err);
