@@ -461,9 +461,8 @@ const timestamp = dateObject.toLocaleString() //2019-12-9 10:30:15
                     <Grid container className="rounded-borders">
                         {
                             displayURI("Data Publisher", resource.publisher, 6)
-                        }  {
-                            displayField("last changed", timestamp, 6)
-                        }
+                        } 
+                        
                     <DeleteResource />
                    
                     </Grid>

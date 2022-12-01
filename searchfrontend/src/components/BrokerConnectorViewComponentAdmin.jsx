@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { getConnector, prepareConnectorFormat, prepareConnectorsObject } from '../helpers/sparql/connectors';
 import { BrokerAttribute, BrokerAttributeUrl, BrokerViewComponent } from "./BrokerViewComponent";
 import { deleteconnectors } from "../actions/authActions";
-import DeleteConnector from "./auth/DeleteConnector";
+//import DeleteConnector from "./auth/DeleteConnector";
 import DeleteResource from "./auth/DeleteResource";
 
 
@@ -137,20 +137,7 @@ export function BrokerConnectorViewComponentAdmin(props) {
                 {
                         displayURI("Connector URI", connector.originURI, 12)
                     }
-                    {
-                        resources.length !== 0 ?
-                            <BrokerAttribute
-                            col={12}
-                            label="Resources ID">
-                                {resources.map(resource => (
-                                    <Link to={'/resourcesadmin/resource?id=' + resource.resourceID } target="_blank"
-                                    key={resource.resourceID} 
-                                    className="resource-link">
-                                        {resource.title ? resource.title.join(", ") : "Unknown Resource" }
-                                    </Link>
-                                ))}
-                            </BrokerAttribute> : ""
-                    }
+
                 </Grid>
 
                 <Grid container className="rounded-borders">

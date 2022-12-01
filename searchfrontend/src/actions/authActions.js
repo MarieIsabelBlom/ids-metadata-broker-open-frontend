@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { returnErrors } from './errorActions';
 
-
 import {
   USER_LOADED,
   USER_LOADING,
@@ -10,7 +9,9 @@ import {
   LOGIN_FAIL,
   LOGOUT_SUCCESS,
   DELETE_SUCCESS,
-  DELETE_FAIL
+  DELETE_FAIL,
+  SAVE_SUCCESS,
+  SAVE_FAIL
 } from './types';
 
 import { mongodb_handlerURL } from '../urlConfig';
@@ -105,6 +106,137 @@ export const logout = () => {
   }
 }
 
+//Save deleted Resource to MongoDB
+export const savetodbresource = ({ reason }) => dispatch => {
+  let resourceId = decodeURIComponent(window.location.search);
+  if (resourceId !== null && resourceId !== "") {
+      resourceId = resourceId.split("=")[1];
+  }
+
+axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , {
+  data: {
+      query: {
+          term: {
+              _id: resourceId
+          }
+      }
+  }
+})
+.then(response => {
+    if (response.status === 200) {
+        const fresource = [response.data.hits.hits.find(({ _id }) => _id === resourceId)];
+        fresource.map(resource => {
+                let ResourceURI = resource._source.resourceID;
+               // console.log(JSON.stringify(ResourceURI))   
+                  
+  var data = JSON.stringify({ "id": ResourceURI, "reason": reason });
+  
+  var config = {
+    method: 'post',
+    url: 'http://localhost:4000/data/addreason',
+    headers: { 
+      'Content-Type': 'application/json'
+        },
+    data : data
+  };
+  
+  axios(config)
+  .then(function (response) {
+    dispatch({
+      type: SAVE_SUCCESS
+    });
+    console.log(JSON.stringify(response.data));
+  })
+  .catch(function (error) {
+    console.log(error);
+  }); 
+     })  
+        
+        }
+    })
+    .catch(err => {
+      if (err.response) {
+        dispatch(
+          returnErrors(err.response.data, err.response.status, 'SAVE_FAIL')
+        )
+      } else {
+        dispatch(
+          returnErrors({ msg: 'Network error' }, 400, 'SAVE_FAIL')
+        );
+      }
+      dispatch({
+        type: SAVE_FAIL
+      })
+    }) 
+  };
+
+//Save deleted Connector to DB  
+export const savetodb = ({ reason }) =>  dispatch => {
+  let resourceId = decodeURIComponent(window.location.search);
+  if (resourceId !== null && resourceId !== "") {
+      resourceId = resourceId.split("=")[1];
+  }
+
+axios.get('http://localhost:9200/registrations/_search?size=1000&pretty' , {
+  data: {
+      query: {
+          term: {
+              _id: resourceId
+          }
+      }
+  }
+})
+.then(response => {
+    if (response.status === 200) {
+        const connector = response.data.hits.hits;
+        const fconnector = [response.data.hits.hits.find(({ _id }) => _id === resourceId)];
+        fconnector.map(conn => {
+                let id = conn._id;
+                let connector = conn._source.connector;
+                let originURI = connector.originURI;
+              //  console.log(JSON.stringify(originURI))   
+                  
+
+  var data = JSON.stringify({ "id": originURI, "reason": reason });
+  
+  var config = {
+    method: 'post',
+    url: 'http://localhost:4000/data/addreason',
+    headers: { 
+      'Content-Type': 'application/json'
+        },
+    data : data
+  };
+  
+  axios(config)
+  .then(function (response) {
+    dispatch({
+      type: SAVE_SUCCESS
+    });
+    console.log(JSON.stringify(response.data));
+  })
+  .catch(function (error) {
+    console.log(error);
+  }); 
+     })  
+        
+        }
+    })
+    .catch(err => {
+      if (err.response) {
+        dispatch(
+          returnErrors(err.response.data, err.response.status, 'SAVE_FAIL')
+        )
+      } else {
+        dispatch(
+          returnErrors({ msg: 'Network error' }, 400, 'SAVE_FAIL')
+        );
+      }
+      dispatch({
+        type: SAVE_FAIL
+      })
+    }) 
+  };
 
 export const deleteconnectors = () => dispatch => {
 
@@ -130,7 +262,7 @@ axios.get('http://localhost:9200/registrations/_search?size=1000&pretty' , {
                 let id = conn._id;
                 let connector = conn._source.connector;
                 let originURI = connector.originURI;
-                console.log(JSON.stringify(originURI))   
+              //  console.log(JSON.stringify(originURI))   
        axios.get('http://localhost:4000' + '/data/clean/connector/' + originURI )
         .then ((originURI) => {
            console.log("cleaning Request for Connector " , JSON.stringify(originURI));})
@@ -177,7 +309,7 @@ axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , {
         const fresource = [response.data.hits.hits.find(({ _id }) => _id === resourceId)];
         fresource.map(resource => {
                 let ResourceURI = resource._source.resourceID;
-                console.log(JSON.stringify(ResourceURI))   
+                //console.log(JSON.stringify(ResourceURI))   
 
   axios.get('http://localhost:4000' + '/data/clean/resource/' + ResourceURI )
     .then ((ResourceURI) => {
@@ -194,9 +326,7 @@ axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , {
     })
   })
     }
-  })
-  .catch(err => {
-      console.log("An error occured: " + err);
-  })
+ 
+});
 }
 

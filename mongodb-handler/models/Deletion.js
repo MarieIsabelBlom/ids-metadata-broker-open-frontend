@@ -1,22 +1,19 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const schemaOptions = {
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
+  };
+
 let Deletion = new Schema({
-    username: {
-        type: String,
-        required: true
-    },
     id: {
         type: String,
         required: true
     },
-    timestamp: {
-        type: String
-    },
     reason: {
         type: String
-    }
-});
+    },
+}, schemaOptions);
 
 
 

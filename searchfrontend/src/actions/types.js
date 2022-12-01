@@ -18,4 +18,6 @@ export const CLEAR_USER = "CLEAR_USER"
 
 //Delete Connector or Resource
 export const DELETE_SUCCESS = "DELETE_SUCCESS"
+export const SAVE_SUCCESS = "SAVE_SUCCESS"
 export const DELETE_FAIL = "DELETE_FAIL"
+export const SAVE_FAIL = "SAVE_FAIL"

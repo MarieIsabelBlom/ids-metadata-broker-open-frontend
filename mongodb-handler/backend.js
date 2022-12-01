@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const addAdmin = require('./utils/addAdmin');
+const addDeletion = require('./utils/addDeletion');
 const proxyMiddleware = require('./middleware/proxy');
 const proxyadminMiddleware = require('./middleware/proxyadmin');
 const auth = require('./middleware/auth');
@@ -36,7 +37,7 @@ app.use('/proxyadmin', auth, admin, proxyadminMiddleware);
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
-// Connect to MogonDB
+// Connect to MongoDB
 mongoose.connect(
   mongodb_endpoint,
   { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false },
@@ -44,7 +45,7 @@ mongoose.connect(
 )
 
 addAdmin("admin", process.env.ADMIN_PASSWORD);
-
+addDeletion("1","1");
 
 app.use('/users', userRoutes);
 app.use('/auth', authRoutes);
