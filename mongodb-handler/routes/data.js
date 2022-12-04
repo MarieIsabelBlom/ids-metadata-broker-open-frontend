@@ -20,11 +20,11 @@ const formData = new FormData();
 const url = 'http://localhost:8080/infrastructure';
 
 
-router.use(auth, admin);
+//router.use(auth, admin);
 
 //Route for Sending a Deletion Message to Delete a Connector to the Broker
-router.get('/clean/resource/:uri(*)', async (req, res) => {
-
+router.get('/clean/resource/:uri(*)', auth, admin, async (req, res) => {
+console.log(req.user)
     try {
         const ResourceURI = req.params.uri;
         
@@ -36,7 +36,7 @@ router.get('/clean/resource/:uri(*)', async (req, res) => {
        
       };
         console.log ('cleaning request for Resource', ResourceURI)
-       // res.send(ResourceURI);
+        res.send(ResourceURI);
         
        
        fs.readFile(resourcemessage, (err, data) => {
@@ -44,6 +44,7 @@ router.get('/clean/resource/:uri(*)', async (req, res) => {
           if(data != null){
            
           let ResourceUnavailable = JSON.parse(data);
+          console.log(ResourceUnavailable);
           ResourceUnavailable['ids:affectedResource']['@id'] = ResourceURI;
        
 
@@ -52,7 +53,7 @@ router.get('/clean/resource/:uri(*)', async (req, res) => {
             console.log(err);
           } else {
         console.log('ResourceID is successfully added');        
-
+//console.log(ResourceUnavailable)
 formData.append('header', JSON.stringify(ResourceUnavailable));
 
 const config = {
@@ -63,14 +64,24 @@ const config = {
     },
     data: formData
 };
-try {
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+
+//console.log(config)
+/*try {
     let response = await axios(config);
     res.status(response.status).json(response.data);
     console.log(ResourceURI, 'is successfully deleted');
 } catch (err) {
     res.status(400).send({ error: "Bad request" });
     console.log(err);
-}
+}*/
           }; 
         }); 
       };
@@ -83,7 +94,7 @@ try {
    
       
 //Route for Sending a Deletion Message to Delete a Connector to the Broker
-  router.get('/clean/connector/:uri(*)', async (req, res) => {
+  router.get('/clean/connector/:uri(*)', auth, admin, async (req, res) => {
 
     try {
         const ConnectorURI = req.params.uri;
@@ -96,7 +107,7 @@ try {
        
       };
         console.log ('cleaning request for Connector', ConnectorURI)
-       // res.send(ConnectorURI);
+        res.send(ConnectorURI);
        
           fs.readFile(connectormessage, (err, data) => {
             if (err) throw err;
@@ -124,7 +135,7 @@ const config = {
     data: formData
 };
 try {
-    let response = await axios(config);
+    let response = axios(config);
     res.status(response.status).json(response.data);
     console.log(ConnectorURI, 'is successfully deleted');
 } catch (err) {
@@ -143,7 +154,7 @@ try {
 
 //Route for Saving the Reason for Deletion in MongoDB
 
-router.post('/addreason', async (req, res) => {
+router.post('/addreason', auth, admin, async (req, res) => {
           try {
               const { id, reason } = req.body;
         
@@ -163,7 +174,7 @@ router.post('/addreason', async (req, res) => {
         })
         
 
-        router.get('/', (req, res) => {
+        router.get('/', auth, (req, res) => {
           Deletion.find(function(err, dbdata) {
               if (err) {
                   console.log(err);

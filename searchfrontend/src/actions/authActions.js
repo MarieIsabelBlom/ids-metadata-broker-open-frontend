@@ -107,13 +107,14 @@ export const logout = () => {
 }
 
 //Save deleted Resource to MongoDB
-export const savetodbresource = ({ reason }) => dispatch => {
+export const savetodbresource = ({ reason }) => (dispatch, getState) => {
+  const token = getState().auth.token;
   let resourceId = decodeURIComponent(window.location.search);
   if (resourceId !== null && resourceId !== "") {
       resourceId = resourceId.split("=")[1];
   }
 
-axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , {
+axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , tokenConfig(getState), {
   data: {
       query: {
           term: {
@@ -130,7 +131,6 @@ axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , {
                // console.log(JSON.stringify(ResourceURI))   
                   
   var data = JSON.stringify({ "id": ResourceURI, "reason": reason });
-  
   var config = {
     method: 'post',
     url: 'http://localhost:4000/data/addreason',
@@ -139,8 +139,12 @@ axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , {
         },
     data : data
   };
-  
-  axios(config)
+
+  if (token) {
+    config.headers['x-auth-token'] = token;
+  };
+  console.log(token);
+  axios(config, tokenConfig(getState))
   .then(function (response) {
     dispatch({
       type: SAVE_SUCCESS
@@ -171,13 +175,14 @@ axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , {
   };
 
 //Save deleted Connector to DB  
-export const savetodb = ({ reason }) =>  dispatch => {
+export const savetodb = ({ reason }) =>  (dispatch, getState) => {
+  const token = getState().auth.token;
   let resourceId = decodeURIComponent(window.location.search);
   if (resourceId !== null && resourceId !== "") {
       resourceId = resourceId.split("=")[1];
   }
 
-axios.get('http://localhost:9200/registrations/_search?size=1000&pretty' , {
+axios.get('http://localhost:9200/registrations/_search?size=1000&pretty' , tokenConfig(getState), {
   data: {
       query: {
           term: {
@@ -207,8 +212,11 @@ axios.get('http://localhost:9200/registrations/_search?size=1000&pretty' , {
         },
     data : data
   };
+  if (token) {
+    config.headers['x-auth-token'] = token;
+  };
   
-  axios(config)
+  axios(config, tokenConfig(getState))
   .then(function (response) {
     dispatch({
       type: SAVE_SUCCESS
@@ -238,14 +246,14 @@ axios.get('http://localhost:9200/registrations/_search?size=1000&pretty' , {
     }) 
   };
 
-export const deleteconnectors = () => dispatch => {
+export const deleteconnectors = () => (dispatch, getState) => {
 
   let resourceId = decodeURIComponent(window.location.search);
   if (resourceId !== null && resourceId !== "") {
       resourceId = resourceId.split("=")[1];
   }
 
-axios.get('http://localhost:9200/registrations/_search?size=1000&pretty' , {
+axios.get('http://localhost:9200/registrations/_search?size=1000&pretty' , tokenConfig(getState), {
   data: {
       query: {
           term: {
@@ -263,7 +271,7 @@ axios.get('http://localhost:9200/registrations/_search?size=1000&pretty' , {
                 let connector = conn._source.connector;
                 let originURI = connector.originURI;
               //  console.log(JSON.stringify(originURI))   
-       axios.get('http://localhost:4000' + '/data/clean/connector/' + originURI )
+       axios.get('http://localhost:4000' + '/data/clean/connector/' + originURI, tokenConfig(getState), )
         .then ((originURI) => {
            console.log("cleaning Request for Connector " , JSON.stringify(originURI));})
         .catch(err => {
@@ -288,14 +296,14 @@ axios.get('http://localhost:9200/registrations/_search?size=1000&pretty' , {
 
 
 
-export const deleteresource = () => dispatch => {
+export const deleteresource = () => (dispatch, getState) => {
   
   let resourceId = decodeURIComponent(window.location.search);
   if (resourceId !== null && resourceId !== "") {
       resourceId = resourceId.split("=")[1];
   }
 
-axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , {
+axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , tokenConfig(getState), {
   data: {
       query: {
           term: {
@@ -311,7 +319,7 @@ axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , {
                 let ResourceURI = resource._source.resourceID;
                 //console.log(JSON.stringify(ResourceURI))   
 
-  axios.get('http://localhost:4000' + '/data/clean/resource/' + ResourceURI )
+  axios.get('http://localhost:4000' + '/data/clean/resource/' + ResourceURI, tokenConfig(getState), )
     .then ((ResourceURI) => {
        console.log("cleaning Request for Resource " , JSON.stringify(ResourceURI));})
     .catch(err => {
