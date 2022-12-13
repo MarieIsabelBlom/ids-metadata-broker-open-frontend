@@ -108,7 +108,7 @@ export const logout = () => {
 
 //Save deleted Resource to MongoDB
 export const savetodbresource = ({ reason }) => (dispatch, getState) => {
-  const token = getState().auth.token;
+  //const token = getState().auth.token;
   let resourceId = decodeURIComponent(window.location.search);
   if (resourceId !== null && resourceId !== "") {
       resourceId = resourceId.split("=")[1];
@@ -131,19 +131,22 @@ axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , toke
                // console.log(JSON.stringify(ResourceURI))   
                   
   var data = JSON.stringify({ "id": ResourceURI, "reason": reason });
+  let tokenheader =   tokenConfig(getState)
   var config = {
     method: 'post',
     url: 'http://localhost:4000/data/addreason',
-    headers: { 
+   /* headers: { 
       'Content-Type': 'application/json'
-        },
+        },*/
+      headers: tokenheader.headers,  
     data : data
   };
 
-  if (token) {
+ /* if (token) {
     config.headers['x-auth-token'] = token;
   };
-  console.log(token);
+  console.log(token);*/
+  console.log(tokenConfig(getState))
   axios(config, tokenConfig(getState))
   .then(function (response) {
     dispatch({

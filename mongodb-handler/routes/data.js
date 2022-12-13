@@ -7,7 +7,7 @@ const admin = require('../middleware/admin');
 const FormData = require('form-data');
 const axios = require('axios');
 const fs = require('fs');
-const jwt = require('jsonwebtoken');
+const getDAT = require('../utils/getDAT');
 
 
 
@@ -24,7 +24,6 @@ const url = 'http://localhost:8080/infrastructure';
 
 //Route for Sending a Deletion Message to Delete a Connector to the Broker
 router.get('/clean/resource/:uri(*)', auth, admin, async (req, res) => {
-console.log(req.user)
     try {
         const ResourceURI = req.params.uri;
         
@@ -36,23 +35,29 @@ console.log(req.user)
        
       };
         console.log ('cleaning request for Resource', ResourceURI)
-        res.send(ResourceURI);
+        //res.send(ResourceURI);
         
        
-       fs.readFile(resourcemessage, (err, data) => {
+       fs.readFile(resourcemessage, async (err, data) => {
           if (err) throw err;
           if(data != null){
-           
+           try {
+    
           let ResourceUnavailable = JSON.parse(data);
-          console.log(ResourceUnavailable);
+          //console.log(ResourceUnavailable);
           ResourceUnavailable['ids:affectedResource']['@id'] = ResourceURI;
-       
+         //TODO: ResourceUnavailable['ids:issuerConnector']['@id'] = ConnectorURI; 
+           //get DAT
+           const accessToken = await getDAT();
+
+           //add DAT to message
+           ResourceUnavailable['ids:securityToken']['ids:tokenValue'] = accessToken;
 
         fs.writeFile(resourcemessage, JSON.stringify(ResourceUnavailable,null,4), async (err) => {
           if (err) {
             console.log(err);
           } else {
-        console.log('ResourceID is successfully added');        
+        console.log('ResourceID and DAT are successfully added');        
 //console.log(ResourceUnavailable)
 formData.append('header', JSON.stringify(ResourceUnavailable));
 
@@ -65,34 +70,27 @@ const config = {
     data: formData
 };
 
-axios(config)
-.then(function (response) {
-  console.log(JSON.stringify(response.data));
-})
-.catch(function (error) {
-  console.log(error);
+try {
+  let response = await axios(config);
+  res.status(response.status).json(response.data);
+  console.log(ResourceURI, 'is successfully deleted');
+} catch (err) {
+  res.status(400).send({ error: "Bad request" });
+  console.log(err);
+}
+};
+});
+} catch (err) {
+console.log(err);
+}
+};
+});
+} catch (err) {
+res.status(500).json({ msg: 'Network error' });
+}
+
 });
 
-//console.log(config)
-/*try {
-    let response = await axios(config);
-    res.status(response.status).json(response.data);
-    console.log(ResourceURI, 'is successfully deleted');
-} catch (err) {
-    res.status(400).send({ error: "Bad request" });
-    console.log(err);
-}*/
-          }; 
-        }); 
-      };
-    }); 
-      } catch (err) {
-                res.status(500).json({ msg: 'Network error'});
-            }
-        
-        });
-   
-      
 //Route for Sending a Deletion Message to Delete a Connector to the Broker
   router.get('/clean/connector/:uri(*)', auth, admin, async (req, res) => {
 
@@ -107,22 +105,29 @@ axios(config)
        
       };
         console.log ('cleaning request for Connector', ConnectorURI)
-        res.send(ConnectorURI);
+        //res.send(ConnectorURI);
        
-          fs.readFile(connectormessage, (err, data) => {
+          fs.readFile(connectormessage, async (err, data) => {
             if (err) throw err;
             if(data != null){
-             
+
+            try {
             let ConnectorUnavailable = JSON.parse(data);
             ConnectorUnavailable['ids:issuerConnector']['@id'] = ConnectorURI; 
             ConnectorUnavailable['ids:affectedConnector']['@id'] = ConnectorURI;
          
+           //get DAT
+          const accessToken = await getDAT();
+
+          //add DAT to message
+          ConnectorUnavailable['ids:securityToken']['ids:tokenValue'] = accessToken;
+
   
           fs.writeFile(connectormessage, JSON.stringify(ConnectorUnavailable,null,4), async (err) => {
             if (err) {
               console.log(err);
             } else {
-          console.log('ConnectorID successfully added');
+          console.log('ConnectorID and DAT are successfully added');
   
 formData.append('header', JSON.stringify(ConnectorUnavailable));
 
@@ -135,22 +140,25 @@ const config = {
     data: formData
 };
 try {
-    let response = axios(config);
-    res.status(response.status).json(response.data);
-    console.log(ConnectorURI, 'is successfully deleted');
-} catch (err) {
-    res.status(400).send({ error: "Bad request" });
-    console.log(err);
-}
-          }; 
-        }); 
+                let response = await axios(config);
+                res.status(response.status).json(response.data);
+                console.log(ConnectorURI, 'is successfully deleted');
+              } catch (err) {
+                res.status(400).send({ error: "Bad request" });
+                console.log(err);
+              }
+            };
+          });
+        } catch (err) {
+          console.log(err);
+        }
       };
-    }); 
-      } catch (err) {
-                res.status(500).json({ msg: 'Network error'});
-            }
-        
-        });
+    });
+  } catch (err) {
+    res.status(500).json({ msg: 'Network error' });
+  }
+
+});
 
 //Route for Saving the Reason for Deletion in MongoDB
 
