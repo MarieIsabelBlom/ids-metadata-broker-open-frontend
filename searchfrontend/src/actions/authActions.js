@@ -306,38 +306,53 @@ export const deleteresource = () => (dispatch, getState) => {
       resourceId = resourceId.split("=")[1];
   }
 
-axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , tokenConfig(getState), {
-  data: {
+  axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty', tokenConfig(getState), {
+    data: {
       query: {
-          term: {
-              _id: resourceId
-          }
+        term: {
+          _id: resourceId
+        }
       }
-  }
-})
-.then(response => {
-    if (response.status === 200) {
+    }
+  })
+    .then(response => {
+      if (response.status === 200) {
         const fresource = [response.data.hits.hits.find(({ _id }) => _id === resourceId)];
         fresource.map(resource => {
-                let ResourceURI = resource._source.resourceID;
-                //console.log(JSON.stringify(ResourceURI))   
+          let ResourceURI = resource._source.resourceID;
+          //console.log(JSON.stringify(ResourceURI))   
 
-  axios.get('http://localhost:4000' + '/data/clean/resource/' + ResourceURI, tokenConfig(getState), )
-    .then ((ResourceURI) => {
-       console.log("cleaning Request for Resource " , JSON.stringify(ResourceURI));})
-    .catch(err => {
-      if (err.response) {
-        dispatch(returnErrors(err.response.data, err.response.status))
-      } else {
-        dispatch(returnErrors({ msg: 'Network Error' }, 400))
+          //get connector originURI
+          //post request is used because browsers don't allow sending get requests with body - it is ignored
+          let connectorID = resource._source.connectorID;
+          axios.post('http://localhost:9200/registrations/_search?size=100&pretty', {
+            query: {
+              term: {
+                _id: connectorID
+              }
+            }
+          }, tokenConfig(getState))
+            .then(connectorResponse => {
+              //get connector originURI
+              const originURI = connectorResponse.data.hits.hits[0]._source.connector.originURI;
+
+              axios.get('http://localhost:4000' + '/data/clean/connectors/' + originURI + "/resource/" + ResourceURI, tokenConfig(getState),)
+                .then((ResourceURI) => {
+                  console.log("cleaning Request for Resource ", JSON.stringify(ResourceURI));
+                })
+                .catch(err => {
+                  if (err.response) {
+                    dispatch(returnErrors(err.response.data, err.response.status))
+                  } else {
+                    dispatch(returnErrors({ msg: 'Network Error' }, 400))
+                  }
+                  dispatch({
+                    type: DELETE_FAIL
+                  })
+                })
+            })
+        })
       }
-      dispatch({
-        type: DELETE_FAIL
-      })
-    })
-  })
-    }
- 
-});
+    });
 }
 
