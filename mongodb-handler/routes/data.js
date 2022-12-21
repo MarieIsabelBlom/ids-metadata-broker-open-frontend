@@ -132,7 +132,8 @@ router.get('/clean/connectors/:connectorURI(*)/resource/:resourceURI(*)', auth, 
               console.log(err);
             } else {
           console.log('ConnectorID and DAT are successfully added');
-  
+
+const formData = new FormData();
 formData.append('header', JSON.stringify(ConnectorUnavailable));
 
 const config = {
