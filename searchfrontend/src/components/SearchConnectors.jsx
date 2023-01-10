@@ -1,18 +1,20 @@
-import React from "react";
+import React, { Fragment } from "react";
 import {
     SelectedFilters,
     DataSearch
 } from "@appbaseio/reactivesearch";
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
-import { SearchBroker,SearchBrokerAdmin, BrokerFilter } from "./ConnectorBrokerAdmin";
+import { SearchBroker, SearchBrokerAdmin, BrokerFilter } from "./ConnectorBrokerAdmin";
 import { SearchParis, ParisConnectorView, ParisFilter } from "./ConnectorParis";
 // import Query from "../Query.jsx";
 import '../css/ConnectorsList.css'
+import { connect } from 'react-redux';
 
 import SearchIcon from '../assets/icons/search.svg'
+import Four03 from './error/403';
 
-export default class SearchConnectors extends React.Component {
+class SearchConnectors extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -49,6 +51,8 @@ export default class SearchConnectors extends React.Component {
     }
 
     render() {
+        const { isAuthenticated, user } = this.props.auth;
+
         let tenant = process.env.REACT_APP_TENANT || 'mobids';
 
         tenant = tenant.toLowerCase();
@@ -68,9 +72,9 @@ export default class SearchConnectors extends React.Component {
                 )
             } else if (name === 'eis') {
                 return (
-                    <SearchBroker  />
+                    <SearchBroker />
                 )
-            } else if (name=='mobids') {
+            } else if (name == 'mobids') {
                 return (
                     <SearchBroker />
 
@@ -126,7 +130,7 @@ export default class SearchConnectors extends React.Component {
             }
         </Grid>
 
-        return (
+        let connectorsList = (
             <div className="connectors-list">
                 {
                     Object.entries(currentConnector).length === 0 ?
@@ -135,19 +139,19 @@ export default class SearchConnectors extends React.Component {
 
                                 {/* Filter section on the left-side onnly for mobids */}
                                 {tenant == 'mobids' ? filterSection : ''}
-                                
+
                                 <Grid item
-                                xl={tenant == 'mobids' ? 6 : 9}
-                                md={tenant == 'mobids' ? 8 : 9} xs={12}
-                                className="search-column-container">
-                                    
-                                <DataSearch
-                                    componentId="search"
-                                    dataField={['connector.title','connector.title_en','connector.title_de','connector.description','connector.description_de', 'participant.title', 'participant.description','participant.corporateHompage']}
-                                    URLParams={true}
-                                    queryFormat="or"
-                                    icon={<img src={SearchIcon} className="search-icon" />}
-                                    className="data-search"
+                                    xl={tenant == 'mobids' ? 6 : 9}
+                                    md={tenant == 'mobids' ? 8 : 9} xs={12}
+                                    className="search-column-container">
+
+                                    <DataSearch
+                                        componentId="search"
+                                        dataField={['connector.title', 'connector.title_en', 'connector.title_de', 'connector.description', 'connector.description_de', 'participant.title', 'participant.description', 'participant.corporateHompage']}
+                                        URLParams={true}
+                                        queryFormat="or"
+                                        icon={<img src={SearchIcon} className="search-icon" />}
+                                        className="data-search"
                                         value={this.state.value}
                                         autosuggest={true}
                                         showClear={true}
@@ -186,7 +190,25 @@ export default class SearchConnectors extends React.Component {
                             </Grid>
                         </React.Fragment>
                 }
-            </div >
+            </div>
+        )
+
+        let ParentLink = window.location.pathname;
+
+        if (ParentLink == '/connectoradmin') return (
+            <Fragment>
+                {isAuthenticated && user.role === "admin" ?
+                    connectorsList : <Four03 msg="Only admin allowed to see this page" />}
+            </Fragment>
+        )
+        else return (
+            connectorsList
         )
     }
 }
+
+const mapStateToProps = state => ({
+    auth: state.auth
+})
+
+export default connect(mapStateToProps)(SearchConnectors)

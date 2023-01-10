@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import axios from 'axios';
 import { Container, Divider, Grid } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -8,6 +8,8 @@ import { BrokerAttribute, BrokerAttributeUrl, BrokerViewComponent } from "./Brok
 import { deleteconnectors } from "../actions/authActions";
 //import DeleteConnector from "./auth/DeleteConnector";
 import DeleteResource from "./auth/DeleteResource";
+
+import Four03 from './error/403';
 
 
 
@@ -19,6 +21,9 @@ export function BrokerConnectorViewComponentAdmin(props) {
     let [id, setId] = useState([]);
     let [objCatalog, setObjCatalog] = useState([]);
     let [resourcesArray, setResourcesArray] = useState([]);
+
+    const { isAuthenticated, user } = useSelector(state => state.auth);
+
     //useEffect and useState helps in managing the states of the corresponding resource
     useEffect(() => {
         prepareResource();
@@ -107,47 +112,54 @@ export function BrokerConnectorViewComponentAdmin(props) {
     }
 
     function displayField(fieldLabel, fieldVal, col) {
-        if(!fieldVal)
+        if (!fieldVal)
             return ""
 
         return (
-            <BrokerAttribute col={col} 
+            <BrokerAttribute col={col}
                 label={fieldLabel}
                 value={fieldVal} />
         );
     }
 
     function displayURI(fieldLabel, fieldVal, col) {
-        if(!fieldVal)
+        if (!fieldVal)
             return ""
 
         return (
-            <BrokerAttributeUrl col={col} 
+            <BrokerAttributeUrl col={col}
                 label={fieldLabel}
                 value={fieldVal} />
         );
     }
 
-    return (
+    const brokerViewComponent = (
         <BrokerViewComponent
-        title={connector.title ? connector.title.join(", ") : "Unknown Connector"}
-        parentLink="/connectoradmin"
-        showBackButton={props.showBackButton}>
-                <Grid container className="main-container">
+            title={connector.title ? connector.title.join(", ") : "Unknown Connector"}
+            parentLink="/connectoradmin"
+            showBackButton={props.showBackButton}>
+            <Grid container className="main-container">
                 {
-                        displayURI("Connector URI", connector.originURI, 12)
-                    }
+                    displayURI("Connector URI", connector.originURI, 12)
+                }
 
-                </Grid>
+            </Grid>
 
-                <Grid container className="rounded-borders">
-                    {
-                        displayURI("Maintainer", provider.maintainer, 6)
-                    }
-                  
-                  <DeleteResource isConnector/>  
-                </Grid>
+            <Grid container className="rounded-borders">
+                {
+                    displayURI("Maintainer", provider.maintainer, 6)
+                }
+
+                <DeleteResource isConnector />
+            </Grid>
         </BrokerViewComponent>
+    );
+
+    return (
+        <Fragment>
+            {isAuthenticated && user.role === "admin" ?
+                brokerViewComponent : <Four03 msg="Only admin allowed to see this page" />}
+        </Fragment>
     );
 }
 let resourceId = decodeURIComponent(window.location.search);

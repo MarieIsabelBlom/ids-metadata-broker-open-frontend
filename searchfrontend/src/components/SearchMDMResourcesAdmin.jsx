@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import {
     SelectedFilters,
     DataSearch,
@@ -22,6 +22,8 @@ import { renderPagination, renderResultStats } from "./ConnectorBroker";
 import clsx from 'clsx';
 
 import SearchIcon from '../assets/icons/search.svg'
+
+import Four03 from './error/403';
 
 class SearchMDMResourcesAdmin extends React.Component {
 
@@ -77,7 +79,7 @@ class SearchMDMResourcesAdmin extends React.Component {
                         resource.length !== 0 ?
                             <React.Fragment key={resource.resourceID}>
                                 <Link to={'/resourcesadmin/resource?id=' + encodeURIComponent(resource.resourceID)} >
-                                    <Card  style={{ border: 'none', boxShadow: "none" }}>
+                                    <Card style={{ border: 'none', boxShadow: "none" }}>
                                         <CardActionArea>
                                             <CardContent className="connector-content">
                                                 <Typography variant="h5" component="h2">
@@ -98,8 +100,10 @@ class SearchMDMResourcesAdmin extends React.Component {
             </React.Fragment >
         );
     }
-    
+
     render() {
+        const { isAuthenticated, user } = this.props.auth;
+        
         let tenant = process.env.REACT_APP_TENANT || 'mobids';
         tenant = tenant.toLowerCase();
 
@@ -139,34 +143,34 @@ class SearchMDMResourcesAdmin extends React.Component {
                     />
                 </Grid>
             </Grid>
-            <Divider style={{backgroundColor: "#B9B9B9", marginTop: 30, marginBottom: 30 }} />
+            <Divider style={{ backgroundColor: "#B9B9B9", marginTop: 30, marginBottom: 30 }} />
         </div>
 
         let search = <React.Fragment>
             <Grid container className="search-container">
                 <Grid item
-                xs={12} md={tenant == "mobids" ? 7 : 12}
-                lg={tenant == "mobids" ? 8 : 12}
-                xl={tenant == "mobids" ? 9 : 12} >
+                    xs={12} md={tenant == "mobids" ? 7 : 12}
+                    lg={tenant == "mobids" ? 8 : 12}
+                    xl={tenant == "mobids" ? 9 : 12} >
                     <DataSearch
-                    componentId="search"
-                    dataField={['title', 'title_en', 'title_de', 'description', 'description_de', 'description_en']}
-                    URLParams={true}
-                    queryFormat="or"
-                    autosuggest={true}
-                    showClear={true}
-                    icon={<img src={SearchIcon} className="search-icon" />}
-                    onValueChange={
-                        function (value) {
-                            if (propsFromApp.location.pathname.indexOf('resourcesadmin') === -1) {
-                                propsFromApp.history.push("/resourcesadmin");
+                        componentId="search"
+                        dataField={['title', 'title_en', 'title_de', 'description', 'description_de', 'description_en']}
+                        URLParams={true}
+                        queryFormat="or"
+                        autosuggest={true}
+                        showClear={true}
+                        icon={<img src={SearchIcon} className="search-icon" />}
+                        onValueChange={
+                            function (value) {
+                                if (propsFromApp.location.pathname.indexOf('resourcesadmin') === -1) {
+                                    propsFromApp.history.push("/resourcesadmin");
+                                }
                             }
                         }
-                    }
-                    value={this.state.value}
-                    onChange={this.handleSearch}
-                    style={{marginRight: 5}}
-                /></Grid>
+                        value={this.state.value}
+                        onChange={this.handleSearch}
+                        style={{ marginRight: 5 }}
+                    /></Grid>
                 {tenant == "mobids" ? <Grid item md={5} lg={4} xl={3}>
                     <Button className={clsx("advanced-button", this.state.openSearch && "expanded")} onClick={() => this.handleOpenSearch(!this.state.openSearch)}>Advanced Search</Button></Grid> : ""
                 }
@@ -208,7 +212,8 @@ class SearchMDMResourcesAdmin extends React.Component {
         </Grid>
 
         let propsFromApp = this.props;
-        return (
+
+        let connectorsList = (
             <div className="connectors-list">
                 {/* Helper component to use the useExpandableFilter hook in this class component */}
                 {tenant == 'mobids' ? <HookHelper /> : ''}
@@ -220,9 +225,9 @@ class SearchMDMResourcesAdmin extends React.Component {
 
                         {/* List of resources in the /query page */}
                         <Grid item xl={tenant == 'mobids' ? 6 : 9}
-                        md={tenant == 'mobids' ? 8 : 9}
-                        xs={12} 
-                        className="search-column-container">
+                            md={tenant == 'mobids' ? 8 : 9}
+                            xs={12}
+                            className="search-column-container">
                             {tenant == 'mobids' ? search : ''}
 
                             <div className="conn-list">
@@ -254,12 +259,20 @@ class SearchMDMResourcesAdmin extends React.Component {
                     </Grid>
                 </React.Fragment>
             </div >
+        );
+
+        return (
+            <Fragment>
+                {isAuthenticated && user.role === "admin" ?
+                    connectorsList : <Four03 msg="Only admin allowed to see this page" />}
+            </Fragment>
         )
     }
 }
 
 const mapStateToProps = state => ({
-    token: state.auth.token
+    token: state.auth.token,
+    auth: state.auth
 })
 
 const HookHelper = () => {

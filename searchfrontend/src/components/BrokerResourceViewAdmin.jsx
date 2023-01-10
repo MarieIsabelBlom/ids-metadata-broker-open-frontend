@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import Typography from '@material-ui/core/Typography';
 import { Grid } from "@material-ui/core";
 import Button from '@material-ui/core/Button';
@@ -14,6 +14,7 @@ import '../css/ConnectorView.css'
 import { BrokerAttribute, BrokerAttributeUrl, BrokerViewComponent } from "./BrokerViewComponent";
 import DeleteResource from "./auth/DeleteResource";
 
+import Four03 from './error/403';
 
 
 export function BrokerResourceViewAdmin(props) {
@@ -29,7 +30,7 @@ export function BrokerResourceViewAdmin(props) {
 
     let targetURI = props.es_url
     let selfURI = props.es_url
-    
+
     //uncomment when merging with master branch M.P.
     if (typeof (targetURI) !== 'undefined' && targetURI != null) {
         if (targetURI.includes("/es")) {
@@ -47,6 +48,7 @@ export function BrokerResourceViewAdmin(props) {
     const ADMIN_GRAPH = "<https://broker.ids.isst.fraunhofer.de/admin>";
     const user = useSelector(state => state.auth.user);
     const token = useSelector(state => state.auth.token);
+    const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
 
     const labels = {
         1: 'Rate with 1 star',
@@ -70,11 +72,11 @@ export function BrokerResourceViewAdmin(props) {
 
     let [trustLevel, setTrustLevel] = useState("");
 
-   
+
 
     useEffect(() => {
         if (Object.keys(resource).length !== 0) {
-          const resourceURI = resource.resourceID;
+            const resourceURI = resource.resourceID;
 
             let TRUST_LEVEL_QUERY = `
             PREFIX ids: <https://w3id.org/idsa/core/>
@@ -346,8 +348,8 @@ export function BrokerResourceViewAdmin(props) {
                 ResourceURI = window.validResourceId;
                 console.log(validResourceId)
             }
-           
-            
+
+
             //find and get the respective validResourceId in Elastic search
 
             axios.get(targetURI + "resources/_search?pretty&size=1000", {  // .get(targetURI + "/resources/_search?size=1000&pretty", {
@@ -378,7 +380,7 @@ export function BrokerResourceViewAdmin(props) {
 
     //function to display field/URI based on 'div' classname
     function displayField(fieldLabel, fieldVal, col, className) {
-        if(!fieldVal)
+        if (!fieldVal)
             return ""
 
         return (
@@ -387,7 +389,7 @@ export function BrokerResourceViewAdmin(props) {
     }
 
     function displayURI(fieldLabel, fieldVal, col) {
-        if(!fieldVal)
+        if (!fieldVal)
             return ""
 
         return (
@@ -413,22 +415,22 @@ export function BrokerResourceViewAdmin(props) {
         )
     }
 
- /* var unixtime = resource.lastChanged; // unix timestamp in seconds
-    var t = new Date(unixtime * 1000);
-    var timestamp = ('0' + t.getHours()).slice(-2) + ':' + ('0' + t.getMinutes()).slice(-2);*/
+    /* var unixtime = resource.lastChanged; // unix timestamp in seconds
+       var t = new Date(unixtime * 1000);
+       var timestamp = ('0' + t.getHours()).slice(-2) + ':' + ('0' + t.getMinutes()).slice(-2);*/
 
 
 
-const unixTimestamp = resource.lastChanged
-const milliseconds = unixTimestamp * 1000 
-const dateObject = new Date(milliseconds)
-const timestamp = dateObject.toLocaleString() //2019-12-9 10:30:15
+    const unixTimestamp = resource.lastChanged
+    const milliseconds = unixTimestamp * 1000
+    const dateObject = new Date(milliseconds)
+    const timestamp = dateObject.toLocaleString() //2019-12-9 10:30:15
 
 
 
 
     function firstArrayItem(arr, prop) {
-        if(!arr || arr.length < 1)
+        if (!arr || arr.length < 1)
             return undefined
         else if (!prop)
             return arr[0]
@@ -444,13 +446,13 @@ const timestamp = dateObject.toLocaleString() //2019-12-9 10:30:15
     let resource_title = resource.mainTitle || resource.title_en || resource.title || resource.title_de;
     let resource_description = resource.description_en || resource.description_de || resource.description;
 
-    return (
+    const brokerViewComponent = (
         <div>
-            <BrokerViewComponent 
-            showBackButton={props.showBackButton}
-            title={resource_title ? resource_title : "Unknown Resource"}
+            <BrokerViewComponent
+                showBackButton={props.showBackButton}
+                title={resource_title ? resource_title : "Unknown Resource"}
 
-            parentLink="/resourcesadmin">
+                parentLink="/resourcesadmin">
                 <div>
                     <Grid container className="main-container">
                         {
@@ -461,10 +463,10 @@ const timestamp = dateObject.toLocaleString() //2019-12-9 10:30:15
                     <Grid container className="rounded-borders">
                         {
                             displayURI("Data Publisher", resource.publisher, 6)
-                        } 
-                        
-                    <DeleteResource />
-                   
+                        }
+
+                        <DeleteResource />
+
                     </Grid>
                 </div>
             </BrokerViewComponent>
@@ -472,21 +474,28 @@ const timestamp = dateObject.toLocaleString() //2019-12-9 10:30:15
         </div>
     );
 
+    return (
+        <Fragment>
+            {isAuthenticated && user.role === "admin" ?
+                brokerViewComponent : <Four03 msg="Only admin allowed to see this page" />}
+        </Fragment>
+    );
+
 }
 
 
 let resourceId = decodeURIComponent(window.location.search);
-    let validResourceId;
-    // The id of the resource will be appended in the url. eg.., https://<hostname>/resources/resource?id=https%3A%2F%2Fiais.fraunhofer.de%2Feis%2Fids%2FsomeBroker%2Fcatalog541260824%2F1091662930%2F1213443818
-    if (resourceId !== null && resourceId !== "") {
-        //split the above url to get only the resource id
-        resourceId = resourceId.split("=")[1];
-        // The id's of the object will contain unique paths added by the elastic search. Here in the resourceId: https://iais.fraunhofer.de/eis/ids/someBroker/catalog541260824/1091662930/1213443818, the valid resource id excludes the last path. So the valid url is: https://iais.fraunhofer.de/eis/ids/someBroker/catalog541260824/1091662930
-        validResourceId = resourceId;
-       
-        console.log("validResourceId "+ validResourceId)
-    }
-   
+let validResourceId;
+// The id of the resource will be appended in the url. eg.., https://<hostname>/resources/resource?id=https%3A%2F%2Fiais.fraunhofer.de%2Feis%2Fids%2FsomeBroker%2Fcatalog541260824%2F1091662930%2F1213443818
+if (resourceId !== null && resourceId !== "") {
+    //split the above url to get only the resource id
+    resourceId = resourceId.split("=")[1];
+    // The id's of the object will contain unique paths added by the elastic search. Here in the resourceId: https://iais.fraunhofer.de/eis/ids/someBroker/catalog541260824/1091662930/1213443818, the valid resource id excludes the last path. So the valid url is: https://iais.fraunhofer.de/eis/ids/someBroker/catalog541260824/1091662930
+    validResourceId = resourceId;
+
+    console.log("validResourceId " + validResourceId)
+}
+
 
 axios.get('http://localhost:9200/resources/_search?pretty&size=1000', {  // .get(targetURI + "/resources/_search?size=1000&pretty", {
     data: {
@@ -497,24 +506,24 @@ axios.get('http://localhost:9200/resources/_search?pretty&size=1000', {  // .get
         }
     }
 })
-.then(response => {
-    console.log(response)
+    .then(response => {
+        console.log(response)
 
-    if (response.status === 200) {
-        const resVal = response.data.hits.hits.find(({ _id }) => _id === validResourceId);
-
-
-        if (resVal !== null)
-            setResource(resVal._source)
-    }
-})
-.catch(err => {
-    console.log("An error occured: " + err);
-})
+        if (response.status === 200) {
+            const resVal = response.data.hits.hits.find(({ _id }) => _id === validResourceId);
 
 
+            if (resVal !== null)
+                setResource(resVal._source)
+        }
+    })
+    .catch(err => {
+        console.log("An error occured: " + err);
+    })
 
-export const ResourceURI = validResourceId;  
+
+
+export const ResourceURI = validResourceId;
 
 //export const ResourceURI = () => {
  //   let ResourceURI = decodeURIComponent(props.location.search);
@@ -525,4 +534,3 @@ export const ResourceURI = validResourceId;
 
 
 
-  

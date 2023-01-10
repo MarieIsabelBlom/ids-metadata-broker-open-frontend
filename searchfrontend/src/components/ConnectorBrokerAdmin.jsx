@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import {
     ReactiveList,
     MultiList
@@ -19,6 +19,8 @@ import { getAllConnectors } from '../helpers/sparql/connectors';
 import ArrowNext from '../assets/icons/arrow-next.svg'
 import ArrowPrev from '../assets/icons/arrow-previous.svg'
 import useExpandableFilter from "../helpers/useExpandableFilter";
+
+import Four03 from './error/403';
 
 export function BrokerFilter(props) {
 
@@ -78,6 +80,7 @@ export function SearchBroker(props) {
 
     const [connectors, setConnectors] = useState([]);
     const token = useSelector(state => state.auth.token);
+    const { isAuthenticated, user } = useSelector(state => state.auth);
 
     useEffect(() => {
         getAllConnectors(token).then(data => {
@@ -97,7 +100,7 @@ export function SearchBroker(props) {
         let connector = res.connector;
         // let type = res._type;
 
-        if (ParentLink=='/connectoradmin') return (
+        let connectorsAdmin = (
             <React.Fragment key={process.env.REACT_APP_USE_SPARQL === 'true' ? encodeURIComponent(connector.originURI) : encodeURIComponent(res._id)}>
                 <Link to={'/connectoradmin/connector?id=' + (process.env.REACT_APP_USE_SPARQL === 'true' ? encodeURIComponent(connector.originURI) : encodeURIComponent(res._id))} >
                     <Card key={res._id} style={{ border: 'none', boxShadow: "none" }} onClick={() => handleBrokerClick(res)}>
@@ -119,9 +122,9 @@ export function SearchBroker(props) {
                                                 {resources.description}
                                             </Typography>
                                         </div>
-                                    : ""
+                                        : ""
                                 }
-                                
+
                                 <Grid container className="connector-links connector-content-container">
                                     <Grid item xs={6}>
                                         <Typography component="p" className="link-title">
@@ -147,8 +150,15 @@ export function SearchBroker(props) {
                 </Link>
             </React.Fragment>
         )
+        
+        if (ParentLink == '/connectoradmin') return (
+            <Fragment>
+                {isAuthenticated && user.role === "admin" ?
+                    connectorsAdmin : <Four03 msg="Only admin allowed to see this page" />}
+            </Fragment>
+        )
 
-      else return (
+        else return (
             <React.Fragment key={process.env.REACT_APP_USE_SPARQL === 'true' ? encodeURIComponent(connector.originURI) : encodeURIComponent(res._id)}>
                 <Link to={'/connector/connector?id=' + (process.env.REACT_APP_USE_SPARQL === 'true' ? encodeURIComponent(connector.originURI) : encodeURIComponent(res._id))} >
                     <Card key={res._id} style={{ border: 'none', boxShadow: "none" }} onClick={() => handleBrokerClick(res)}>
@@ -170,9 +180,9 @@ export function SearchBroker(props) {
                                                 {resources.description}
                                             </Typography>
                                         </div>
-                                    : ""
+                                        : ""
                                 }
-                                
+
                                 <Grid container className="connector-links connector-content-container">
                                     <Grid item xs={6}>
                                         <Typography component="p" className="link-title">
@@ -254,8 +264,8 @@ export function SearchBrokerAdmin(props) {
         let provider = res.provider;
         let connector = res.connector;
         // let type = res._type;
-        
-        if (parentLink=='/connectoradmin') return (
+
+        if (parentLink == '/connectoradmin') return (
             <React.Fragment key={process.env.REACT_APP_USE_SPARQL === 'true' ? encodeURIComponent(connector.originURI) : encodeURIComponent(res._id)}>
                 <Link to={'/connectoradmin/connector?id=' + (process.env.REACT_APP_USE_SPARQL === 'true' ? encodeURIComponent(connector.originURI) : encodeURIComponent(res._id))} >
                     <Card key={res._id} style={{ border: 'none', boxShadow: "none" }} onClick={() => handleBrokerClick(res)}>
@@ -277,9 +287,9 @@ export function SearchBrokerAdmin(props) {
                                                 {resources.description}
                                             </Typography>
                                         </div>
-                                    : ""
+                                        : ""
                                 }
-                                
+
                                 <Grid container className="connector-links connector-content-container">
                                     <Grid item xs={6}>
                                         <Typography component="p" className="link-title">
@@ -338,29 +348,29 @@ export function SearchBrokerAdmin(props) {
     )
 }
 
-export function renderPagination({pages, totalPages, currentPage, setPage, fragmentName}) {
-    if(totalPages == 0)
+export function renderPagination({ pages, totalPages, currentPage, setPage, fragmentName }) {
+    if (totalPages == 0)
         return null // no results means no pagination
 
     return <div className='pagination'>
-        <Button variant='contained' 
-        onClick={() => setPage(currentPage-1)}
-        startIcon={<img src={ArrowPrev} height={15} width={15}/>}
-        disabled={currentPage == 0} disableElevation>Previous</Button>
+        <Button variant='contained'
+            onClick={() => setPage(currentPage - 1)}
+            startIcon={<img src={ArrowPrev} height={15} width={15} />}
+            disabled={currentPage == 0} disableElevation>Previous</Button>
 
-        <TextField value={currentPage+1} variant="outlined" 
-        onChange={(e) => {
-            let val = parseInt(e.target.value)
-            if(val > 0 && val <= totalPages)
-                setPage(val-1)
-        }}
-        style={{width: 50, marginRight: 12, textAlign: 'center'}} />
+        <TextField value={currentPage + 1} variant="outlined"
+            onChange={(e) => {
+                let val = parseInt(e.target.value)
+                if (val > 0 && val <= totalPages)
+                    setPage(val - 1)
+            }}
+            style={{ width: 50, marginRight: 12, textAlign: 'center' }} />
         of {totalPages}
 
-        <Button variant='contained' 
-        onClick={() => setPage(currentPage+1)}
-        endIcon={<img src={ArrowNext} height={15} width={15}/>}
-        disabled={currentPage == totalPages-1} disableElevation>Next</Button>
+        <Button variant='contained'
+            onClick={() => setPage(currentPage + 1)}
+            endIcon={<img src={ArrowNext} height={15} width={15} />}
+            disabled={currentPage == totalPages - 1} disableElevation>Next</Button>
     </div>
 }
 
