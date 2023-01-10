@@ -63,7 +63,7 @@ export function BrokerConnectorViewComponent(props) {
             }
             //find and get the respective validResourceId in Elastic search
 
-            axios.get(targetURI + "registrations/_search?size=1000&pretty", {
+            axios.get(targetURI + "/registrations/_search?size=1000&pretty", {
                 data: {
                     query: {
                         term: {

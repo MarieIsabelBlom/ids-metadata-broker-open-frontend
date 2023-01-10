@@ -32,7 +32,7 @@ export function BrokerConnectorViewComponentAdmin(props) {
     let targetURI = props.es_url
     let selfURI = props.es_url
     if (typeof (targetURI) !== 'undefined' && targetURI != null) {
-        if (targetURI.includes("/es")) {
+        if (!targetURI.includes("/es")) {
 
             targetURI = targetURI + "/es"
         }
@@ -75,7 +75,7 @@ export function BrokerConnectorViewComponentAdmin(props) {
             }
             //find and get the respective validResourceId in Elastic search
 
-            axios.get(targetURI + "registrations/_search?size=1000&pretty", {
+            axios.get(targetURI + "/registrations/_search?size=1000&pretty", {
                 data: {
                     query: {
                         term: {

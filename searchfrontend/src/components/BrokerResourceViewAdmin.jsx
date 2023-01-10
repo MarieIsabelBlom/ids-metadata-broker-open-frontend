@@ -33,7 +33,7 @@ export function BrokerResourceViewAdmin(props) {
 
     //uncomment when merging with master branch M.P.
     if (typeof (targetURI) !== 'undefined' && targetURI != null) {
-        if (targetURI.includes("/es")) {
+        if (!targetURI.includes("/es")) {
 
             targetURI = targetURI + "/es"
         }
@@ -352,7 +352,7 @@ export function BrokerResourceViewAdmin(props) {
 
             //find and get the respective validResourceId in Elastic search
 
-            axios.get(targetURI + "resources/_search?pretty&size=1000", {  // .get(targetURI + "/resources/_search?size=1000&pretty", {
+            axios.get(targetURI + "/resources/_search?pretty&size=1000", {  // .get(targetURI + "/resources/_search?size=1000&pretty", {
                 data: {
                     query: {
                         term: {
@@ -497,7 +497,7 @@ if (resourceId !== null && resourceId !== "") {
 }
 
 
-axios.get('http://localhost:9200/resources/_search?pretty&size=1000', {  // .get(targetURI + "/resources/_search?size=1000&pretty", {
+axios.get(targetURI + "/resources/_search?pretty&size=1000", {  // .get(targetURI + "/resources/_search?size=1000&pretty", {
     data: {
         query: {
             term: {

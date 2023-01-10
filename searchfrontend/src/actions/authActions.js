@@ -24,7 +24,7 @@ export const loadUser = () => (dispatch, getState) => {
   // User loading
   dispatch({ type: USER_LOADING });
 
-  axios.get('http://localhost:4000' + '/auth/user', tokenConfig(getState))
+  axios.get(mongodb_handlerURL + '/auth/user', tokenConfig(getState))
     .then(res => dispatch({
       type: USER_LOADED,
       payload: res.data
@@ -75,7 +75,7 @@ export const login = ({ username, password }) => dispatch => {
   const body = JSON.stringify({ username, password });
 
   axios
-    .post('http://localhost:4000' + '/auth', body, config)
+    .post(mongodb_handlerURL + '/auth', body, config)
     .then(res =>
       dispatch({
         type: LOGIN_SUCCESS,
@@ -114,7 +114,7 @@ export const savetodbresource = ({ reason }) => (dispatch, getState) => {
       resourceId = resourceId.split("=")[1];
   }
 
-axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , tokenConfig(getState), {
+axios.get(elasticsearchURL + '/resources/_search?size=100&q=*:*&pretty' , tokenConfig(getState), {
   data: {
       query: {
           term: {
@@ -134,7 +134,7 @@ axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty' , toke
   let tokenheader =   tokenConfig(getState)
   var config = {
     method: 'post',
-    url: 'http://localhost:4000/data/addreason',
+    url: mongodb_handlerURL + '/data/addreason',
    /* headers: { 
       'Content-Type': 'application/json'
         },*/
@@ -185,7 +185,7 @@ export const savetodb = ({ reason }) =>  (dispatch, getState) => {
       resourceId = resourceId.split("=")[1];
   }
 
-axios.get('http://localhost:9200/registrations/_search?size=1000&pretty' , tokenConfig(getState), {
+axios.get(elasticsearchURL + '/registrations/_search?size=1000&pretty' , tokenConfig(getState), {
   data: {
       query: {
           term: {
@@ -209,7 +209,7 @@ axios.get('http://localhost:9200/registrations/_search?size=1000&pretty' , token
   
   var config = {
     method: 'post',
-    url: 'http://localhost:4000/data/addreason',
+    url: mongodb_handlerURL +  '/data/addreason',
     headers: { 
       'Content-Type': 'application/json'
         },
@@ -256,7 +256,7 @@ export const deleteconnectors = () => (dispatch, getState) => {
       resourceId = resourceId.split("=")[1];
   }
 
-axios.get('http://localhost:9200/registrations/_search?size=1000&pretty' , tokenConfig(getState), {
+axios.get(elasticsearchURL + '/registrations/_search?size=1000&pretty' , tokenConfig(getState), {
   data: {
       query: {
           term: {
@@ -274,7 +274,7 @@ axios.get('http://localhost:9200/registrations/_search?size=1000&pretty' , token
                 let connector = conn._source.connector;
                 let originURI = connector.originURI;
               //  console.log(JSON.stringify(originURI))   
-       axios.get('http://localhost:4000' + '/data/clean/connector/' + originURI, tokenConfig(getState), )
+       axios.get(mongodb_handlerURL + '/data/clean/connector/' + originURI, tokenConfig(getState), )
         .then ((originURI) => {
            console.log("cleaning Request for Connector " , JSON.stringify(originURI));})
         .catch(err => {
@@ -306,7 +306,7 @@ export const deleteresource = () => (dispatch, getState) => {
       resourceId = resourceId.split("=")[1];
   }
 
-  axios.get('http://localhost:9200/resources/_search?size=100&q=*:*&pretty', tokenConfig(getState), {
+  axios.get(elasticsearchURL + '/resources/_search?size=100&q=*:*&pretty', tokenConfig(getState), {
     data: {
       query: {
         term: {
@@ -325,7 +325,7 @@ export const deleteresource = () => (dispatch, getState) => {
           //get connector originURI
           //post request is used because browsers don't allow sending get requests with body - it is ignored
           let connectorID = resource._source.connectorID;
-          axios.post('http://localhost:9200/registrations/_search?size=100&pretty', {
+          axios.post(elasticsearchURL + '/registrations/_search?size=100&pretty', {
             query: {
               term: {
                 _id: connectorID
@@ -336,7 +336,7 @@ export const deleteresource = () => (dispatch, getState) => {
               //get connector originURI
               const originURI = connectorResponse.data.hits.hits[0]._source.connector.originURI;
 
-              axios.get('http://localhost:4000' + '/data/clean/connectors/' + originURI + "/resource/" + ResourceURI, tokenConfig(getState),)
+              axios.get(mongodb_handlerURL + '/data/clean/connectors/' + originURI + "/resource/" + ResourceURI, tokenConfig(getState),)
                 .then((ResourceURI) => {
                   console.log("cleaning Request for Resource ", JSON.stringify(ResourceURI));
                 })
