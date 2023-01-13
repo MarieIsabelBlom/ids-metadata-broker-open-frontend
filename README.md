@@ -29,5 +29,5 @@ See the READMEs in the respective subfolders.
 
 ## Contributers
 
-* [Neha Thawani](https://github.com/NehaThawani44), [Fraunhofer IAIS](https://www.iais.fraunhofer.de/)
-* [Sebastian Bader](https://github.com/sebbader), [Fraunhofer IAIS](https://www.iais.fraunhofer.de/)
+* [Neha Thawani](https://github.com/NehaThawani44)
+* [Sebastian Bader](https://github.com/sebbader)
