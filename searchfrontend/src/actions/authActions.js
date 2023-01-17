@@ -325,7 +325,7 @@ export const deleteresource = () => (dispatch, getState) => {
           //get connector originURI
           //post request is used because browsers don't allow sending get requests with body - it is ignored
           let connectorID = resource._source.connectorID;
-          axios.post(elasticsearchURL + '/registrations/_search?size=100&pretty', {
+          axios.get(elasticsearchURL + '/registrations/_search?size=100&pretty', {
             query: {
               term: {
                 _id: connectorID
@@ -333,10 +333,16 @@ export const deleteresource = () => (dispatch, getState) => {
             }
           }, tokenConfig(getState))
             .then(connectorResponse => {
+              if (connectorResponse.status === 200) {
               //get connector originURI
-              const originURI = connectorResponse.data.hits.hits[0]._source.connector.originURI;
-
-              axios.get(mongodb_handlerURL + '/data/clean/connectors/' + originURI + "/resource/" + ResourceURI, tokenConfig(getState),)
+             // const originURI = connectorResponse.data.hits.hits[0]._source.connector.originURI;
+              
+             const fconnector = [connectorResponse.data.hits.hits.find(({ _id }) => _id === connectorID)];
+             fconnector.map(conn => {
+                     let connector = conn._source.connector;
+                     let originURI = connector.originURI;
+                   //  console.log(JSON.stringify(originURI))   
+              axios.get(mongodb_handlerURL + '/data/clean/connectors/' + originURI + '/resource/' + ResourceURI, tokenConfig(getState),)
                 .then((ResourceURI) => {
                   console.log("cleaning Request for Resource ", JSON.stringify(ResourceURI));
                 })
@@ -351,6 +357,8 @@ export const deleteresource = () => (dispatch, getState) => {
                   })
                 })
             })
+         }
+         })
         })
       }
     });

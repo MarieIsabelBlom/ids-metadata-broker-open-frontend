@@ -17,7 +17,7 @@ require('dotenv/config')
 const secret = process.env.JWT_SECRET;
 const resourcemessage = process.env.RESOURCEMESSAGE;
 const connectormessage = process.env.CONNECTORMESSAGE;
-const url = 'http://localhost:8080/infrastructure';
+const url = process.env.BROKER_URL + '/infrastructure';
 
 
 //router.use(auth, admin);
@@ -25,9 +25,13 @@ const url = 'http://localhost:8080/infrastructure';
 //Route for Sending a Deletion Message to Delete a Resource to the Broker
 router.get('/clean/connectors/:connectorURI(*)/resource/:resourceURI(*)', auth, admin, async (req, res) => {
   try {
-    const ConnectorURI = req.params.connectorURI;
-    const ResourceURI = req.params.resourceURI;
 
+    const curi = req.params.connectorURI;  
+    const ConnectorURI = curi.replace(":/", "://");
+    const ruri = req.params.resourceURI; 
+    const ResourceURI = ruri.replace(":/", "://");
+
+ 
     // Simple validation
     if (!ResourceURI) {
       return res.status(400).json({
@@ -45,7 +49,7 @@ router.get('/clean/connectors/:connectorURI(*)/resource/:resourceURI(*)', auth, 
         try {
 
           let ResourceUnavailable = JSON.parse(data);
-          //console.log(ResourceUnavailable);
+          //console.log('*****', ConnectorURI);
           ResourceUnavailable['ids:affectedResource']['@id'] = ResourceURI;
           ResourceUnavailable['ids:issuerConnector']['@id'] = ConnectorURI;
 
@@ -60,7 +64,7 @@ router.get('/clean/connectors/:connectorURI(*)/resource/:resourceURI(*)', auth, 
               console.log(err);
             } else {
               console.log('ResourceID and DAT are successfully added');
-              //console.log(ResourceUnavailable)
+              //console.log('*****', ResourceUnavailable)
               const formData = new FormData();
               formData.append('header', JSON.stringify(ResourceUnavailable));
 
@@ -77,6 +81,7 @@ router.get('/clean/connectors/:connectorURI(*)/resource/:resourceURI(*)', auth, 
                 let response = await axios(config);
                 //check if the resource is deleted, if not throw an error
                 //parse multipart/form-data response
+				//console.log('*****', config)
 
                 //get boundary
                 const boundary = MultipartMessageHandler.getBoundary(response);
@@ -121,7 +126,8 @@ router.get('/clean/connectors/:connectorURI(*)/resource/:resourceURI(*)', auth, 
 router.get('/clean/connector/:uri(*)', auth, admin, async (req, res) => {
 
   try {
-    const ConnectorURI = req.params.uri;
+    const curi = req.params.uri; 
+    const ConnectorURI = curi.replace(":/", "://");
     console.log(ConnectorURI);
     // Simple validation
     if (!ConnectorURI) {
@@ -154,6 +160,7 @@ router.get('/clean/connector/:uri(*)', auth, admin, async (req, res) => {
               console.log(err);
             } else {
               console.log('ConnectorID and DAT are successfully added');
+			  console.log('*****', ConnectorUnavailable)
 
               const formData = new FormData();
               formData.append('header', JSON.stringify(ConnectorUnavailable));
@@ -168,6 +175,7 @@ router.get('/clean/connector/:uri(*)', auth, admin, async (req, res) => {
               };
               try {
                 let response = await axios(config);
+				console.log('*****', config)
                 //check if the connector is deleted, if not throw an error
                 //parse multipart/form-data response
 

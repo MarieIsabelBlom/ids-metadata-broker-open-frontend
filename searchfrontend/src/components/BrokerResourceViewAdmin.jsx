@@ -7,7 +7,7 @@ import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 
 import { mongodb_handlerURL } from '../urlConfig';
-
+import { elasticsearchURL } from '../urlConfig';
 import { getResource } from '../helpers/sparql/connectors';
 
 import '../css/ConnectorView.css'
@@ -352,7 +352,7 @@ export function BrokerResourceViewAdmin(props) {
 
             //find and get the respective validResourceId in Elastic search
 
-            axios.get(targetURI + "/resources/_search?pretty&size=1000", {  // .get(targetURI + "/resources/_search?size=1000&pretty", {
+            axios.get(elasticsearchURL + "/resources/_search?pretty&size=1000", {  // .get(targetURI + "/resources/_search?size=1000&pretty", {
                 data: {
                     query: {
                         term: {
@@ -497,7 +497,7 @@ if (resourceId !== null && resourceId !== "") {
 }
 
 
-axios.get(targetURI + "/resources/_search?pretty&size=1000", {  // .get(targetURI + "/resources/_search?size=1000&pretty", {
+axios.get(elasticsearchURL + "/resources/_search?pretty&size=1000", {  // .get(targetURI + "/resources/_search?size=1000&pretty", {
     data: {
         query: {
             term: {
