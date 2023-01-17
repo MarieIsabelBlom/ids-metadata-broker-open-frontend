@@ -8,7 +8,6 @@
 
 The Open Frontend provides an open-source (Apache 2.0) version of a website server that can be used in combination with the IDS Metadata Broker [reference implementation](https://github.com/International-Data-Spaces-Association/metadata-broker-open-core). It provides a basic website and first user and session management capabilities. It is intended to enable show cases and help the further dissemination of the IDS Metadata Broker in demo scenarios and for quick testings.
 
-Important: This project is not intended for productive usage! The providers of this project do not give any guarantees regarding security breaches or any other form of warranty!
 ------
 
 ## Overview: Versioning
@@ -26,10 +25,3 @@ The IDS Metadata Broker Open Frontend follows the SemanticVersioning system. Maj
 
 See the READMEs in the respective subfolders.
 
-
-## Contact Persons and Contributers
-
-For any questions or suggestions that cannot be solved via <a href="https://github.com/International-Data-Spaces-Association/ids-metadata-broker-open-frontend/issues">GitHub-Issues</a>, the following contacts are available:
-* [Neha Thawani](https://github.com/NehaThawani44), [Fraunhofer IAIS](https://www.iais.fraunhofer.de/)
-* [Sebastian Bader](https://github.com/sebbader), [Fraunhofer IAIS](https://www.iais.fraunhofer.de/)
-* or send an email to [contact@ids.fraunhofer.de](mailto:contact@ids.fraunhofer.de)
