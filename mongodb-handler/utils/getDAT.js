@@ -8,6 +8,7 @@ const x509 = require('@peculiar/x509');
 const keyStorePath = process.env.KEYSTORE_PATH;
 const jksPassword = process.env.JKS_PASSWORD;
 const privateKeyPassword = process.env.PRIVATE_KEY_PASSWORD;
+const dapsApi = process.env.DAPS_API;
 
 async function getDAT() {
 
@@ -63,7 +64,7 @@ async function getDAT() {
 
     //creating a request to get DAPS token (DAT)
     const dapsResponse = await axios.post(
-        'https://daps.aisec.fraunhofer.de/v3/token',
+        dapsApi,
         {
             grant_type: 'client_credentials',
             client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
