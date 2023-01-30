@@ -437,7 +437,7 @@ export function BrokerResourceView(props) {
             showMore={
                 <React.Fragment>
                         <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Resource Meta Data</Typography>
-                        <Grid container>      
+                        <Grid container>    
                             {
                                 resource.language ? displayField("Language", resource.language.join(", "), 4) : ""
                             }
@@ -449,6 +449,19 @@ export function BrokerResourceView(props) {
                             }
                             {
                                 displayURI("Content Standard", resource.contentStandard, 4)
+                            }
+                            /*these 4 Fields are only visible if you run the DQV Broker*/
+                            {
+                                displayField("Accuracy", resource.spatialAccuracy, 4)
+                            }
+							{
+                            displayField("Completeness", resource.populationCompleteness, 4)
+                            }
+							{
+                            displayField("Precision", resource.spatialResolutionAsAngularDistance, 4)
+                            }
+							{
+                            displayField("Consistency", resource.rateOfObjectsWithInconsistencyBetweenGivenProperties, 4)
                             }
                         </Grid>
                         
