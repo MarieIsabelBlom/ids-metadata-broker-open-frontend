@@ -183,10 +183,7 @@ class App extends React.Component {
        // return new URL(window._env_.REACT_APP_BROKER_URL).toString();
 
         // uncomment for deployment
-        if(window._env_ === undefined)
-            return new URL('/es', window.location.origin).toString()
-        else
-            return new URL('/es', window._env_.REACT_APP_BROKER_URL).toString();
+        return elasticsearchURL;
     }
 
     handleDrawerOpen = () => {
@@ -365,7 +362,7 @@ class App extends React.Component {
                         { this.tenant == 'mobids' ? <Route exact path="/">
                                 <MDSHome />
                             </Route> : ""}
-                            { this.tenant !== 'mobids' ? <Route path="/browse">
+                            { this.tenant == 'eis' ? <Route path="/browse">
                                 <Dashboard />
                             </Route> : ""}
                             <Route path="/connector/:resID">
