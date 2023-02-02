@@ -26,10 +26,14 @@ The IDS Metadata Broker Open Frontend follows the SemanticVersioning system. Maj
 
 See the READMEs in the respective subfolders.
 
+## Feature Branches
 
-## Contact Persons and Contributers
+This Repository contains 2 feature Branches:
+* dqvdata: Contains an Implementation with additional Fields for describing the Quality of Resources. To display the Fields, you need to run the specific DQV Broker Version
+* deletefunction: This branch contains an additional Route, which allows an Admin to delete Resources and Connectors directly via the Frontend. 
 
-For any questions or suggestions that cannot be solved via <a href="https://github.com/International-Data-Spaces-Association/ids-metadata-broker-open-frontend/issues">GitHub-Issues</a>, the following contacts are available:
-* [Neha Thawani](https://github.com/NehaThawani44), [Fraunhofer IAIS](https://www.iais.fraunhofer.de/)
-* [Sebastian Bader](https://github.com/sebbader), [Fraunhofer IAIS](https://www.iais.fraunhofer.de/)
-* or send an email to [contact@ids.fraunhofer.de](mailto:contact@ids.fraunhofer.de)
+## Contributers
+
+* [Neha Thawani](https://github.com/NehaThawani44)
+* [Sebastian Bader](https://github.com/sebbader)
+* [Marie Blom](https://github.com/MarieIsabelBlom), [Fraunhofer IAIS](https://www.iais.fraunhofer.de/)
