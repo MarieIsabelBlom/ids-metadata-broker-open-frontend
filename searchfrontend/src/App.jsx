@@ -38,6 +38,7 @@ import { BrokerConnectorViewComponent } from './components/BrokerConnectorViewCo
 
 import { elasticsearchURL } from './urlConfig';
 import Footer from './components/Footer';
+import ImprintViewMDS from './ImprintViewMDS';
 
 const drawerWidth = 300;
 const styles = theme => ({
@@ -170,7 +171,7 @@ class App extends React.Component {
     }
 
     // change eis to paris to have the paris frontend
-    tenant = process.env.REACT_APP_TENANT || 'mobids';
+    tenant = process.env.REACT_APP_TENANT || 'eis';
     tenant = this.tenant.toLowerCase();
 
     /*
@@ -290,9 +291,7 @@ class App extends React.Component {
                         <h5 style={{ fontSize: '14px', paddingTop: '6px' }}>{this.renderMainTitle(this.tenant)}</h5>
                         <p style={{ fontSize: '10px', textAlign: 'left' }}>International Data Spaces</p>
                     </Grid>
-                    <Grid className="footer-mail" container item xs={6} lg={6} md={6} >
-                        <a href="mailto:contact@ids.fraunhofer.de" style={{ fontSize: '10px' }}>contact@ids.fraunhofer.de</a>
-                    </Grid>
+                   
                     <Grid className="footer-mail" container item xs={6} lg={6} md={6} >
                         <a href="https://www.iais.fraunhofer.de/.org/" style={{ fontSize: '10px' }}>© {new Date().getFullYear()}&nbsp;Fraunhofer IAIS</a>
                     </Grid>
@@ -361,9 +360,11 @@ class App extends React.Component {
                     })}>
                         <div className={clsx(classes.appBarSpacer, 'appBarSpacer')} />
                         <Container maxWidth="xl" className={classes.container}>
-                            <Route exact path="/">
+                            
+                            
+                        { this.tenant == 'mobids' ? <Route exact path="/">
                                 <MDSHome />
-                            </Route>
+                            </Route> : ""}
                             { this.tenant !== 'mobids' ? <Route path="/browse">
                                 <Dashboard />
                             </Route> : ""}
@@ -422,9 +423,12 @@ class App extends React.Component {
                             <Route path="/data-protection">
                                 <DataPrivacyView />
                             </Route>
-                            <Route path="/imprint">
+                            { this.tenant !== 'mobids' ? <Route path="/imprint">
                                 <ImprintView />
-                            </Route>
+                            </Route> : ""}
+                            { this.tenant == 'mobids' ? <Route path="/imprint">
+                                <ImprintViewMDS />
+                            </Route> : ""}
                             <Route path="/maintainer">
                                 <Maintainer />
                             </Route>
@@ -437,6 +441,7 @@ class App extends React.Component {
                             <Route path="/admin">
                                 <Adminx />
                             </Route>
+                            
                         </Container>
                         {footerPos2}
                     </main>

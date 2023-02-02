@@ -49,7 +49,7 @@ export default class SearchConnectors extends React.Component {
     }
 
     render() {
-        let tenant = process.env.REACT_APP_TENANT || 'mobids';
+        let tenant = process.env.REACT_APP_TENANT || 'eis';
 
         tenant = tenant.toLowerCase();
 

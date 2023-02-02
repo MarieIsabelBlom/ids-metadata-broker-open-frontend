@@ -12,7 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import CloseIcon from '@material-ui/icons/Close';
 import { Button } from '@material-ui/core';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 
 import Logo from '../assets/MDS-Logo-black.svg'
