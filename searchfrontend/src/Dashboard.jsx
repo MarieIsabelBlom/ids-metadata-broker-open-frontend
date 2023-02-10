@@ -135,11 +135,7 @@ class Dashboard extends PureComponent {
 
   //M.P: uncomment when running locally in IMP
    setBrokerURL = () => {
-    if (window._env_ === undefined)
-      this.brokerURL = 'http://localhost:9200';
-    else
-      this.brokerURL = window._env_.REACT_APP_BROKER_URL;
-    //this.brokerURL = new URL('/es', this.brokerURL).toString();
+    return elasticsearchURL;
   } 
 /*
   setBrokerURL = () => {
@@ -197,7 +193,7 @@ class Dashboard extends PureComponent {
         })
     } else {
       axios
-      .get(this.brokerURL + '/registrations/_search?size=100&q=*:*')
+      .get(elasticsearchURL + '/registrations/_search?size=100&q=*:*')
       .then(response => {
         if (response.status === 200) {
 

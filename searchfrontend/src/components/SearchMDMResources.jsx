@@ -100,11 +100,46 @@ class SearchMDMResources extends React.Component {
     }
     
     render() {
-        let tenant = process.env.REACT_APP_TENANT || 'mobids';
+        let tenant = process.env.REACT_APP_TENANT || 'eis';
         tenant = tenant.toLowerCase();
 
         let advancedSearch = <div className="advanced-filter-container">
-            <Grid container>
+                  {tenant!== "mobids" ? <Grid container>
+                <Grid item xs={12} md={4}>
+                    <MultiDropdownList
+                        componentId="adv_category"
+                        dataField="publisherAsUri.keyword"
+                        placeholder="Data Publisher"
+                        className="advanced-filter"
+                        filterLabel="Data Publisher"
+                        showCount={false}
+                        URLParams={true}
+                    />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <MultiDropdownList
+                        componentId="adv_subcategory"
+                        dataField="sovereignAsUri.keyword"
+                        placeholder="Data Owner"
+                        className="advanced-filter"
+                        filterLabel="Data Owner"
+                        showCount={false}
+                        URLParams={true}
+                    />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <MultiDropdownList
+                        componentId="adv_transport"
+                        dataField="keyword.keyword"
+                        placeholder="Keywords"
+                        className="advanced-filter"
+                        filterLabel="Keywords"
+                        showCount={false}
+                        URLParams={true}
+                    />
+                </Grid>
+            </Grid> :"" }
+            {tenant== "mobids" ? <Grid container>
                 <Grid item xs={12} md={4}>
                     <MultiDropdownList
                         componentId="adv_category"
@@ -138,124 +173,125 @@ class SearchMDMResources extends React.Component {
                         URLParams={true}
                     />
                 </Grid>
-            </Grid>
+            </Grid> :"" }
             <Divider style={{backgroundColor: "#B9B9B9", marginTop: 30, marginBottom: 30 }} />
         </div>
 
-        let search = <React.Fragment>
-            <Grid container className="search-container">
-                <Grid item
-                xs={12} md={tenant == "mobids" ? 7 : 12}
-                lg={tenant == "mobids" ? 8 : 12}
-                xl={tenant == "mobids" ? 9 : 12} >
-                    <DataSearch
-                    componentId="search"
-                    dataField={['title', 'title_en', 'title_de', 'description', 'description_de', 'description_en']}
-                    URLParams={true}
-                    queryFormat="or"
-                    autosuggest={true}
-                    showClear={true}
-                    icon={<img src={SearchIcon} className="search-icon" />}
-                    onValueChange={
-                        function (value) {
-                            if (propsFromApp.location.pathname.indexOf('resources') === -1) {
-                                propsFromApp.history.push("/resources");
-                            }
-                        }
-                    }
-                    value={this.state.value}
-                    onChange={this.handleSearch}
-                    style={{marginRight: 5}}
-                /></Grid>
-                {tenant == "mobids" ? <Grid item md={5} lg={4} xl={3}>
-                    <Button className={clsx("advanced-button", this.state.openSearch && "expanded")} onClick={() => this.handleOpenSearch(!this.state.openSearch)}>Advanced Search</Button></Grid> : ""
+let search = <React.Fragment>
+<Grid container className="search-container">
+    <Grid item
+    xs={12} md={tenant == "eis" || "mobids" ? 7 : 12}
+    lg={tenant == "eis" || "mobids" ? 8 : 12}
+    xl={tenant == "eis" || "mobids"? 9 : 12} >
+        <DataSearch
+        componentId="search"
+        dataField={['title', 'title_en', 'title_de', 'description', 'description_de', 'description_en']}
+        URLParams={true}
+        queryFormat="or"
+        autosuggest={true}
+        showClear={true}
+        icon={<img src={SearchIcon} className="search-icon" />}
+        onValueChange={
+            function (value) {
+                if (propsFromApp.location.pathname.indexOf('resources') === -1) {
+                    propsFromApp.history.push("/resources");
                 }
-            </Grid>
-            {tenant == "mobids" && this.state.openSearch ? advancedSearch : ""}
-            <SelectedFilters className="selected-filters" />
-        </React.Fragment>
-
-        let filterSection = <Grid item xl={3} md={4} xs={12}>
-            <Card className="filter-container">
-                <React.Fragment>
-                    <MultiList
-                        componentId="Keywords"
-                        dataField="keyword.keyword"
-                        style={{
-                            margin: 20
-                        }}
-                        showSearch={true}
-                        showCount={false}
-                        title="Keywords"
-                        URLParams={true}
-                        className="expandable expanded"
-                    />
-                    <Divider />
-                    <MultiList
-                        componentId="Publishers"
-                        dataField="publisherAsUri.keyword"
-                        style={{
-                            margin: 20
-                        }}
-                        showSearch={true}
-                        showCount={false}
-                        title="Publisher"
-                        URLParams={true}
-                        className="expandable"
-                    />
-                </React.Fragment>
-            </Card>
-        </Grid>
-
-        let propsFromApp = this.props;
-        return (
-            <div className="connectors-list">
-                {/* Helper component to use the useExpandableFilter hook in this class component */}
-                {tenant == 'mobids' ? <HookHelper /> : ''}
-                <React.Fragment>
-                    {tenant != 'mobids' ? search : ''}
-                    <Grid container>
-                        {/* Filter section on the left-side onnly for mobids */}
-                        {tenant == 'mobids' ? filterSection : ''}
-
-                        {/* List of resources in the /query page */}
-                        <Grid item xl={tenant == 'mobids' ? 6 : 9}
-                        md={tenant == 'mobids' ? 8 : 9}
-                        xs={12} 
-                        className="search-column-container">
-                            {tenant == 'mobids' ? search : ''}
-
-                            <div className="conn-list">
-                                {(process.env.REACT_APP_USE_SPARQL === 'true') && (
-                                    this.renderMobilityResources({ data: this.state.resources })
-                                )}
-                                {(process.env.REACT_APP_USE_SPARQL === 'false') && (
-                                    <ReactiveList
-                                        componentId="result"
-                                        dataField="title.keyword"
-                                        pagination={true}
-                                        URLParams={true}
-                                        react={{
-                                            and: ["search", "Keywords", "Publishers", "adv_category", "adv_subcategory", "adv_transport"]
-                                        }}
-                                        render={this.renderMobilityResources}
-                                        renderResultStats={renderResultStats}
-                                        renderPagination={renderPagination}
-                                        size={10}
-                                        style={{
-                                            margin: 0
-                                        }}
-                                    />
-                                )}
-                            </div>
-                        </Grid>
-
-                        {tenant != 'mobids' ? filterSection : ''}
-                    </Grid>
-                </React.Fragment>
-            </div >
-        )
+            }
+        }
+        value={this.state.value}
+        onChange={this.handleSearch}
+        style={{marginRight: 5}}
+    /></Grid>
+    
+    {tenant == "mobids" || "eis" ? <Grid item md={5} lg={4} xl={3}>
+        <Button className={clsx("advanced-button", this.state.openSearch && "expanded")} onClick={() => this.handleOpenSearch(!this.state.openSearch)}>Advanced Search</Button></Grid> : ""
     }
+</Grid>
+{tenant == "mobids" || "eis" && this.state.openSearch ? advancedSearch : ""}
+<SelectedFilters className="selected-filters" />
+</React.Fragment>
+
+let filterSection = <Grid item xl={3} md={4} xs={12}>
+<Card className="filter-container">
+    <React.Fragment>
+        <MultiList
+            componentId="Keywords"
+            dataField="keyword.keyword"
+            style={{
+                margin: 20
+            }}
+            showSearch={true}
+            showCount={false}
+            title="Keywords"
+            URLParams={true}
+            className="expandable expanded"
+        />
+        <Divider />
+        <MultiList
+            componentId="Publishers"
+            dataField="publisherAsUri.keyword"
+            style={{
+                margin: 20
+            }}
+            showSearch={true}
+            showCount={false}
+            title="Publisher"
+            URLParams={true}
+            className="expandable"
+        />
+    </React.Fragment>
+</Card>
+</Grid>
+
+let propsFromApp = this.props;
+return (
+<div className="connectors-list">
+    {/* Helper component to use the useExpandableFilter hook in this class component */}
+    {tenant == 'mobids' ? <HookHelper /> : ''}
+    <React.Fragment>
+        {tenant != 'mobids' ? search : ''}
+        <Grid container>
+            {/* Filter section on the left-side onnly for mobids */}
+            {tenant == 'mobids' ? filterSection : ''}
+
+            {/* List of resources in the /query page */}
+            <Grid item xl={tenant == 'mobids' || 'eis' ? 6 : 9}
+            md={tenant == 'mobids' || 'eis' ? 8 : 9}
+            xs={12} 
+            className="search-column-container">
+                {tenant == 'mobids' ? search : ''}
+
+                <div className="conn-list">
+                    {(process.env.REACT_APP_USE_SPARQL === 'true') && (
+                        this.renderMobilityResources({ data: this.state.resources })
+                    )}
+                    {(process.env.REACT_APP_USE_SPARQL === 'false') && (
+                        <ReactiveList
+                            componentId="result"
+                            dataField="title.keyword"
+                            pagination={true}
+                            URLParams={true}
+                            react={{
+                                and: ["search", "Keywords", "Publishers", "adv_category", "adv_subcategory", "adv_transport"]
+                            }}
+                            render={this.renderMobilityResources}
+                            renderResultStats={renderResultStats}
+                            renderPagination={renderPagination}
+                            size={10}
+                            style={{
+                                margin: 0
+                            }}
+                        />
+                    )}
+                </div>
+            </Grid>
+
+            {tenant != 'mobids' ? filterSection : ''}
+        </Grid>
+    </React.Fragment>
+</div >
+)
+}
 }
 
 const mapStateToProps = state => ({
