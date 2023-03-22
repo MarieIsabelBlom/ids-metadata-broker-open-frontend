@@ -28,6 +28,7 @@ See the READMEs in the respective subfolders.
 
 ## Feature Branches
 
+
 This Repository contains 2 feature Branches:
 * dqvdata: Contains an Implementation with additional Fields for describing the Quality of Resources. To display the Fields, you need to run the specific DQV Broker Version
 * deletefunction: This branch contains an additional Route, which allows an Admin to delete Resources and Connectors directly via the Frontend. 
@@ -37,3 +38,4 @@ This Repository contains 2 feature Branches:
 * [Neha Thawani](https://github.com/NehaThawani44)
 * [Sebastian Bader](https://github.com/sebbader)
 * [Marie Blom](https://github.com/MarieIsabelBlom), [Fraunhofer IAIS](https://www.iais.fraunhofer.de/)
+
